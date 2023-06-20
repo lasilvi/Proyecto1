@@ -1,0 +1,133 @@
+{% extends 'app_registro/pages.html' %}
+
+{% block formulario %}
+
+{% load crispy_forms_tags %}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="d-flex p-2">
+            <form method="post" id="myForm">
+                {% csrf_token %}
+                <label >Esta registrando los asistentes del Acta N°{{ act_ident }} </label> 
+                <div>
+                <label>del Proceso/Dependecia {{ act_proceso }}</label>
+                </div>
+                <table class="table text-center">
+                <div class="container">
+                  <div class="form-group"> 
+                    <td>
+                    <label >Asistente</label>
+                    <select name="campo1" id="campo1" class="form-control">
+                        {% for choice in form.user.field.choices %}
+                          <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                        {% endfor %}
+                    </select>
+                  </td>
+                  <td>
+                  <label >Asistio</label>
+                <div>
+                  <input type="checkbox" name="" id="Asset1">
+                  </div>
+                  </td>
+                    <td>
+                    <button type="button" class="btn btn-danger" onclick="eliminarCampo1">Eliminar</button>
+                    </td>
+                    </div>
+                  </table>
+                  <div id="campos-extra"></div>
+                  <button type="button" class="btn btn-primary" onclick="agregarCampo()">Agregar Nuevo Campo</button>
+                  <button type="submit" class="btn btn-primary">Enviar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+  let contadorCampos = 2; // Contador para asignar IDs únicos a los nuevos campos
+  let valoresCampos = {}; // Objeto para almacenar los valores de los campos
+
+  function agregarCampo() {
+    const camposExtra = document.getElementById("campos-extra");
+    const nuevoCampoId = `campo${contadorCampos}`
+    // Crear el nuevo campo
+    const nuevoCampo = document.createElement("div");
+    nuevoCampo.className = "form-group";
+    nuevoCampo.innerHTML = `
+      <table class="table text-center">
+        <td>
+      <label for="campo${contadorCampos}">Asistente</label>
+      <select name="campo${contadorCampos}" id="campo${contadorCampos}" class="form-control">
+          {% for choice in form.user.field.choices %}
+            <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+          {% endfor %}
+      </select>
+    </td>
+    <td>
+      <label >Asistio</label>
+      <div>
+      <input type="checkbox" name="asset${contadorCampos}" id="Asset${contadorCampos}">
+      </div>
+    </td>
+    <td>
+      <button type="button" class="btn btn-danger" onclick="eliminarCampo('${nuevoCampoId}')">Eliminar</button>
+    </td> 
+    </table>
+    `;
+    // Agregar el nuevo campo al contenedor
+    camposExtra.appendChild(nuevoCampo);
+    // Incrementar el contador de campos
+    contadorCampos++;
+  }
+
+  function eliminarCampo(campoId) {
+    const campo = document.getElementById(campoId);
+    const tabla = campo.closest("table"); // Obtener la tabla que contiene el campo
+    tabla.remove(); // Eliminar la tabla completa
+    delete valoresCampos[campoId]
+  }
+
+
+  document.getElementById("myForm").addEventListener("submit", function(event) {
+    event.preventDefault(); // Evitar el envío del formulario por defecto
+  
+    const ultimoCampo = document.getElementById(`campo${contadorCampos - 1}`);
+    const ultimoValor = ultimoCampo.value;
+
+    if (ultimoValor in valoresCampos) {
+        return alert("El usuario seleccionado ya ha sido registrado");
+    }
+    // Recorrer los campos existentes y guardar sus valores en el objeto valoresCampos
+    for (let i = 1; i < contadorCampos; i++) {
+      const campo = document.getElementById(`campo${i}`);
+      const assetCampo = document.getElementById(`Asset${i}`);
+      if (campo) {
+        const user_id = campo.value;
+        const assetValue = assetCampo.checked;
+        valoresCampos[user_id] = [campo.value, assetValue];
+      }
+    }
+    // Enviar el formulario o hacer cualquier otra operación con los valores guardados
+    //console.log(campo1.checked);
+    console.log(valoresCampos);
+    
+    
+    // Aquí puedes agregar código adicional para enviar el formulario al servidor si es necesario
+    // this.submit(); // Descomenta esta línea si deseas enviar el formulario al servidor
+    // Agregar código adicional aquí para enviar el diccionario valoresCampos a la vista
+
+    // Puedes utilizar AJAX para enviar el diccionario al servidor o agregar un campo oculto
+    // al formulario y asignarle el valor del diccionario para que se envíe junto con el formulario
+    // Por ejemplo, puedes hacer algo como esto:
+    const valoresCamposInput = document.createElement("input");
+    valoresCamposInput.type = "hidden";
+    valoresCamposInput.name = "valoresCampos";
+    valoresCamposInput.value = JSON.stringify(valoresCampos);
+    this.appendChild(valoresCamposInput);
+
+    // Enviar el formulario
+    this.submit();
+  });
+</script>
+{% endblock %}

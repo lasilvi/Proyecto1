@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1 class="text-center">Sistema de control y registro de actas de reuniones</h1>
+    <h2 class="text-center">Escuela Interamericana de Bibliotecología</h2>
+    <div class="d-flex justify-content-center">
+        <ul class="list-group">
+            <li class="list-group-item">
+                <a class="btn btn-primary" href="{% url 'Registro' %}" role="button">Nueva Acta</a>
+            </li>
+            <li class="list-group-item">
+                <a class="btn btn-primary" href="{% url 'Registro' %}" role="button">Editar Acta</a>
+            </li>
+            <li class="list-group-item">
+                <a class="btn btn-primary" href="{% url 'Registro' %}" role="button">Asistentes</a>
+            </li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

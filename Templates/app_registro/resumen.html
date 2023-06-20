@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Tu Información de Base de Datos Filtrada</h1>
+
+  <ul>
+    {% for dato in datos %}
+      <li>{{ dato.nombre }}</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

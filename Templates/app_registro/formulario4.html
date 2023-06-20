@@ -1,0 +1,159 @@
+{% extends 'app_registro/pages.html' %}
+
+{% block formulario %}
+
+{% load crispy_forms_tags %}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="d-flex p-2">
+            <form method="post" id="myForm">
+                {% csrf_token %}
+                <div class="container">
+                  <label >Esta registrando los compromisos del Acta N°{{ act_ident }}</label> 
+                  <div>
+                  <label >del Proceso/Dependecia {{ act_proceso }}</label> 
+                  </div>
+                  <table class="table table-bordered text-center">
+                      <tr>   
+                          <td> 
+                              <label class="field-label" id="num1">N°1</label>
+                          </td>  
+                          <td>       
+                              <label class="field-label">Compromiso</label>
+                              <textarea name="title" id="commiment1" rows="4" cols="25"></textarea>
+                          </td> 
+                          <td>  
+                              <label class="field-label">Fecha</label>
+                              <input type="date" name="date" id="date1"  rows="1" cols="25">
+                          </td>  
+                          <td>       
+                              <label class="field-label">Estado</label>
+                              <textarea name="user" id="control1" rows="1" cols="25"></textarea>
+                          </td> 
+                          <td>       
+                            <label class="field-label">Observaciones</label>
+                            <textarea name="user" id="observaton1" rows="4" cols="25" ></textarea>
+                        </td> 
+                        <td>       
+                            <label class="field-label">Responsable</label>
+                            <select name="campo1" id="campo1" class="form-control">
+                            {% for choice in form.responsible.field.choices %}
+                                <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                            {% endfor %}
+                            </select>
+                      </td>
+                      <td>
+                        <button type="button" class="btn btn-danger" onclick="eliminarCampo1">Eliminar</button>
+                      </td> 
+                      </tr>   
+                  </table>
+                    <div id="campos-extra"></div>
+                    <button type="button" class="btn btn-primary" onclick="agregarCampo()">Agregar Nuevo Campo</button>
+                    <button type="submit" class="btn btn-primary">Enviar</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<script>
+  let contadorCampos = 2; // Contador para asignar IDs únicos a los nuevos campos
+  const valoresCampos = {};
+
+  
+  function eliminarCampo(campoId) {
+    const campo = document.getElementById(campoId);
+    const tabla = campo.closest("table"); // Obtener la tabla que contiene el campo
+    tabla.remove(); // Eliminar la tabla completa
+    delete valoresCampos[campoId]
+  }
+
+
+  function agregarCampo() {
+    const camposExtra = document.getElementById("campos-extra");
+    const nuevoCampoId = `campo${contadorCampos}`
+
+    // Crear el nuevo campo
+    const nuevoCampo = document.createElement("div");
+    nuevoCampo.className = "form-group";
+    nuevoCampo.innerHTML = `
+    <table class="table table-bordered text-center">
+        <tr>   
+            <td> 
+                <label class="field-label" id="num${contadorCampos}">N°${contadorCampos}</label>
+            </td>  
+            <td>       
+                <label class="field-label">Compromiso</label>
+                <textarea name="title" id="commiment${contadorCampos}" rows="4" cols="25"></textarea>
+            </td> 
+            <td>  
+                <label class="field-label">Fecha</label>
+                <input type="date" name="date" id="date${contadorCampos}" rows="1" cols="25">
+            </td>  
+            <td>       
+                <label class="field-label">Control</label>
+                <textarea name="user" id="control${contadorCampos}" rows="1" cols="25"></textarea>
+            </td> 
+            <td>       
+              <label class="field-label">Observaciones</label>
+              <textarea name="user" id="observaton${contadorCampos}" rows="4" cols="25"></textarea>
+          </td> 
+          <td>       
+              <label class="field-label">Responsable</label>
+              <select name="campo1" id="campo${contadorCampos}" class="form-control">
+              {% for choice in form.responsible.field.choices %}
+                  <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+              {% endfor %}
+              </select>
+        </td>
+        <td>
+            <button type="button" class="btn btn-danger" onclick="eliminarCampo('${nuevoCampoId}')">Eliminar</button>
+        </td>
+        </tr>   
+    </table>
+    
+    `;
+    // Agregar el nuevo campo al contenedor
+    camposExtra.appendChild(nuevoCampo);
+    // Incrementar el contador de campos
+    contadorCampos++;
+  }
+
+  document.getElementById("myForm").addEventListener("submit", function(event) {
+    event.preventDefault(); // Evitar el envío del formulario por defecto
+  
+    const ultimoCampo = document.getElementById(`campo${contadorCampos - 1}`);
+   
+    // Recorrer los campos existentes y guardar sus valores en el objeto valoresCampos
+    for (let i = 1; i < contadorCampos; i++) {
+      const campo = document.getElementById(`campo${i}`);
+      const numCampo = document.getElementById(`num${i}`);
+      const commimentCampo = document.getElementById(`commiment${i}`);
+      const dateCampo = document.getElementById(`date${i}`);
+      const controlCampo = document.getElementById(`control${i}`);
+      const observationCampo = document.getElementById(`observaton${i}`);
+      if (campo) {
+        const user_id = campo.value;
+        const numValue = i;
+        const commiment = commimentCampo.value;
+        const date = dateCampo.value;
+        const control = controlCampo.value;
+        const observation = observationCampo.value;
+        valoresCampos[numValue] = [ numValue,user_id,commiment,date,control,observation];
+      }
+    }
+    console.log(valoresCampos);
+    
+    const valoresCamposInput = document.createElement("input");
+    valoresCamposInput.type = "hidden";
+    valoresCamposInput.name = "valoresCampos";
+    valoresCamposInput.value = JSON.stringify(valoresCampos);
+    this.appendChild(valoresCamposInput);
+
+    // Enviar el formulario
+    this.submit();
+  });
+</script>
+{% endblock %}

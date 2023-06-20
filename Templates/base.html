@@ -1,0 +1,44 @@
+<!-- base.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+    <!-- Agrega esto en la sección <head> de tu archivo base.html -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">     
+    {% block css %}{% endblock %}
+    <style>
+        .grande {
+            font-size: 24px; /* Puedes ajustar el valor del tamaño de fuente según tus preferencias */
+        }
+        .field-label {
+            display: block;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+        .table {
+            border-collapse: collapse;
+          }
+          
+          .table td {
+            border-top: 1px solid #ddd; /* Bordes horizontales */
+            padding: 8px;
+          }
+          
+          .table td:first-child {
+            border-left: none; /* Elimina el borde izquierdo de la primera columna */
+          }
+          
+          .table td:last-child {
+            border-right: none; /* Elimina el borde derecho de la última columna */
+          }
+    </style>
+</head>
+<body>
+    {% block content %}{% endblock %}
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    {% block js %}{% endblock %}
+</body>
+</html>
