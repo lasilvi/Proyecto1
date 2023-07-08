@@ -38,3 +38,7 @@ admin.site.register(Typemeet, TypemeetAdmin)
 class DependeceAdmin(admin.ModelAdmin):
    list_display = [field.name for field in Dependece._meta.fields]
 admin.site.register(Dependece, DependeceAdmin)
+
+class StateAdmin(admin.ModelAdmin):
+   list_display = [field.name for field in State._meta.fields]
+admin.site.register(State, StateAdmin)

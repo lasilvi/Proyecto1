@@ -37,12 +37,13 @@ class RegisterForm(forms.ModelForm):
         self.fields['place'].required = False
         self.fields['next_place'].required = False
         self.fields['ident'].required = False
+        Tiposdereunion = Typemeet.objects.values_list('pk','name')
+        print(Tiposdereunion)
+        self.fields['type_meet'].choices = Tiposdereunion
         Dependecias = Dependece.objects.values_list('cod', 'name')
         self.fields['process_text'].choices = Dependecias
-        Tiposdereunion = Typemeet.objects.values_list('pk','name')
-        self.fields['type_meet'].choices = Tiposdereunion
-   
         
+   
 class RegisterFormUser(forms.ModelForm):
     class Meta:
         """Campos utilizados."""
@@ -68,6 +69,9 @@ DevelopmentFormSet = formset_factory(RegisterFormDevelopment)
 class RegisterFormCommitment(forms.ModelForm):
     responsibles = User.objects.values_list('num_id','name')
     responsible = forms.ChoiceField(choices=responsibles)
+    controls = State.objects.values_list('pk','name')
+    estado = forms.ChoiceField(choices=controls)
+    print(estado)
     class Meta:
         """Campos utilizados."""
         model = Commitment
@@ -78,5 +82,11 @@ class RegisterFormCommitment(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['date'].required = False
+
+class RegisterFormAssistant(forms.ModelForm):
+    class Meta:
+        """Campos utilizados."""
+        model = User
+        fields = "__all__"
         
         

@@ -42,8 +42,15 @@ def Register(request):
            id = str(act.pk)
            indentificacion = str(act.ident)
            proceso = str(act.process_text)
+           resultados = Dependece.objects.filter(cod=proceso)
+           if resultados.exists():
+                primer_resultado = resultados.first()  # Obtener el primer objeto del queryset
+                act_proceso_name = primer_resultado.name
+           else:
+                # Manejar el caso cuando no hay resultados encontrados
+                act_proceso_name = None
            # Construye la URL de redirección con la variable como parámetro
-           url_redireccion = reverse('RegistroUserconfirmation') + '?ActaN°=' + id + '&Proceso/Dependecia=' + proceso + '&Identificacion=' + indentificacion
+           url_redireccion = reverse('RegistroUserconfirmation') + '?ActaN°=' + id + '&Proceso/Dependecia=' + act_proceso_name + '&Identificacion=' + indentificacion
            return redirect(url_redireccion) 
     else:
         form = RegisterForm()
@@ -153,12 +160,8 @@ def RegisterCommintment(request):
             for  num, valor in valoresCampos.items():
                 try:
                     act_instance = Act.objects.get(id=act_id)
-                    user_instance = User.objects.get(num_id=int(valor[1]))
-                    print(valor[0])
-                    print(valor[1])
-                    print(valor[2])
-                    print(valor[3])
-                
+                    user_instance = User.objects.get(num_id=int(valor[1]))   
+                    state_instance = State.objects.get(pk= int(valor[4]))
                 except Act.DoesNotExist:
                     return HttpResponse('No se encontró el Act correspondiente')
                 except User.DoesNotExist:
@@ -170,7 +173,7 @@ def RegisterCommintment(request):
                 comimtment_instance.date = valor[3]
                 comimtment_instance.observations = valor[2]
                 comimtment_instance.commitment = valor[5]
-                comimtment_instance.control = valor[4]
+                comimtment_instance.control = state_instance
                 comimtment_instance.save()
 
             url_redireccion = reverse('resumen') + '?ActaN°=' + str(act_id)
@@ -185,10 +188,30 @@ def RegisterCommintment(request):
             }     
         return render(request, 'app_registro/formulario4.html', context)
 
+
+def RegisterAssistant(request):
+    if request.method == 'POST':
+        form = RegisterFormAssistant(request.POST)
+        if form.is_valid():
+            user = form.save()
+            url_redireccion = reverse('menu') 
+            return redirect(url_redireccion)
+    else:
+        form = RegisterFormAssistant()
+        context = {
+        'form': form     }     
+        return render(request, 'app_registro/usuarios.html', context)
+
 def Summary(request):
     # Obtén el valor del campo por el cual deseas filtrar (puedes pasarlo a través de la URL o de un formulario)
     valor_act = int(request.GET.get("ActaN°"))
     # Realiza la consulta y el filtrado de los datos
-    datos = Act.objects.filter(pk=valor_act)
+    datos_acta = Act.objects.filter(pk=valor_act)
+    for dato in datos_acta:
+      ProcesoDependecia = dato.process_text
+      Tipodereunion = dato.type_meet
     
-    return render(request, 'app_registro/resumen.html', {'datos': datos})
+    nombreproceso = Dependece.objects.filter(cod=ProcesoDependecia)
+    nombretiporeunion = Typemeet.objects.filter(pk=Tipodereunion)
+    asistentes = Confirmation.objects.filter(act_id = valor_act )
+    return render(request, 'app_registro/resumen.html', {'datos': datos_acta,'nombreproceso' : nombreproceso,'nombretiporeunion':nombretiporeunion, 'asistentes': asistentes})

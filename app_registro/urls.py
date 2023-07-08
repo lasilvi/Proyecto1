@@ -10,4 +10,5 @@ urlpatterns = [
     path('RegistroDesarrollo/', views.RegisterDevelopment, name='RegistroDevelop'),
     path('RegistroCompromiso/', views.RegisterCommintment, name='RegistroCommintment'),
     path('resumen/', views.Summary, name='resumen'),
+    path('RegistroAsistente/', views.RegisterAssistant, name='RegisterAssistant')
     ]

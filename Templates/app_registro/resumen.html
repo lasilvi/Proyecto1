@@ -1,11 +1,22 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h1>Tu Información de Base de Datos Filtrada mensaje nuevo </h1>
+  <h1>Tu Información de Base de Datos </h1>
 
   <ul>
-    {% for dato in datos %}
-      <li>{{ dato.nombre }}</li>
+    {% for dato in datos%}
+      <h2>Acta N°{{dato.ident}}</h2>
+      <h2>Fecha {{dato.pub_date}}</h2>
+    {% endfor %}
+    {% for dato in nombreproceso %}
+      <h2>Proceso/Dependecia {{dato.name}}</h2>
+    {% endfor %}
+    {% for dato in nombretiporeunion %}
+      <h2>Tipo de reunion {{dato.name}}</h2>
+    {% endfor %}
+    {% for dato in asistentes %}
+      <h2>nombre {{dato.user_id}}</h2>
     {% endfor %}
   </ul>
+  <button type="submit" class="btn btn-primary">Volver a menu</button>
 {% endblock %}

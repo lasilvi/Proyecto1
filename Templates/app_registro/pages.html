@@ -10,7 +10,7 @@
                     <div class="card text-center">
                         <nav aria-label="Page navigation">
                             <ul class="pagination" id="pagination-list">
-                                <li class="page-item mr-2"><a class="page-link" data-page="Acta">Acta</a></li>
+                                <li class="page-item mr-2"><a class="page-link" data-page="Registro">Acta</a></li>
                                 <li class="page-item mr-2"><a class="page-link" data-page="Asistentes">Asistentes</a></li>
                                 <li class="page-item mr-2"><a class="page-link" data-page="Desarrollo">Desarrollo</a></li>
                                 <li class="page-item mr-2"><a class="page-link" data-page="Compromisos">Compromisos</a></li>
@@ -28,22 +28,11 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function() {
-        $('#pagination-list a').click(function(event) {
-            event.preventDefault();
-            
-            // Obtén la página a la que se hizo clic
-            var page = $(this).data('page');
-            
-            // Actualiza el estilo de las páginas activas
-            $('#pagination-list .active').removeClass('active');
-            $(this).parent().addClass('active');
-            
-            // Realiza las operaciones necesarias para mostrar los datos de la página correspondiente
-            // Puedes usar el valor de 'page' para actualizar los datos o realizar peticiones AJAX
-            
-            // Ejemplo: Mostrar el nombre de la página en un color diferente
-            $('#page-name').text(page).css('color', 'red');
-        });
+        // Obtén el nombre de la página actual
+        var currentPage = "{{ block.super }}"; // Esto obtendrá el contenido del bloque formulario de la plantilla actual
+        
+        // Encuentra el enlace correspondiente a la página actual y añade la clase 'active'
+        $('#pagination-list a[data-page="' + currentPage + '"]').parent().addClass('active');
     });
 </script>
 {% endblock %}
