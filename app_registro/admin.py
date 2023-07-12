@@ -42,3 +42,7 @@ admin.site.register(Dependece, DependeceAdmin)
 class StateAdmin(admin.ModelAdmin):
    list_display = [field.name for field in State._meta.fields]
 admin.site.register(State, StateAdmin)
+
+class ProcessAdmin(admin.ModelAdmin):
+   list_display = [field.name for field in Process._meta.fields]
+admin.site.register(Process, ProcessAdmin)

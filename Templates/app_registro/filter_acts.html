@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Filtrar acta</h1>
+
+  <form method="post">
+    {% csrf_token %}
+    <div>
+      <label for="ident">N° Acta:</label>
+      <input type="text" name="ident" id="ident">
+    </div>
+    <div>
+      <label for="date">Fecha:</label>
+      <input type="date" name="date" id="date">
+    </div>
+    <div>
+      <label for="type_meet">Tipo de reunion:</label>
+      <select name="type_meet" id="type_meet">
+        <option value="">-- Select Type --</option>
+        {% for typemeet in typemeets %}
+          <option value="{{ typemeet.pk }}">{{ typemeet.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <button type="submit">Filter</button>
+    </div>
+  </form>
+
+  <h2>Actas filtradas:</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Act Number</th>
+        <th>Identification</th>
+        <th>Fecha</th>
+        <th>Tipo de reunion</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for act in acts %}
+        <tr>
+          <td>{{ act.act_number }}</td>
+          <td>{{ act.ident }}</td>
+          <td>{{ act.pub_date }}</td>
+          <td>{{ act.type_meet.name }}</td>
+          <td><a href="{% url 'edit_act' act.pk %}">Editar</a></td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="4">No acts found.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

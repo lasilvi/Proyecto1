@@ -10,5 +10,7 @@ urlpatterns = [
     path('RegistroDesarrollo/', views.RegisterDevelopment, name='RegistroDevelop'),
     path('RegistroCompromiso/', views.RegisterCommintment, name='RegistroCommintment'),
     path('resumen/', views.Summary, name='resumen'),
-    path('RegistroAsistente/', views.RegisterAssistant, name='RegisterAssistant')
+    path('RegistroAsistente/', views.RegisterAssistant, name='RegisterAssistant'),
+    path('edit_act/<int:act_id>/', views.edit_act, name='edit_act'),
+    path('filter-acts/', views.filter_acts, name='filter_acts'),
     ]

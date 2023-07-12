@@ -1,6 +1,6 @@
 
 # Create your views here.
-from django.shortcuts import render, redirect, HttpResponse
+from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
 from .forms import *
 from django.urls import reverse
 from .models import *
@@ -68,11 +68,18 @@ def RegisterUserConfirmation(request):
         if valoresCampos:
             valoresCampos = json.loads(valoresCampos)
             # Procesar los usuarios del diccionario valoresCampos
+            
             for  user_id, valor in valoresCampos.items():
+                print(valor[0])
+                print(valor[1])
+                print(valor[2])
+                print(valor[3])
                 print(user_id)
                 try:
                     act_instance = Act.objects.get(id=act_id)
                     user_instance = User.objects.get(num_id=int(valor[0]))
+                    job_instance = Job.objects.get(pk=int(valor[2]))
+                    Process_instance = Process.objects.get(pk=int(valor[3]))
                 
                 except Act.DoesNotExist:
                     return HttpResponse('No se encontró el Act correspondiente')
@@ -83,6 +90,8 @@ def RegisterUserConfirmation(request):
                 confirmation.act_id = act_instance
                 confirmation.user_id = user_instance
                 confirmation.asset = valor[1]
+                confirmation.job_position = job_instance
+                confirmation.process = Process_instance
                 confirmation.save()
             url_redireccion = reverse('RegistroDevelop') + '?ActaN°=' + str(act_id) + '&Proceso/Dependecia=' + act_proceso + '&Identificacion=' + act_ident
             return redirect(url_redireccion) 
@@ -188,7 +197,6 @@ def RegisterCommintment(request):
             }     
         return render(request, 'app_registro/formulario4.html', context)
 
-
 def RegisterAssistant(request):
     if request.method == 'POST':
         form = RegisterFormAssistant(request.POST)
@@ -202,16 +210,59 @@ def RegisterAssistant(request):
         'form': form     }     
         return render(request, 'app_registro/usuarios.html', context)
 
+
+def edit_act(request, act_id):
+    acta = Act.objects.get(id=act_id)
+
+    if request.method == 'POST':
+        # Manejar el envío del formulario y actualizar los campos del acta en consecuencia
+        acta.campo1 = request.POST.get('campo1')
+        acta.campo2 = request.POST.get('campo2')
+        # Actualizar otros campos según sea necesario
+        acta.save()
+        return redirect('filter_acts')  # Redirigir a la página de filtrado de actas después de guardar los cambios
+
+    context = {
+        'acta': acta
+    }
+
+    return render(request, 'app_registro/edit_act.html', context)
+
 def Summary(request):
     # Obtén el valor del campo por el cual deseas filtrar (puedes pasarlo a través de la URL o de un formulario)
     valor_act = int(request.GET.get("ActaN°"))
     # Realiza la consulta y el filtrado de los datos
     datos_acta = Act.objects.filter(pk=valor_act)
+    datos_desarrollo = Development.objects.filter(act_id=valor_act)
     for dato in datos_acta:
       ProcesoDependecia = dato.process_text
       Tipodereunion = dato.type_meet
-    
+      
     nombreproceso = Dependece.objects.filter(cod=ProcesoDependecia)
     nombretiporeunion = Typemeet.objects.filter(pk=Tipodereunion)
-    asistentes = Confirmation.objects.filter(act_id = valor_act )
-    return render(request, 'app_registro/resumen.html', {'datos': datos_acta,'nombreproceso' : nombreproceso,'nombretiporeunion':nombretiporeunion, 'asistentes': asistentes})
+    asistentes = Confirmation.objects.filter(act_id = valor_act)
+    
+    return render(request, 'app_registro/resumen.html', {'datos': datos_acta,'desarrollo': datos_desarrollo,'nombreproceso' : nombreproceso,'nombretiporeunion':nombretiporeunion, 'asistentes': asistentes})
+
+def filter_acts(request):
+    ident = request.POST.get('ident')
+    date = request.POST.get('date')
+    type_meet = request.POST.get('type_meet')
+
+    acts = Act.objects.all()
+
+    if ident:
+        acts = acts.filter(ident=ident)
+    if date:
+        acts = acts.filter(pub_date=date)
+    if type_meet:
+        acts = acts.filter(type_meet=type_meet)
+
+    typemeets = Typemeet.objects.all()
+
+    context = {
+        'acts': acts,
+        'typemeets': typemeets
+    }
+
+    return render(request, 'app_registro/filter_acts.html', context)

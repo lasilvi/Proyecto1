@@ -30,19 +30,22 @@ class Job(models.Model):
 class User(models.Model):
     name = models.CharField(max_length=200,editable=True)
     mail = models.CharField(max_length=200,null=True, default=None,editable=True)
-    job_position = models.ForeignKey(Job,on_delete =models.CASCADE,null=True, default=None,editable=True)
     num_id = models.IntegerField(editable=True)
-    process = models.CharField(max_length=40,null=True, default=None,editable=True)
-
 
     def __str__(self):
-        return str(self.num_id)
+        return str(self.name)
            
+class Process(models.Model):
+    name = models.CharField(max_length=200,null=True, default=None)
+    def __str__(self):
+        return str(self.pk)
     
 class Confirmation(models.Model):
     user_id = models.ForeignKey(User,on_delete =models.CASCADE,verbose_name="Usuario",editable=True)
     act_id = models.ForeignKey(Act,on_delete =models.CASCADE)
     asset = models.BooleanField(null=True, default=None,editable=True)
+    job_position = models.ForeignKey(Job,on_delete =models.CASCADE,null=True, default=None,editable=True)
+    process = models.ForeignKey(Process,on_delete =models.CASCADE,null=True, default=None,editable=True)
 
     def __str__(self):
         return str(self.pk)

@@ -54,6 +54,18 @@ class RegisterFormUser(forms.ModelForm):
 class RegisterFormUserConfirmation(forms.Form):
     users = User.objects.values_list('num_id','name')
     user = forms.ChoiceField(choices=users)
+    jobs = Job.objects.values_list('pk','name_job')
+    job = forms.ChoiceField(choices=jobs)
+    procesos = Process.objects.values_list('pk','name')
+    proceso = forms.ChoiceField(choices=procesos)
+
+    class Meta:
+        """Campos utilizados."""
+        model = Commitment
+        fields = "__all__"
+        widgets = {
+            'date': NumberInput(attrs={'type': 'date'}),
+        }
 
 ConfirmationFormSet = formset_factory(RegisterFormUserConfirmation)    
     
@@ -84,9 +96,14 @@ class RegisterFormCommitment(forms.ModelForm):
         self.fields['date'].required = False
 
 class RegisterFormAssistant(forms.ModelForm):
+    cargos = User.objects.values_list('num_id','name')
+    cargo = forms.ChoiceField(choices=cargos)
     class Meta:
         """Campos utilizados."""
         model = User
         fields = "__all__"
         
-        
+class ActForm(forms.ModelForm):
+    class Meta:
+        model = Act
+        fields = ['hour', 'next_meet', 'next_hour', 'place', 'next_place']

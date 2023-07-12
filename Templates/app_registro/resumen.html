@@ -1,22 +1,132 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h1>Tu Información de Base de Datos </h1>
 
-  <ul>
-    {% for dato in datos%}
-      <h2>Acta N°{{dato.ident}}</h2>
-      <h2>Fecha {{dato.pub_date}}</h2>
-    {% endfor %}
-    {% for dato in nombreproceso %}
-      <h2>Proceso/Dependecia {{dato.name}}</h2>
-    {% endfor %}
-    {% for dato in nombretiporeunion %}
-      <h2>Tipo de reunion {{dato.name}}</h2>
-    {% endfor %}
-    {% for dato in asistentes %}
-      <h2>nombre {{dato.user_id}}</h2>
-    {% endfor %}
-  </ul>
-  <button type="submit" class="btn btn-primary">Volver a menu</button>
+<div class="container mt-5">
+  <div class="row justify-content-center">
+      <div class="d-flex p-2">
+      <table class="table text-center">
+        <tr> 
+          
+          {% for dato in datos %}
+          <td colspan="3" class="grande">ACTA N°{{dato.ident}}</td>
+          {% endfor %}
+       </tr> 
+        <tr> 
+            <td colspan="3" class="grande">UNIVERSIDAD DE ANTIOQUIA</td>
+        </tr> 
+        <tr >
+            <td colspan="2">
+                <label>Proceso/Dependencia</label>
+                <div>
+                  {% for dato in nombreproceso %}
+                  {{dato.name}}
+                {% endfor %}
+                </div>
+            </td>
+            <td>
+                <label>Tipo de reunión</label>
+                <div>
+                  {% for dato in nombretiporeunion %}
+                  {{dato.name}}
+                {% endfor %}
+                </div>
+            </td>
+        </tr> 
+        <tr> 
+          <td >
+              <label>Fecha</label>
+              <div>
+                {% for dato in datos %}
+                {{dato.pub_date}}
+              {% endfor %}
+              </div>
+          </td>
+          <td>
+              <label >Hora</label>
+              <div>
+                {% for dato in datos %}
+                {{dato.hour}}
+              {% endfor %}
+              </div>
+          </td>
+          <td>
+              <label>Lugar</label>
+              <div>
+                {% for dato in datos %}
+                {{dato.place}}
+              {% endfor %}
+              </div>
+          </td>
+      </tr> 
+      <tr> 
+          <td>
+              <label>Fecha próxima</label>
+              <div>
+                {% for dato in datos %}
+                {{dato.next_meet}}
+              {% endfor %}
+              </div>
+          </td>
+          <td>
+              <label >Hora Próxima</label>
+              <div>
+                {% for dato in datos %}
+                {{dato.next_hour}}
+              {% endfor %}
+              </div>
+          </td>
+          <td>
+              <label >Lugar próxima</label>
+              <div>
+                {% for dato in datos %}
+                {{dato.next_place}}
+              {% endfor %}
+              </div>
+          </td>
+      </tr>  
+        <tr >
+        {% for dato in asistentes %}
+        <td>{{dato.user_id}}</td>
+        {% endfor %}
+        </tr >
+      
+          {% for dato in desarrollo%}
+          <tr>   
+              <td> 
+                  <label>N°{{dato.num}}</label>
+              </td>  
+              <td>       
+                  <label>Titulo {{dato.tittle}}</label>            
+              </td> 
+              <td>  
+                  <label >Decripción {{dato.description}}</label>
+              </td> 
+              <td>  
+                <label >Discusión {{dato.discussion}}</label>
+              </td>   
+              <td>  
+                <label>Resultado </label>
+                <div>
+                {{dato.result}}
+                </div>
+              </td>  
+              <td>       
+                  <label >Responsable </label>
+                  <div>
+                  {{dato.user_id}}
+                  </div>
+                </select>
+              </td>       
+          </tr>  
+          {% endfor %} 
+      </table>
+      <td>
+        <button type="submit" class="btn btn-primary">Volver a menu</button>
+        <button type="submit" class="btn btn-primary">Descargar</button>
+        </td >
+    </div>
+  </div>
+</div>
+  
 {% endblock %}

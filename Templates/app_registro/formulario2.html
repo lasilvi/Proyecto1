@@ -25,6 +25,22 @@
                     </select>
                   </td>
                   <td>
+                    <label >Cargo</label>
+                    <select name="cargo1" id="cargo1" class="form-control">
+                        {% for choice in form.job.field.choices %}
+                          <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                        {% endfor %}
+                    </select>
+                  </td>
+                  <td>
+                    <label >Proceso</label>
+                    <select name="proceso1" id="proceso1" class="form-control">
+                        {% for choice in form.proceso.field.choices %}
+                          <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                        {% endfor %}
+                    </select>
+                  </td>
+                  <td>
                   <label >Asistio</label>
                 <div>
                   <input type="checkbox" name="" id="Asset1">
@@ -47,7 +63,7 @@
 <script>
   let contadorCampos = 2; // Contador para asignar IDs únicos a los nuevos campos
   let valoresCampos = {}; // Objeto para almacenar los valores de los campos
-
+  
   function agregarCampo() {
     const camposExtra = document.getElementById("campos-extra");
     const nuevoCampoId = `campo${contadorCampos}`
@@ -60,6 +76,22 @@
       <label for="campo${contadorCampos}">Asistente</label>
       <select name="campo${contadorCampos}" id="campo${contadorCampos}" class="form-control">
           {% for choice in form.user.field.choices %}
+            <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+          {% endfor %}
+      </select>
+    </td>
+    <td>
+      <label >Cargo</label>
+      <select name="campo${contadorCampos}" id="cargo${contadorCampos}" class="form-control">
+          {% for choice in form.job.field.choices %}
+            <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+          {% endfor %}
+      </select>
+    </td>
+    <td>
+      <label >Proceso</label>
+      <select name="campo${contadorCampos}" id="proceso${contadorCampos}" class="form-control">
+          {% for choice in form.proceso.field.choices %}
             <option value="{{ choice.0 }}">{{ choice.1 }}</option>
           {% endfor %}
       </select>
@@ -102,10 +134,14 @@
     for (let i = 1; i < contadorCampos; i++) {
       const campo = document.getElementById(`campo${i}`);
       const assetCampo = document.getElementById(`Asset${i}`);
+      const cargoCampo = document.getElementById(`cargo${i}`);
+      const procesoCampo = document.getElementById(`proceso${i}`);
       if (campo) {
         const user_id = campo.value;
         const assetValue = assetCampo.checked;
-        valoresCampos[user_id] = [campo.value, assetValue];
+        const cargoValue = cargoCampo.value;
+        const procesoValue = procesoCampo.value;
+        valoresCampos[user_id] = [campo.value, assetValue,cargoValue,procesoValue];
       }
     }
     // Enviar el formulario o hacer cualquier otra operación con los valores guardados
