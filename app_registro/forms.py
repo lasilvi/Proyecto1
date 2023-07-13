@@ -2,6 +2,7 @@ from django import forms
 from .models import *
 from django.forms import formset_factory
 from django.forms.widgets import NumberInput
+from django.forms.widgets import TextInput, DateInput, TimeInput
 
 class RegisterForm(forms.ModelForm):
     class Meta:
@@ -106,4 +107,23 @@ class RegisterFormAssistant(forms.ModelForm):
 class ActForm(forms.ModelForm):
     class Meta:
         model = Act
-        fields = ['hour', 'next_meet', 'next_hour', 'place', 'next_place']
+        fields = "__all__"
+        widgets = {
+            'pub_date': DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'hour': TimeInput(attrs={'class': 'form-control', 'type': 'time'}),
+            'place': TextInput(attrs={'class': 'form-control'}),
+            'next_meet': DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'next_hour': TimeInput(attrs={'class': 'form-control', 'type': 'time'}),
+            'next_place': TextInput(attrs={'class': 'form-control'}),
+        }
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.fields['pub_date'].required = False
+            self.fields['process_text'].required = False
+            self.fields['type_meet'].required = False
+            self.fields['ident'].required = False
+            self.fields['hour'].required = False
+            self.fields['next_meet'].required = False
+            self.fields['next_hour'].required = False
+            self.fields['place'].required = False
+            self.fields['next_place'].required = False

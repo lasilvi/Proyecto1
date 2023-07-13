@@ -97,9 +97,9 @@
                 <input type="date" name="date" id="date${contadorCampos}" rows="1" cols="25">
             </td>  
             <td>       
-                <label class="field-label">Control</label>
+                <label class="field-label">Estado</label>
                 <select name="campo1" id="control${contadorCampos}" class="form-control">
-                    {% for choice in form.control.field.choices %}
+                    {% for choice in form.estado.field.choices %}
                         <option value="{{ choice.0 }}">{{ choice.1 }}</option>
                     {% endfor %}
                 </select>

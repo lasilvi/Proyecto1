@@ -213,17 +213,24 @@ def RegisterAssistant(request):
 
 def edit_act(request, act_id):
     acta = Act.objects.get(id=act_id)
-
+    confirmacion = Confirmation.objects.filter(act_id=act_id)
+    desarrollo = Development.objects.filter(act_id=act_id)
+    compromisos = Commitment.objects.filter(act_id=act_id)
+    
     if request.method == 'POST':
-        # Manejar el envío del formulario y actualizar los campos del acta en consecuencia
-        acta.campo1 = request.POST.get('campo1')
-        acta.campo2 = request.POST.get('campo2')
+        form = ActForm(request.POST, instance=acta)
+        #if form.is_valid():
         # Actualizar otros campos según sea necesario
-        acta.save()
+        form.save()
         return redirect('filter_acts')  # Redirigir a la página de filtrado de actas después de guardar los cambios
-
+    else:
+        form = ActForm(instance=acta)
     context = {
-        'acta': acta
+        'form': form,
+        'acta': acta,
+        'confirmacion': confirmacion,
+        'desarrollo': desarrollo,
+        'compromisos': compromisos
     }
 
     return render(request, 'app_registro/edit_act.html', context)
@@ -259,10 +266,13 @@ def filter_acts(request):
         acts = acts.filter(type_meet=type_meet)
 
     typemeets = Typemeet.objects.all()
+    Dependeces = Dependece.objects.all()
 
     context = {
         'acts': acts,
-        'typemeets': typemeets
+        'typemeets': typemeets,
+        'Dependeces': Dependeces,
+
     }
 
     return render(request, 'app_registro/filter_acts.html', context)

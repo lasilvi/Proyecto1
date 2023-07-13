@@ -20,19 +20,19 @@
                             <td >
                                 <label for="{{ acta.pub_date.id_for_label }}">Fecha</label>
                                 <div>
-                                    <input type="text" name="campo2" value="{{ acta.pub_date }}">
+                                    {{form.pub_date}}
                                 </div>
                             </td>
                             <td>
                                 <label for="{{ acta.hour.id_for_label }}">Hora</label>
                                 <div>
-                                <input type="text" name="campo2" value="{{ acta.hour }}">
+                                {{form.hour}}
                                 </div>
                             </td>
                             <td>
                                 <label for="{{ acta.place.id_for_label }}">Lugar</label>
                                 <div>
-                                    <input type="text" name="campo2" value="{{ acta.place }}">
+                                    {{form.place }}
                                 </div>
                             </td>
                         </tr> 
@@ -40,19 +40,19 @@
                             <td>
                                 <label for="{{ acta.next_meet.id_for_label }}">Fecha próxima</label>
                                 <div>
-                                    <input type="text" name="campo2" value="{{ acta.next_meet }}">
+                                    {{ form.next_meet }}
                                 </div>
                             </td>
                             <td>
                                 <label for="{{ acta.next_hour.id_for_label }}">Hora Próxima</label>
                                 <div>
-                                <input type="text" name="campo2" value="{{ acta.next_hour }}">
+                                {{ form.next_hour }}
                                 </div>
                             </td>
                             <td>
                                 <label for="{{ acta.next_place.id_for_label }}">Lugar próxima</label>
                                 <div>
-                                    <input type="text" name="campo2" value="{{ acta.next_place}}">
+                                    {{ form.next_place}}
                                 </div>
                             </td>
                         </tr>  
