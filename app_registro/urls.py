@@ -18,5 +18,8 @@ urlpatterns = [
     path('RegistroProceso', views.RegisterProcess, name='RegisterProcess'),
     path('EditarProceso/<int:process_id>/', views.editar_Proceso, name='EditarProceso'),
     path('RegistroTipodeReunion/', views.RegisterTypemeet, name='RegisterTypemeet'),
-     path('EditarTipodeReunion/<int:tmeet_id>/', views.editar_Tipodereunion, name='EditarTipoReunion'),
+    path('EditarTipodeReunion/<int:tmeet_id>/', views.editar_Tipodereunion, name='EditarTipoReunion'),
+    path('eliminar_tipo_reunion/<int:type_id>/', views.eliminar_tipo_reunion, name='eliminar_tipo_reunion'),
+    path('eliminar_usuario/<int:user_id>/', views.eliminar_usuario, name='eliminar_usuario'),
+    path('eliminar_proceso/<int:dependece_id>/', views.eliminar_proceso, name='eliminar_proceso'),
     ]

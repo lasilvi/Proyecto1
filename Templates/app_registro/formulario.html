@@ -21,8 +21,8 @@
                           <label for="{{ form.process_text.id_for_label }}">Proceso/Dependencia</label>
                           <div>
                           <select name="process_text" id="process_text" class="form-control">
-                            {% for choice in form.process_text.field.choices %}
                             <option value="">Seleccione una opción</option>
+                            {% for choice in form.process_text.field.choices %}
                             <option value="{{ choice.0 }}">{{ choice.1 }}</option>
                             {% endfor %}
                         </select>

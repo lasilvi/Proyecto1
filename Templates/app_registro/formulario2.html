@@ -35,6 +35,7 @@
                   <td>
                     <label >Proceso</label>
                     <select name="proceso1" id="proceso1" class="form-control">
+                      <option value="">Seleccione una opción</option>
                         {% for choice in form.proceso.field.choices %}
                           <option value="{{ choice.0 }}">{{ choice.1 }}</option>
                         {% endfor %}
@@ -75,6 +76,7 @@
         <td>
       <label for="campo${contadorCampos}">Asistente</label>
       <select name="campo${contadorCampos}" id="campo${contadorCampos}" class="form-control">
+        <option value="">Seleccione una opción</option>
           {% for choice in form.user.field.choices %}
             <option value="{{ choice.0 }}">{{ choice.1 }}</option>
           {% endfor %}

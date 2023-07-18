@@ -203,13 +203,13 @@ def RegisterAssistant(request):
         form = RegisterFormAssistant(request.POST)
         if form.is_valid():
             user = form.save()
-          
-    
-    form = RegisterFormAssistant()
+            return redirect('RegisterAssistant') 
+    else:
+        form = RegisterFormAssistant()      
     users = User.objects.all()
     context = {
-        'form': form ,
-        'users' : users   }     
+            'form': form ,
+            'users' : users   }     
     return render(request, 'app_registro/usuarios.html', context)
     
 def RegisterProcess(request):
@@ -217,8 +217,9 @@ def RegisterProcess(request):
         form = ProcessForm(request.POST)
         if form.is_valid():
             process = form.save()
-          
-    form = ProcessForm()
+            return redirect('RegisterProcess')
+    else:     
+        form = ProcessForm()
     processs = Dependece.objects.all()
     context = {
         'form': form ,
@@ -368,3 +369,37 @@ def eliminar_usuario(request):
         except User.DoesNotExist:
             return JsonResponse({'error': 'El usuario no existe'}, status=400)
     return JsonResponse({'error': 'Solicitud no válida'}, status=400)
+
+
+def eliminar_tipo_reunion(request,type_id):
+
+    if request.method == 'GET':
+        typemeet = Typemeet.objects.get(pk=type_id)
+        return render(request, 'app_registro/eliminar_tipo_reunion.html', {'typemeet': typemeet})
+
+    elif request.method == 'POST':
+        typemeet = Typemeet.objects.get(pk=type_id)
+        typemeet.delete()
+        return redirect('RegisterTypemeet')
+    
+def eliminar_usuario(request,user_id):
+
+    if request.method == 'GET':
+        user = User.objects.get(pk=user_id)
+        return render(request, 'app_registro/eliminar_usuario.html', {'user': user})
+
+    elif request.method == 'POST':
+        user = User.objects.get(pk=user_id)
+        user.delete()
+        return redirect('RegisterAssistant')
+    
+def eliminar_proceso(request,dependece_id):
+
+    if request.method == 'GET':
+        dependece = Dependece.objects.get(pk=dependece_id)
+        return render(request, 'app_registro/eliminar_proceso.html', {'depedece': dependece})
+
+    elif request.method == 'POST':
+        dependece = Dependece.objects.get(pk=dependece_id)
+        dependece.delete()
+        return redirect('RegisterProcess')

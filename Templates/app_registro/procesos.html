@@ -50,7 +50,8 @@
                       <td>{{ data.cod }}</td>
                       <td>
                         <a href="{% url 'EditarProceso' data.id %}" class="btn btn-danger btn-sm">Editar</a>
-                        <button class="btn btn-danger btn-sm delete-user" data-user-id="{{ data.id }}">Eliminar</button>
+                        <a href="{% url 'eliminar_proceso' data.id %}" class="btn btn-danger btn-sm delete-typemeet" data-typemeet-id="{{ data.id }}">Eliminar</a>
+
                       </td>
                     </tr>
                   {% empty %}
@@ -68,34 +69,5 @@
       </div>
   </div>
 </div>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-$(document).ready(function() {
-  $('.delete-user').click(function() {
-    var userId = $(this).data('user-id');
 
-    // Confirmar la eliminación del usuario (opcional)
-    if (confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
-      // Enviar la solicitud POST al servidor utilizando AJAX
-      $.ajax({
-        url: '/app_registro/eliminar_usuario/',  // Reemplaza esto con la URL correcta para eliminar el usuario
-        type: 'POST',
-        data: {
-          'user_id': userId
-        },
-        success: function(response) {
-          // Manejar la respuesta del servidor
-          // Por ejemplo, actualizar la vista para reflejar la eliminación del usuario
-          // Puedes mostrar un mensaje de éxito o actualizar la lista de usuarios, etc.
-          console.log('El usuario ha sido eliminado exitosamente');
-        },
-        error: function(xhr, textStatus, errorThrown) {
-          // Manejar errores en caso de que ocurra alguno durante la solicitud
-          console.error('Ocurrió un error al eliminar el usuario:', errorThrown);
-        }
-      });
-    }
-  });
-});
-</script>
 {% endblock %}
