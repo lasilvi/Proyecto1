@@ -13,4 +13,10 @@ urlpatterns = [
     path('RegistroAsistente/', views.RegisterAssistant, name='RegisterAssistant'),
     path('edit_act/<int:act_id>/', views.edit_act, name='edit_act'),
     path('filter-acts/', views.filter_acts, name='filter_acts'),
+    path('EditarUsuario/<int:user_id>/', views.editar_usuario, name='EditarUsuario'),
+    path('eliminar_usuario/', views.eliminar_usuario, name='eliminar_usuario'),
+    path('RegistroProceso', views.RegisterProcess, name='RegisterProcess'),
+    path('EditarProceso/<int:process_id>/', views.editar_Proceso, name='EditarProceso'),
+    path('RegistroTipodeReunion/', views.RegisterTypemeet, name='RegisterTypemeet'),
+     path('EditarTipodeReunion/<int:tmeet_id>/', views.editar_Tipodereunion, name='EditarTipoReunion'),
     ]

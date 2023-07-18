@@ -1,12 +1,13 @@
 {% extends 'base.html' %}
 {% block content %}
+
 {% load crispy_forms_tags %}
 <!-- Incluir los archivos CSS y JS del selector de fecha y hora -->
 <link rel="stylesheet" href="ruta/al/css/bootstrap-datetimepicker.css">
 <script src="ruta/al/js/bootstrap-datetimepicker.js"></script>
 
 <div class="container mt-5">
-  <div class="row justify-content-center">
+  <div class="row justify-content-center align-items-center">
       <div class="d-flex p-2">
           <form method="post" >
               {% csrf_token %}
@@ -21,17 +22,11 @@
                               {{ form.name}}
                           </div>
                       </td>
-                      <td>
-                        <label for="{{ form.num_id.id_for_label }}">Cedula</label>
+                      <td >
+                        <label for="{{ form.cod.id_for_label }}">Codigo</label>
                         <div>
-                            {{ form.num_id }}
+                            {{ form.cod}}
                         </div>
-                      <td>
-                          <label for="{{ form.mail.id_for_label }}">Correo</label>
-                          <div>
-                          {{ form.mail }}
-                          </div>
-                      </td>
                     </td>
                   </tr> 
               </table>
@@ -44,20 +39,18 @@
                 <thead>
                   <tr>
                     <th>Nombre</th>
-                    <th>cedula</th>
-                    <th>Correo</th>
+                    <th>Codigo</th>
                     <th>Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {% for user in users %}
+                  {% for data in processs %}
                     <tr>
-                      <td>{{ user.name }}</td>
-                      <td>{{ user.num_id }}</td>
-                      <td>{{ user.mail }}</td>
+                      <td>{{ data.name }}</td>
+                      <td>{{ data.cod }}</td>
                       <td>
-                        <a href="{% url 'EditarUsuario' user.id %}" class="btn btn-danger btn-sm">Editar</a>
-                        <button class="btn btn-danger btn-sm delete-user" data-user-id="{{ user.id }}">Eliminar</button>
+                        <a href="{% url 'EditarProceso' data.id %}" class="btn btn-danger btn-sm">Editar</a>
+                        <button class="btn btn-danger btn-sm delete-user" data-user-id="{{ data.id }}">Eliminar</button>
                       </td>
                     </tr>
                   {% empty %}

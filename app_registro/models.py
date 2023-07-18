@@ -28,9 +28,9 @@ class Job(models.Model):
         return str(self.name_job)
   
 class User(models.Model):
-    name = models.CharField(max_length=200,editable=True)
-    mail = models.CharField(max_length=200,null=True, default=None,editable=True)
-    num_id = models.IntegerField(editable=True)
+    name = models.CharField(max_length=200, default=None)
+    mail = models.CharField(max_length=200,null=True,default=None)
+    num_id = models.IntegerField(default=None)
 
     def __str__(self):
         return str(self.name)

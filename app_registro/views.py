@@ -8,6 +8,7 @@ from .models import Development
 from django.views import View
 import json
 from django.db.models import Max,Q
+from django.http import JsonResponse
 
 # Create your views here.
 
@@ -202,13 +203,76 @@ def RegisterAssistant(request):
         form = RegisterFormAssistant(request.POST)
         if form.is_valid():
             user = form.save()
-            url_redireccion = reverse('menu') 
-            return redirect(url_redireccion)
+          
+    
+    form = RegisterFormAssistant()
+    users = User.objects.all()
+    context = {
+        'form': form ,
+        'users' : users   }     
+    return render(request, 'app_registro/usuarios.html', context)
+    
+def RegisterProcess(request):
+    if request.method == 'POST':
+        form = ProcessForm(request.POST)
+        if form.is_valid():
+            process = form.save()
+          
+    form = ProcessForm()
+    processs = Dependece.objects.all()
+    context = {
+        'form': form ,
+        'processs' : processs}     
+    return render(request, 'app_registro/procesos.html', context)
+
+def RegisterTypemeet(request):
+    if request.method == 'POST':
+        form = TypeMeetForm(request.POST)
+        if form.is_valid():
+            typemeet = form.save()
+          
+    form = TypeMeetForm()
+    typemeets = Typemeet.objects.all()
+    context = {
+        'form': form ,
+        'typemeets' : typemeets}     
+    return render(request, 'app_registro/tipodereunion.html', context)
+
+def editar_Proceso(request, process_id):
+    process = Dependece.objects.get(id=process_id)
+    
+    if request.method == 'POST':
+        form = ProcessForm(request.POST, instance=process)
+        #if form.is_valid():
+        # Actualizar
+        #  otros campos según sea necesario
+        form.save()
+        return redirect('RegisterProcess')  # Redirigir a la página de filtrado de actas después de guardar los cambios
     else:
-        form = RegisterFormAssistant()
-        context = {
-        'form': form     }     
-        return render(request, 'app_registro/usuarios.html', context)
+        form = ProcessForm(instance=process)
+    context = {
+        'form': form,
+    }
+
+    return render(request, ('app_registro/editar_procesos.html'), context)
+
+def editar_Tipodereunion(request, tmeet_id):
+    typemeet = Typemeet.objects.get(id=tmeet_id)
+    
+    if request.method == 'POST':
+        form = TypeMeetForm(request.POST, instance=typemeet)
+        #if form.is_valid():
+        # Actualizar
+        #  otros campos según sea necesario
+        form.save()
+        return redirect('RegisterTypemeet')  # Redirigir a la página de filtrado de actas después de guardar los cambios
+    else:
+        form = TypeMeetForm(instance=typemeet)
+    context = {
+        'form': form,
+    }
+
+    return render(request, ('app_registro/editar_tipodereunion.html'), context)
 
 
 def edit_act(request, act_id):
@@ -234,6 +298,23 @@ def edit_act(request, act_id):
     }
 
     return render(request, 'app_registro/edit_act.html', context)
+
+def editar_usuario(request, user_id):
+    user = User.objects.get(id=user_id)
+    
+    if request.method == 'POST':
+        form = UserForm(request.POST, instance=user)
+        #if form.is_valid():
+        # Actualizar otros campos según sea necesario
+        form.save()
+        return redirect('RegisterAssistant')  # Redirigir a la página de filtrado de actas después de guardar los cambios
+    else:
+        form = UserForm(instance=user)
+    context = {
+        'form': form,
+    }
+
+    return render(request, ('app_registro/editar_usuario.html'), context)
 
 def Summary(request):
     # Obtén el valor del campo por el cual deseas filtrar (puedes pasarlo a través de la URL o de un formulario)
@@ -276,3 +357,14 @@ def filter_acts(request):
     }
 
     return render(request, 'app_registro/filter_acts.html', context)
+
+def eliminar_usuario(request):
+    if request.method == 'POST':
+        user_id = request.POST.get('user_id')  # Obtener el ID del usuario enviado en la solicitud POST
+        try:
+            user = User.objects.get(pk=user_id)
+            user.delete()
+            return JsonResponse({'message': 'Usuario eliminado exitosamente'})
+        except User.DoesNotExist:
+            return JsonResponse({'error': 'El usuario no existe'}, status=400)
+    return JsonResponse({'error': 'Solicitud no válida'}, status=400)

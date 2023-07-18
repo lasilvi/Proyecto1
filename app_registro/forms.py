@@ -97,12 +97,15 @@ class RegisterFormCommitment(forms.ModelForm):
         self.fields['date'].required = False
 
 class RegisterFormAssistant(forms.ModelForm):
-    cargos = User.objects.values_list('num_id','name')
-    cargo = forms.ChoiceField(choices=cargos)
     class Meta:
         """Campos utilizados."""
         model = User
         fields = "__all__"
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.fields['name'].required = False
+            self.fields['mail'].required = False
+            self.fields['num_id'].required = False
         
 class ActForm(forms.ModelForm):
     class Meta:
@@ -116,7 +119,7 @@ class ActForm(forms.ModelForm):
             'next_hour': TimeInput(attrs={'class': 'form-control', 'type': 'time'}),
             'next_place': TextInput(attrs={'class': 'form-control'}),
         }
-        def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
             self.fields['pub_date'].required = False
             self.fields['process_text'].required = False
@@ -127,3 +130,25 @@ class ActForm(forms.ModelForm):
             self.fields['next_hour'].required = False
             self.fields['place'].required = False
             self.fields['next_place'].required = False
+
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = "__all__"
+    def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.fields['name'].required = False
+            self.fields['mail'].required = False
+            self.fields['num_id'].required = False
+
+class ProcessForm(forms.ModelForm):
+    class Meta:
+        model = Dependece
+        fields = "__all__"
+
+
+class TypeMeetForm(forms.ModelForm):
+    class Meta:
+        model = Typemeet
+        fields = "__all__"
+   

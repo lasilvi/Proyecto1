@@ -1,21 +1,27 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<div class="container mt-5">
   <div class="text-center">
     <h1>Filtrar acta</h1>
-
     <form method="post">
       {% csrf_token %}
+      <table class="table text-center">
+        <td >
       <div>
-        <label for="ident">N° Acta:</label>
+        <label for="ident">N° Acta</label>
         <input type="text" name="ident" id="ident">
       </div>
+    </td >
+    <td >
       <div>
-        <label for="date">Fecha:</label>
+        <label for="date">Fecha</label>
         <input type="date" name="date" id="date">
       </div>
+    </td >
+    <td >
       <div>
-        <label for="type_meet">Tipo de reunión:</label>
+        <label for="type_meet">Tipo de reunión</label>
         <select name="type_meet" id="type_meet">
           <option value="">-- Seleccionar Tipo --</option>
           {% for typemeet in typemeets %}
@@ -23,8 +29,10 @@
           {% endfor %}
         </select>
       </div>
+    </td >
+    </table> 
       <div>
-        <button type="submit" class="btn btn-primary ">Filtrar</button>
+        <button type="submit" class="btn btn-primary btn-lg btn-block">Filtrar</button>
       </div>
     </form>
 
@@ -61,4 +69,5 @@
       </td>
     </table>
   </div>
+</div>
 {% endblock %}
