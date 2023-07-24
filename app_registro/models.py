@@ -43,7 +43,7 @@ class Process(models.Model):
 class Confirmation(models.Model):
     user_id = models.ForeignKey(User,on_delete =models.CASCADE,verbose_name="Usuario",editable=True)
     act_id = models.ForeignKey(Act,on_delete =models.CASCADE)
-    asset = models.BooleanField(null=True, default=None,editable=True)
+    asset = models.BooleanField(null=True, default=None)
     job_position = models.ForeignKey(Job,on_delete =models.CASCADE,null=True, default=None,editable=True)
     process = models.ForeignKey(Process,on_delete =models.CASCADE,null=True, default=None,editable=True)
 

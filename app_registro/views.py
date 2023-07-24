@@ -9,6 +9,7 @@ from django.views import View
 import json
 from django.db.models import Max,Q
 from django.http import JsonResponse
+from django.contrib import messages 
 
 # Create your views here.
 
@@ -58,55 +59,83 @@ def Register(request):
         #formuser = RegisterFormUser()
     return render(request, 'app_registro/formulario.html', {'form': form})
 
+#/////////////////////////////////////////////////////////////////////////////////
 def RegisterUserConfirmation(request):
     act_id = int(request.GET.get("ActaN°"))
     act_proceso = request.GET.get("Proceso/Dependecia")
     act_ident = request.GET.get("Identificacion")
     if request.method == 'POST':
         formuser = RegisterFormUserConfirmation(request.POST)
-        # Obtener el diccionario valoresCampos del formulario
-        valoresCampos = request.POST.get('valoresCampos')
-        if valoresCampos:
-            valoresCampos = json.loads(valoresCampos)
-            # Procesar los usuarios del diccionario valoresCampos
-            
-            for  user_id, valor in valoresCampos.items():
-                print(valor[0])
-                print(valor[1])
-                print(valor[2])
-                print(valor[3])
-                print(user_id)
-                try:
-                    act_instance = Act.objects.get(id=act_id)
-                    user_instance = User.objects.get(num_id=int(valor[0]))
-                    job_instance = Job.objects.get(pk=int(valor[2]))
-                    Process_instance = Process.objects.get(pk=int(valor[3]))
-                
-                except Act.DoesNotExist:
-                    return HttpResponse('No se encontró el Act correspondiente')
-                except User.DoesNotExist:
-                    return HttpResponse(f"No se encontró el usuario con ID {user_id}")
+        if formuser.is_valid():
 
-                confirmation = Confirmation()
-                confirmation.act_id = act_instance
-                confirmation.user_id = user_instance
-                confirmation.asset = valor[1]
-                confirmation.job_position = job_instance
-                confirmation.process = Process_instance
-                confirmation.save()
-            url_redireccion = reverse('RegistroDevelop') + '?ActaN°=' + str(act_id) + '&Proceso/Dependecia=' + act_proceso + '&Identificacion=' + act_ident
+            user_id = formuser.cleaned_data['user_id']  # Obtener el ID del usuario del formulario
+            existing_confirmation = Confirmation.objects.filter(act_id=act_id, user_id=user_id).first()
+            if existing_confirmation:
+                # Si ya existe, redirigir a la página de confirmación con un mensaje de error
+                messages.error(request, 'El asistente ya ha sido registrado para esta acta.')
+                url_redireccion = reverse('RegistroUserconfirmation') + '?ActaN°=' + str(act_id) + '&Proceso/Dependecia=' + act_proceso + '&Identificacion=' + act_ident
+                return redirect(url_redireccion)
+            
+            confirmacion = formuser.save(commit=False)
+            act_instance = Act.objects.get(id=act_id)
+            confirmacion.act_id = act_instance
+            confirmacion.save()
+
+            # Construye la URL de redirección con la variable como parámetro
+            url_redireccion = reverse('RegistroUserconfirmation') + '?ActaN°=' + str(act_id) + '&Proceso/Dependecia=' + act_proceso + '&Identificacion=' + act_ident
             return redirect(url_redireccion) 
+            
     else:
         formuser = RegisterFormUserConfirmation()
+    confimaciones = Confirmation.objects.filter(act_id=act_id)
     context = {
     'form': formuser,
     'act_id': act_id,
     'act_proceso': act_proceso,
     'act_ident': act_ident,
+    'confimaciones':confimaciones
     }
     
     return render(request, 'app_registro/formulario2.html', context)
 
+def editar_RegisterUserConfirmation(request,user_id,act_proceso,act_ident):
+    act_id = int(request.GET.get("ActaN°"))
+    act_proceso = request.GET.get("Proceso/Dependecia")
+    act_ident = request.GET.get("Identificacion")
+    confimaciones = Confirmation.objects.filter(Q(act_id=act_id) & Q(user_id=user_id))
+    
+    if request.method == 'POST':
+        form = RegisterFormUserConfirmation(request.POST, instance=confimaciones)
+        #if form.is_valid():
+        # Actualizar
+        #  otros campos según sea necesario
+        form.save()
+        return redirect('RegisterProcess')  # Redirigir a la página de filtrado de actas después de guardar los cambios
+    else:
+        form = RegisterFormUserConfirmation(instance=confimaciones)
+    context = {
+        'form': form,
+    }
+
+    return render(request, ('app_registro/editar_EditarRegistroUsuariosConfirmacion.html'), context)
+
+def eliminar_RegisterUserConfirmation(request,user_id,act_id,act_proceso,act_ident):
+    print(user_id)
+    
+    if request.method == 'GET':
+        confirmation = Confirmation.objects.get(id=user_id)
+        return render(request, 'app_registro/eliminar_RegistroUsuariosConfirmacion.html', {'confirmation': confirmation, 'act_id': act_id,
+    'act_proceso': act_proceso,
+    'act_ident': act_ident})
+
+    elif request.method == 'POST':
+        confirmation = Confirmation.objects.get(id=user_id)
+        confirmation.delete()
+        # Construye la URL de redirección con la variable como parámetro
+        url_redireccion = reverse('RegistroUserconfirmation') + '?ActaN°=' + str(act_id) + '&Proceso/Dependecia=' + act_proceso + '&Identificacion=' + str(act_ident)
+        return redirect(url_redireccion) 
+        
+#////////////////////////////////////////////////////////////////////////////////
 def RegisterDevelopment(request):
     act_id = int(request.GET.get("ActaN°"))
     act_proceso = request.GET.get("Proceso/Dependecia")
@@ -198,6 +227,7 @@ def RegisterCommintment(request):
             }     
         return render(request, 'app_registro/formulario4.html', context)
 
+#////////////////////////////////////////////////////////////////////////////////
 def RegisterAssistant(request):
     if request.method == 'POST':
         form = RegisterFormAssistant(request.POST)
@@ -211,7 +241,36 @@ def RegisterAssistant(request):
             'form': form ,
             'users' : users   }     
     return render(request, 'app_registro/usuarios.html', context)
+
+def eliminar_usuario(request,user_id):
+
+    if request.method == 'GET':
+        user = User.objects.get(pk=user_id)
+        return render(request, 'app_registro/eliminar_usuario.html', {'user': user})
+
+    elif request.method == 'POST':
+        user = User.objects.get(pk=user_id)
+        user.delete()
+        return redirect('RegisterAssistant')
+
+def editar_usuario(request, user_id):
+    user = User.objects.get(id=user_id)
     
+    if request.method == 'POST':
+        form = UserForm(request.POST, instance=user)
+        #if form.is_valid():
+        # Actualizar otros campos según sea necesario
+        form.save()
+        return redirect('RegisterAssistant')  # Redirigir a la página de filtrado de actas después de guardar los cambios
+    else:
+        form = UserForm(instance=user)
+    context = {
+        'form': form,
+    }
+
+    return render(request, ('app_registro/editar_usuario.html'), context)
+
+#///////////////////////////////////////////////////////////////////////////////
 def RegisterProcess(request):
     if request.method == 'POST':
         form = ProcessForm(request.POST)
@@ -225,19 +284,6 @@ def RegisterProcess(request):
         'form': form ,
         'processs' : processs}     
     return render(request, 'app_registro/procesos.html', context)
-
-def RegisterTypemeet(request):
-    if request.method == 'POST':
-        form = TypeMeetForm(request.POST)
-        if form.is_valid():
-            typemeet = form.save()
-          
-    form = TypeMeetForm()
-    typemeets = Typemeet.objects.all()
-    context = {
-        'form': form ,
-        'typemeets' : typemeets}     
-    return render(request, 'app_registro/tipodereunion.html', context)
 
 def editar_Proceso(request, process_id):
     process = Dependece.objects.get(id=process_id)
@@ -257,6 +303,31 @@ def editar_Proceso(request, process_id):
 
     return render(request, ('app_registro/editar_procesos.html'), context)
 
+def eliminar_proceso(request,dependece_id):
+
+    if request.method == 'GET':
+        dependece = Dependece.objects.get(pk=dependece_id)
+        return render(request, 'app_registro/eliminar_proceso.html', {'depedece': dependece})
+
+    elif request.method == 'POST':
+        dependece = Dependece.objects.get(pk=dependece_id)
+        dependece.delete()
+        return redirect('RegisterProcess')
+
+#///////////////////////////////////////////////////////////////////////////////
+def RegisterTypemeet(request):
+    if request.method == 'POST':
+        form = TypeMeetForm(request.POST)
+        if form.is_valid():
+            typemeet = form.save()
+          
+    form = TypeMeetForm()
+    typemeets = Typemeet.objects.all()
+    context = {
+        'form': form ,
+        'typemeets' : typemeets}     
+    return render(request, 'app_registro/tipodereunion.html', context)
+
 def editar_Tipodereunion(request, tmeet_id):
     typemeet = Typemeet.objects.get(id=tmeet_id)
     
@@ -275,7 +346,18 @@ def editar_Tipodereunion(request, tmeet_id):
 
     return render(request, ('app_registro/editar_tipodereunion.html'), context)
 
+def eliminar_tipo_reunion(request,type_id):
 
+    if request.method == 'GET':
+        typemeet = Typemeet.objects.get(pk=type_id)
+        return render(request, 'app_registro/eliminar_tipo_reunion.html', {'typemeet': typemeet})
+
+    elif request.method == 'POST':
+        typemeet = Typemeet.objects.get(pk=type_id)
+        typemeet.delete()
+        return redirect('RegisterTypemeet')
+
+#///////////////////////////////////////////////////////////////////////////////
 def edit_act(request, act_id):
     acta = Act.objects.get(id=act_id)
     confirmacion = Confirmation.objects.filter(act_id=act_id)
@@ -299,23 +381,6 @@ def edit_act(request, act_id):
     }
 
     return render(request, 'app_registro/edit_act.html', context)
-
-def editar_usuario(request, user_id):
-    user = User.objects.get(id=user_id)
-    
-    if request.method == 'POST':
-        form = UserForm(request.POST, instance=user)
-        #if form.is_valid():
-        # Actualizar otros campos según sea necesario
-        form.save()
-        return redirect('RegisterAssistant')  # Redirigir a la página de filtrado de actas después de guardar los cambios
-    else:
-        form = UserForm(instance=user)
-    context = {
-        'form': form,
-    }
-
-    return render(request, ('app_registro/editar_usuario.html'), context)
 
 def Summary(request):
     # Obtén el valor del campo por el cual deseas filtrar (puedes pasarlo a través de la URL o de un formulario)
@@ -359,47 +424,8 @@ def filter_acts(request):
 
     return render(request, 'app_registro/filter_acts.html', context)
 
-def eliminar_usuario(request):
-    if request.method == 'POST':
-        user_id = request.POST.get('user_id')  # Obtener el ID del usuario enviado en la solicitud POST
-        try:
-            user = User.objects.get(pk=user_id)
-            user.delete()
-            return JsonResponse({'message': 'Usuario eliminado exitosamente'})
-        except User.DoesNotExist:
-            return JsonResponse({'error': 'El usuario no existe'}, status=400)
-    return JsonResponse({'error': 'Solicitud no válida'}, status=400)
 
 
-def eliminar_tipo_reunion(request,type_id):
-
-    if request.method == 'GET':
-        typemeet = Typemeet.objects.get(pk=type_id)
-        return render(request, 'app_registro/eliminar_tipo_reunion.html', {'typemeet': typemeet})
-
-    elif request.method == 'POST':
-        typemeet = Typemeet.objects.get(pk=type_id)
-        typemeet.delete()
-        return redirect('RegisterTypemeet')
     
-def eliminar_usuario(request,user_id):
 
-    if request.method == 'GET':
-        user = User.objects.get(pk=user_id)
-        return render(request, 'app_registro/eliminar_usuario.html', {'user': user})
-
-    elif request.method == 'POST':
-        user = User.objects.get(pk=user_id)
-        user.delete()
-        return redirect('RegisterAssistant')
     
-def eliminar_proceso(request,dependece_id):
-
-    if request.method == 'GET':
-        dependece = Dependece.objects.get(pk=dependece_id)
-        return render(request, 'app_registro/eliminar_proceso.html', {'depedece': dependece})
-
-    elif request.method == 'POST':
-        dependece = Dependece.objects.get(pk=dependece_id)
-        dependece.delete()
-        return redirect('RegisterProcess')

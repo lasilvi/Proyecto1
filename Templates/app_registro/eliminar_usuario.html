@@ -3,11 +3,12 @@
 {% block content %}
 <!DOCTYPE html>
 <html>
+    <table class="table text-center ">
 <head>
-    <title>Eliminar tipo de usuario</title>
+    <title>Eliminar usuario</title>
 </head>
 <body>
-    <h1>Eliminar tipo usuario</h1>
+    <h1>Eliminar  usuario</h1>
     <p>¿Estás seguro de que deseas eliminar el usuario"{{ user.name }}"?</p>
     <form method="post" action="{% url 'eliminar_usuario' user.id %}">
         {% csrf_token %}
@@ -15,5 +16,6 @@
         <a href="{% url 'RegisterAssistant' %}">Cancelar</a>
     </form>
 </body>
+</table>
 </html>
 {% endblock %}

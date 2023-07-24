@@ -37,7 +37,7 @@
               </table>
               <td colspan="3">
                 <div class="text-center">
-                    <button type="submit" class="btn btn-primary btn-lg btn-block">Crear</button>
+                    <button type="submit" class="btn btn-primary btn-lg btn-block">Crear Asistente</button>
                 </div>
              </td>
              <table class="table text-center">
@@ -65,11 +65,10 @@
                       <td colspan="5">No se encontraron actas.</td>
                     </tr>
                   {% endfor %}
-                  
-                </tbody>
-                <td colspan="3" class="text-center">
-                  <a href="{% url 'menu' %}" class="btn btn-primary">Volver a menú</a>
-                </td>
+                </tbody> 
+                  <td colspan="3" class="text-center">
+                    <a href="{% url 'menu' %}" class="btn btn-primary">Volver a menú</a>
+                  </td> 
               </table>
           </form>
       </div>

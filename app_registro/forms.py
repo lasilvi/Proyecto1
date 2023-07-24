@@ -52,21 +52,26 @@ class RegisterFormUser(forms.ModelForm):
         fields = "__all__"
 
 #para registrar los usuarios en las actas 
-class RegisterFormUserConfirmation(forms.Form):
-    users = User.objects.values_list('num_id','name')
-    user = forms.ChoiceField(choices=users)
-    jobs = Job.objects.values_list('pk','name_job')
-    job = forms.ChoiceField(choices=jobs)
-    procesos = Process.objects.values_list('pk','name')
-    proceso = forms.ChoiceField(choices=procesos)
-
+class RegisterFormUserConfirmation(forms.ModelForm):
     class Meta:
         """Campos utilizados."""
-        model = Commitment
+        model = Confirmation
         fields = "__all__"
         widgets = {
-            'date': NumberInput(attrs={'type': 'date'}),
+            'asset': forms.CheckboxInput(),
         }
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['job_position'].required = False
+        self.fields['act_id'].required = False
+
+        user = User.objects.values_list('pk','name')
+        self.fields['user_id'].choices = user
+        job = Job.objects.values_list('pk', 'name_job')
+        self.fields['job_position'].choices = job
+        proceso = Process.objects.values_list('pk', 'name')
+        self.fields['process'].choices = proceso
+        
 
 ConfirmationFormSet = formset_factory(RegisterFormUserConfirmation)    
     
