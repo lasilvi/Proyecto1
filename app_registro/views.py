@@ -42,7 +42,7 @@ def Register(request):
                 
            act.save()
            id = str(act.pk)
-           indentificacion = str(act.ident)
+           indentificacion = act.ident
            proceso = str(act.process_text)
            resultados = Dependece.objects.filter(cod=proceso)
            if resultados.exists():
@@ -52,7 +52,7 @@ def Register(request):
                 # Manejar el caso cuando no hay resultados encontrados
                 act_proceso_name = None
            # Construye la URL de redirección con la variable como parámetro
-           url_redireccion = reverse('RegistroUserconfirmation') + '?ActaN°=' + id + '&Proceso/Dependecia=' + act_proceso_name + '&Identificacion=' + indentificacion
+           url_redireccion = reverse('RegistroUserconfirmation' , kwargs={'act_id': id, 'act_proceso': proceso, 'act_ident': indentificacion})
            return redirect(url_redireccion) 
     else:
         form = RegisterForm()
@@ -60,10 +60,7 @@ def Register(request):
     return render(request, 'app_registro/formulario.html', {'form': form})
 
 #/////////////////////////////////////////////////////////////////////////////////
-def RegisterUserConfirmation(request):
-    act_id = int(request.GET.get("ActaN°"))
-    act_proceso = request.GET.get("Proceso/Dependecia")
-    act_ident = request.GET.get("Identificacion")
+def RegisterUserConfirmation(request,act_id,act_proceso,act_ident):
     if request.method == 'POST':
         formuser = RegisterFormUserConfirmation(request.POST)
         if formuser.is_valid():
@@ -73,36 +70,34 @@ def RegisterUserConfirmation(request):
             if existing_confirmation:
                 # Si ya existe, redirigir a la página de confirmación con un mensaje de error
                 messages.error(request, 'El asistente ya ha sido registrado para esta acta.')
-                url_redireccion = reverse('RegistroUserconfirmation') + '?ActaN°=' + str(act_id) + '&Proceso/Dependecia=' + act_proceso + '&Identificacion=' + act_ident
+                url_redireccion = reverse('RegistroUserconfirmation' , kwargs={'act_id': act_id, 'act_proceso': act_proceso, 'act_ident': act_ident})
                 return redirect(url_redireccion)
             
             confirmacion = formuser.save(commit=False)
-            act_instance = Act.objects.get(id=act_id)
-            confirmacion.act_id = act_instance
             confirmacion.save()
 
             # Construye la URL de redirección con la variable como parámetro
-            url_redireccion = reverse('RegistroUserconfirmation') + '?ActaN°=' + str(act_id) + '&Proceso/Dependecia=' + act_proceso + '&Identificacion=' + act_ident
+            url_redireccion = reverse('RegistroUserconfirmation' , kwargs={'act_id': act_id, 'act_proceso': act_proceso, 'act_ident': act_ident})
             return redirect(url_redireccion) 
             
     else:
         formuser = RegisterFormUserConfirmation()
     confimaciones = Confirmation.objects.filter(act_id=act_id)
+    proceso = Dependece.objects.get(cod=act_proceso)
     context = {
     'form': formuser,
     'act_id': act_id,
     'act_proceso': act_proceso,
     'act_ident': act_ident,
-    'confimaciones':confimaciones
+    'confimaciones':confimaciones,
+    'proceso': proceso,
+
     }
     
     return render(request, 'app_registro/formulario2.html', context)
 
-def editar_RegisterUserConfirmation(request,user_id,act_proceso,act_ident):
-    act_id = int(request.GET.get("ActaN°"))
-    act_proceso = request.GET.get("Proceso/Dependecia")
-    act_ident = request.GET.get("Identificacion")
-    confimaciones = Confirmation.objects.filter(Q(act_id=act_id) & Q(user_id=user_id))
+def editar_RegisterUserConfirmation(request,user_id,act_id,act_proceso,act_ident):
+    confimaciones = Confirmation.objects.get(id=user_id)
     
     if request.method == 'POST':
         form = RegisterFormUserConfirmation(request.POST, instance=confimaciones)
@@ -110,14 +105,15 @@ def editar_RegisterUserConfirmation(request,user_id,act_proceso,act_ident):
         # Actualizar
         #  otros campos según sea necesario
         form.save()
-        return redirect('RegisterProcess')  # Redirigir a la página de filtrado de actas después de guardar los cambios
+        url= reverse('RegistroUserconfirmation', kwargs={'act_id': act_id, 'act_proceso': act_proceso, 'act_ident': act_ident}) 
+        return redirect(url) # Redirigir a la página de filtrado de actas después de guardar los cambios
     else:
         form = RegisterFormUserConfirmation(instance=confimaciones)
     context = {
         'form': form,
     }
 
-    return render(request, ('app_registro/editar_EditarRegistroUsuariosConfirmacion.html'), context)
+    return render(request, ('app_registro/editar_formulario2confirmacion.html'), context)
 
 def eliminar_RegisterUserConfirmation(request,user_id,act_id,act_proceso,act_ident):
     print(user_id)
@@ -132,101 +128,130 @@ def eliminar_RegisterUserConfirmation(request,user_id,act_id,act_proceso,act_ide
         confirmation = Confirmation.objects.get(id=user_id)
         confirmation.delete()
         # Construye la URL de redirección con la variable como parámetro
-        url_redireccion = reverse('RegistroUserconfirmation') + '?ActaN°=' + str(act_id) + '&Proceso/Dependecia=' + act_proceso + '&Identificacion=' + str(act_ident)
+        url_redireccion = reverse('RegistroUserconfirmation' , kwargs={'act_id': act_id, 'act_proceso': act_proceso, 'act_ident': act_ident})
         return redirect(url_redireccion) 
         
 #////////////////////////////////////////////////////////////////////////////////
-def RegisterDevelopment(request):
-    act_id = int(request.GET.get("ActaN°"))
-    act_proceso = request.GET.get("Proceso/Dependecia")
-    act_ident = request.GET.get("Identificacion")
+def RegisterDevelopment(request,act_id,act_proceso,act_ident):
     if request.method == 'POST':
         formdevelopment = RegisterFormDevelopment(request.POST)
-
-        valoresCampos = request.POST.get('valoresCampos')
-        if valoresCampos:
-            valoresCampos = json.loads(valoresCampos)
-            # Procesar los usuarios del diccionario valoresCampos
-            for  num, valor in valoresCampos.items():
-                try:
-                    act_instance = Act.objects.get(id=act_id)
-                    user_instance = User.objects.get(num_id=int(valor[1]))
-                    print(valor[0])
-                    print(valor[1])
-                    print(valor[2])
-                    print(valor[3])
-                    print(valor[4])
-                    print(valor[5])
+        if formdevelopment.is_valid():
+            desarrollo = formdevelopment.save(commit=False)
+            
+            # Obtener el último valor de "num" para la combinación de "act_id" y "desarrollo"
+            last_development = Development.objects.filter(act_id=act_id).order_by('-num').first()
+            if last_development:
+                new_num = last_development.num + 1
+            else:
+                new_num = 1
                 
-                except Act.DoesNotExist:
-                    return HttpResponse('No se encontró el Act correspondiente')
-                except User.DoesNotExist:
-                    return HttpResponse(f"No se encontró el usuario con ID {num}")
+            desarrollo.num = new_num
 
-                Development_instance = Development()
-                Development_instance = Development()
-                Development_instance.act_id = act_instance
-                Development_instance.num = valor[0]
-                Development_instance.tittle = valor[2]
-                Development_instance.description = valor[3]
-                Development_instance.discussion = valor[4]
-                Development_instance.result = valor[5]
-                Development_instance.user_id = user_instance
-                Development_instance.save()
-
-            url_redireccion = reverse('RegistroCommintment') + '?ActaN°=' + str(act_id) + '&Proceso/Dependecia=' + act_proceso + '&Identificacion=' + act_ident
-            return redirect(url_redireccion) 
+            desarrollo.save()
+                
+            url_redireccion = reverse('RegistroDevelop' , args=[act_id, act_proceso, act_ident])
+            return redirect(url_redireccion)  
+        else:
+            # Mensajes de depuración para ver los errores del formulario en la consola
+            print("Errores del formulario:")
+            print(formdevelopment.errors)
     else:
         formdevelopment = RegisterFormDevelopment()
+    desarrollo = Development.objects.filter(act_id=act_id)
+    proceso = Dependece.objects.get(cod=act_proceso)
     context = {
-            'form': formdevelopment,
-            'act_id': act_id,
-            'act_proceso': act_proceso,
-            'act_ident': act_ident,
-        }    
+            'form': formdevelopment,'act_id': act_id,'act_proceso': act_proceso,
+            'act_ident': act_ident,'desarrollo':desarrollo,'proceso': proceso}    
     return render(request, 'app_registro/formulario3.html',  context )
 
-def RegisterCommintment(request):
-    act_id = int(request.GET.get("ActaN°"))
-    act_proceso = request.GET.get("Proceso/Dependecia")
-    act_ident = request.GET.get("Identificacion")
+def eliminar_RegisterDevelopment(request,desarrollo_id,act_id,act_proceso,act_ident):
+    print(desarrollo_id)
+    
+    if request.method == 'GET':
+        desarrollo = Development.objects.get(id=desarrollo_id)
+        return render(request, 'app_registro/eliminar_Desarrollo.html', {'desarrollo': desarrollo, 'act_id': act_id,'act_proceso': act_proceso,'act_ident': act_ident})
+
+    elif request.method == 'POST':
+        desarrollo = Development.objects.get(id=desarrollo_id)
+        desarrollo.delete()
+        # Construye la URL de redirección con la variable como parámetro
+        url_redireccion = reverse('RegistroDevelop' , args=[act_id, act_proceso, act_ident]) 
+        return redirect(url_redireccion) 
+
+def editar_RegisterDevelopment(request,desarrollo_id,act_id,act_proceso,act_ident):
+    desarrollo = Development.objects.get(id=desarrollo_id)
+    
     if request.method == 'POST':
-        form = RegisterFormCommitment(request.POST)
-        valoresCampos = request.POST.get('valoresCampos')
-        if valoresCampos:
-            valoresCampos = json.loads(valoresCampos)
-            # Procesar los usuarios del diccionario valoresCampos
-            for  num, valor in valoresCampos.items():
-                try:
-                    act_instance = Act.objects.get(id=act_id)
-                    user_instance = User.objects.get(num_id=int(valor[1]))   
-                    state_instance = State.objects.get(pk= int(valor[4]))
-                except Act.DoesNotExist:
-                    return HttpResponse('No se encontró el Act correspondiente')
-                except User.DoesNotExist:
-                    return HttpResponse(f"No se encontró el usuario con ID {num}")
-
-                comimtment_instance = Commitment()
-                comimtment_instance.act_id = act_instance
-                comimtment_instance.user_id = user_instance
-                comimtment_instance.date = valor[3]
-                comimtment_instance.observations = valor[2]
-                comimtment_instance.commitment = valor[5]
-                comimtment_instance.control = state_instance
-                comimtment_instance.save()
-
-            url_redireccion = reverse('resumen') + '?ActaN°=' + str(act_id)
-            return redirect(url_redireccion)
+        form = RegisterFormDevelopment(request.POST, instance=desarrollo)
+        #if form.is_valid():
+        # Actualizar
+        #  otros campos según sea necesario
+        form.save()
+        url= reverse('RegistroDevelop', kwargs={'act_id': act_id, 'act_proceso': act_proceso, 'act_ident': act_ident}) 
+        return redirect(url) # Redirigir a la página de filtrado de actas después de guardar los cambios
     else:
-        form = RegisterFormCommitment()
-        context = {
+        form = RegisterFormDevelopment(instance=desarrollo)
+    context = {
         'form': form,
-        'act_id': act_id,
-        'act_proceso': act_proceso,
-        'act_ident': act_ident,
-            }     
-        return render(request, 'app_registro/formulario4.html', context)
+    }
 
+    return render(request, ('app_registro/editar_formulario3desarrollo.html'), context)
+#///////////////////////////////////////////////////////////////////////////////////////////////
+def RegisterCommintment(request,act_id,act_proceso,act_ident):
+    if request.method == 'POST':
+        formcompromiso = RegisterFormCommitment(request.POST)
+        if formcompromiso.is_valid():
+            compromiso = formcompromiso.save(commit=False)
+            act_instance = Act.objects.get(id=act_id)
+            compromiso.act_id = act_instance
+            compromiso.save()
+                
+            url_redireccion = reverse('RegistroCommintment', args=[act_id, act_proceso, act_ident])
+            return redirect(url_redireccion) 
+        else:
+            # Mensajes de depuración para ver los errores del formulario en la consola
+            print("Errores del formulario:")
+            print(formcompromiso.errors) 
+    else:
+        formcompromiso = RegisterFormCommitment()
+    compromisos = Commitment.objects.filter(act_id=act_id)
+    proceso = Dependece.objects.get(cod=act_proceso)
+    context = {
+            'form': formcompromiso,'act_id': act_id,'act_proceso': act_proceso,
+            'act_ident': act_ident,'compromiso':compromisos,'proceso': proceso}    
+    return render(request, 'app_registro/formulario4.html',  context )
+
+def eliminar_RegisterCommintment(request,compromiso_id,act_id,act_proceso,act_ident):
+
+    if request.method == 'GET':
+        compromiso = Commitment.objects.get(id=compromiso_id)
+        return render(request, 'app_registro/eliminar_Compromiso.html', {'compromiso': compromiso, 'act_id': act_id,'act_proceso': act_proceso,'act_ident': act_ident})
+
+    elif request.method == 'POST':
+        desarrollo = Commitment.objects.get(id=compromiso_id)
+        desarrollo.delete()
+        # Construye la URL de redirección con la variable como parámetro
+        url_redireccion = reverse('RegistroCommintment' , args=[act_id, act_proceso, act_ident]) 
+        return redirect(url_redireccion) 
+    
+def editar_RegisterCommintment(request,compromiso_id,act_id,act_proceso,act_ident):
+    compromiso = Commitment.objects.get(id=compromiso_id)
+    
+    if request.method == 'POST':
+        form = RegisterFormCommitment(request.POST, instance=compromiso)
+        #if form.is_valid():
+        # Actualizar
+        #  otros campos según sea necesario
+        form.save()
+        url= reverse('RegistroCommintment', kwargs={'act_id': act_id, 'act_proceso': act_proceso, 'act_ident': act_ident}) 
+        return redirect(url) # Redirigir a la página de filtrado de actas después de guardar los cambios
+    else:
+        form = RegisterFormCommitment(instance=compromiso)
+    context = {
+        'form': form,
+    }
+
+    return render(request, ('app_registro/editar_formulario4compromiso.html'), context)
 #////////////////////////////////////////////////////////////////////////////////
 def RegisterAssistant(request):
     if request.method == 'POST':
@@ -369,34 +394,37 @@ def edit_act(request, act_id):
         #if form.is_valid():
         # Actualizar otros campos según sea necesario
         form.save()
-        return redirect('filter_acts')  # Redirigir a la página de filtrado de actas después de guardar los cambios
+        url_redireccion = reverse('edit_act' , args=[act_id])
+        return redirect(url_redireccion)  # Redirigir a la página de filtrado de actas después de guardar los cambios
     else:
         form = ActForm(instance=acta)
     context = {
         'form': form,
         'acta': acta,
         'confirmacion': confirmacion,
-        'desarrollo': desarrollo,
+        'desarrollos': desarrollo,
         'compromisos': compromisos
     }
 
     return render(request, 'app_registro/edit_act.html', context)
 
-def Summary(request):
-    # Obtén el valor del campo por el cual deseas filtrar (puedes pasarlo a través de la URL o de un formulario)
-    valor_act = int(request.GET.get("ActaN°"))
+def Summary(request,act_id):
     # Realiza la consulta y el filtrado de los datos
-    datos_acta = Act.objects.filter(pk=valor_act)
-    datos_desarrollo = Development.objects.filter(act_id=valor_act)
+    datos_acta = Act.objects.filter(pk=act_id)
+    datos_desarrollo = Development.objects.filter(act_id=act_id)
     for dato in datos_acta:
       ProcesoDependecia = dato.process_text
       Tipodereunion = dato.type_meet
       
     nombreproceso = Dependece.objects.filter(cod=ProcesoDependecia)
     nombretiporeunion = Typemeet.objects.filter(pk=Tipodereunion)
-    asistentes = Confirmation.objects.filter(act_id = valor_act)
+    asistentes = Confirmation.objects.filter(act_id = act_id)
+    compromisos = Commitment.objects.filter(act_id=act_id)
     
-    return render(request, 'app_registro/resumen.html', {'datos': datos_acta,'desarrollo': datos_desarrollo,'nombreproceso' : nombreproceso,'nombretiporeunion':nombretiporeunion, 'asistentes': asistentes})
+    
+    return render(request, 'app_registro/resumen.html', {'datos': datos_acta,
+                                                         'desarrollo': datos_desarrollo,'nombreproceso' : nombreproceso,
+                                                         'nombretiporeunion':nombretiporeunion, 'asistentes': asistentes,'compromisos': compromisos})
 
 def filter_acts(request):
     ident = request.POST.get('ident')

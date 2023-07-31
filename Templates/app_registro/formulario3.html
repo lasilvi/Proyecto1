@@ -9,146 +9,106 @@
       <div class="d-flex p-2">
           <form method="post" id="myForm">
               {% csrf_token %}
-              <label >Esta registrando los desarrollo del Acta N°{{ act_ident }} </label> 
+              <table class="table text-center">
+                <tr> 
+                  <td colspan="3" class="grande">UNIVERSIDAD DE ANTIOQUIA</td>
+              </tr> 
+              <tr> 
+                <h1 class="text-center">Sistema de control y registro de actas de reuniones</h1>
+                <h2 class="text-center">Escuela Interamericana de Bibliotecología</h2>
+              <tr> 
+                <tr>
+                  <td colspan="1" class="text-center">
+                      <a href="{% url 'RegistroUserconfirmation' act_id act_proceso act_ident%}" class="btn btn-primary">Asistentes</a>
+                  </td>
+                  <td colspan="1" class="text-center">
+                      <a href="{% url 'RegistroDevelop' act_id act_proceso act_ident%}" class="btn btn-primary">Desarrollos</a>
+                  </td>
+                  <td colspan="1" class="text-center">
+                      <a href="{% url 'RegistroCommintment' act_id act_proceso act_ident%}" class="btn btn-primary">Compromisos</a>
+                  </td>
+              </tr>
+          </table>
+          <label >Esta registrando los desarrollo del Acta N°{{ act_ident }} </label> 
               <div>
-              <label>del Proceso/Dependecia {{ act_proceso }}</label>
+              <label>del Proceso/Dependecia {{ proceso.name }}</label>
               </div>
               <table class="table table-bordered text-center">
-                  <tr>   
-                      <td> 
-                          <label class="field-label" id="num1">N°1</label>
-                      </td>  
+                  <tr>  
+                    <input type="hidden" name="act_id" value="{{ act_id }}"> 
                       <td>       
                           <label class="field-label">Titulo</label>
-                          <textarea name="title" id="title1" rows="1" cols="25"></textarea>
+                          <textarea name="tittle" id="tittle" rows="1" cols="25" required></textarea>
                       </td> 
                       <td>  
                           <label class="field-label">Decripción</label>
-                          <textarea name="description" id="description1" rows="4" cols="25"></textarea>
+                          <textarea name="description" id="description" rows="4" cols="25" required></textarea>
                       </td> 
                       <td>  
                         <label class="field-label">Discusión</label>
-                        <textarea name="discussion" id="discussion1" rows="4" cols="25"></textarea>
+                        <textarea name="discussion" id="discussion" rows="4" cols="25"></textarea>
                       </td>   
                       <td>  
                         <label class="field-label">Resultado</label>
-                        <textarea name="result" id="result1" rows="4" cols="25"></textarea>
+                        <textarea name="result" id="result" rows="4" cols="25"></textarea>
                       </td>  
                       <td>       
                           <label class="field-label">Responsable</label>
-                          <select name="campo1" id="campo1" class="form-control">
-                            {% for choice in form.responsible.field.choices %}
+                          <select name="user_id" id="user_id" class="form-control" required>
+                            <option value="">Seleccione una opción</option>
+                            {% for choice in form.user_id.field.choices %}
                               <option value="{{ choice.0 }}">{{ choice.1 }}</option>
                             {% endfor %}
                         </select>
                       </td>    
                       <td>
-                        <button type="button" class="btn btn-danger" onclick="eliminarCampo1">Eliminar</button>
+                        <button type="submit" class="btn btn-primary btn-lg btn-block">Crear desarrollo</button>
                       </td>       
                   </tr>   
               </table>
-              <div id="campos-extra"></div>
-              <button type="button" class="btn btn-primary" onclick="agregarCampo()">Agregar Nuevo Campo</button>
-              <button type="submit" class="btn btn-primary">Enviar</button>
+            </table>
+            <table class="table text-center">
+              <thead>
+                <tr>
+                  <th>Numero</th>
+                  <th>Titulo</th>
+                  <th>Descripcion</th>
+                  <th>Discusion</th>
+                  <th>Responsable</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for user in desarrollo %}
+                  <tr>
+                    <td>{{ user.num }}</td>
+                    <td>{{ user.tittle }}</td>
+                    <td>{{ user.description }}</td>
+                    <td>{{ user.discussion }}</td>
+                    <td>{{ user.result }}</td>
+                    <td>{{ user.user_id }}</td>
+                    <td>
+                      <a href="{% url 'EditarRegistroDesarrollo' user.id act_id act_proceso act_ident%}" class="btn btn-danger btn-sm">Editar</a>
+                      <a href="{% url 'eliminar_Desarrollo' user.id act_id act_proceso act_ident%}" class="btn btn-danger btn-sm delete-typemeet" data-typemeet-id="{{ user.id }}">Eliminar</a>
+                    </td>
+                  </tr>
+                {% empty %}
+                  <tr>
+                    <td colspan="5">No se encontraron desarrollos</td>
+                  </tr>
+                {% endfor %}
+              </tbody> 
+                <td colspan="3" class="text-center">
+                  <a href="{% url 'menu' %}" class="btn btn-primary">Volver a menú</a>
+                </td> 
+                <td colspan="3" class="text-center">
+                  <a href="{% url 'RegistroCommintment' act_id act_proceso act_ident%}" class="btn btn-primary">Siguiente</a>
+                </td> 
+            </table>
           </form>
+        </div>
       </div>
   </div>
 </div>
 
-
-<script>
-  let contadorCampos = 2; // Contador para asignar IDs únicos a los nuevos campos
-  let valoresCampos = {}; // Objeto para almacenar los valores de los campos
-
-  function eliminarCampo(campoId) {
-    const campo = document.getElementById(campoId);
-    const tabla = campo.closest("table"); // Obtener la tabla que contiene el campo
-    tabla.remove(); // Eliminar la tabla completa
-    delete valoresCampos[campoId]
-  }
-
-  function agregarCampo() {
-    const camposExtra = document.getElementById("campos-extra");
-    const nuevoCampoId = `campo${contadorCampos}`
-    // Crear el nuevo campo
-    const nuevoCampo = document.createElement("div");
-    nuevoCampo.className = "form-group";
-    nuevoCampo.innerHTML = `
-      <table class="table table-bordered text-center">
-        <tr>   
-            <td> 
-                <label class="field-label" id="num${contadorCampos}">N°${contadorCampos}</label>
-            </td>  
-            <td>       
-                <label class="field-label">Titulo</label>
-                <textarea name="title" id="title${contadorCampos}" rows="1" cols="25"></textarea>
-            </td> 
-            <td>  
-                <label class="field-label">Decripción</label>
-                <textarea name="description" id="description${contadorCampos}" rows="4" cols="25"></textarea>
-            </td> 
-            <td>  
-              <label class="field-label">Discusión</label>
-              <textarea name="discussion" id="discussion${contadorCampos}" rows="4" cols="25"></textarea>
-            </td> 
-            <td>  
-              <label class="field-label">Resultado</label>
-              <textarea name="result" id="result${contadorCampos}" rows="4" cols="25"></textarea>
-            </td>   
-            <td>       
-                <label class="field-label">Responsable</label>
-                    <select name="campo1" id="campo${contadorCampos}" class="form-control">
-                    {% for choice in form.responsible.field.choices %}
-                        <option value="{{ choice.0 }}">{{ choice.1 }}</option>
-                    {% endfor %}
-                </select>
-            </td> 
-            <td>
-              <button type="button" class="btn btn-danger" onclick="eliminarCampo('${nuevoCampoId}')">Eliminar</button>
-            </td>
-        </tr>   
-    </table>
-    `;
-    // Agregar el nuevo campo al contenedor
-    camposExtra.appendChild(nuevoCampo);
-    // Incrementar el contador de campos
-    contadorCampos++;
-  }
-
-  document.getElementById("myForm").addEventListener("submit", function(event) {
-    event.preventDefault(); // Evitar el envío del formulario por defecto
-  
-    const ultimoCampo = document.getElementById(`campo${contadorCampos - 1}`);
-   
-    // Recorrer los campos existentes y guardar sus valores en el objeto valoresCampos
-    for (let i = 1; i < contadorCampos; i++) {
-      const campo = document.getElementById(`campo${i}`);
-      const numCampo = document.getElementById(`num${i}`);
-      const tittleCampo = document.getElementById(`title${i}`);
-      const descriptionCampo = document.getElementById(`description${i}`);
-      const discussionCampo = document.getElementById(`discussion${i}`);
-      const resultCampo = document.getElementById(`result${i}`);
-      if (campo) {
-        const user_id = campo.value;
-        const numValue = i;
-        const title = tittleCampo.value;
-        const description = descriptionCampo.value;
-        const discussion = discussionCampo.value;
-        const result = resultCampo.value;
-        valoresCampos[numValue] = [ numValue,user_id,title,description,discussion,result];
-      }
-    }
-    console.log(valoresCampos);
-    
-    const valoresCamposInput = document.createElement("input");
-    valoresCamposInput.type = "hidden";
-    valoresCamposInput.name = "valoresCampos";
-    valoresCamposInput.value = JSON.stringify(valoresCampos);
-    this.appendChild(valoresCamposInput);
-
-    // Enviar el formulario
-    this.submit();
-  });
-
-</script>
 {% endblock %}

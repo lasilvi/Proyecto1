@@ -63,7 +63,6 @@ class RegisterFormUserConfirmation(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['job_position'].required = False
-        self.fields['act_id'].required = False
 
         user = User.objects.values_list('pk','name')
         self.fields['user_id'].choices = user
@@ -72,24 +71,22 @@ class RegisterFormUserConfirmation(forms.ModelForm):
         proceso = Process.objects.values_list('pk', 'name')
         self.fields['process'].choices = proceso
         
-
-ConfirmationFormSet = formset_factory(RegisterFormUserConfirmation)    
-    
 class RegisterFormDevelopment(forms.ModelForm):
-    responsibles = User.objects.values_list('num_id','name')
-    responsible = forms.ChoiceField(choices=responsibles)
     class Meta:
         """Campos utilizados."""
         model = Development
         fields = "__all__"      
-DevelopmentFormSet = formset_factory(RegisterFormDevelopment)
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['result'].required = False
+        self.fields['discussion'].required = False
+        self.fields['num'].required = False
+        user = User.objects.values_list('pk','name')
+        self.fields['user_id'].choices = user
+
 
 class RegisterFormCommitment(forms.ModelForm):
-    responsibles = User.objects.values_list('num_id','name')
-    responsible = forms.ChoiceField(choices=responsibles)
-    controls = State.objects.values_list('pk','name')
-    estado = forms.ChoiceField(choices=controls)
-    print(estado)
     class Meta:
         """Campos utilizados."""
         model = Commitment
@@ -100,6 +97,14 @@ class RegisterFormCommitment(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['date'].required = False
+        self.fields['observations'].required = False
+        
+
+
+        user = User.objects.values_list('pk','name')
+        self.fields['user_id'].choices = user
+        controls = State.objects.values_list('pk','name')
+        self.fields['control'].choices = controls
 
 class RegisterFormAssistant(forms.ModelForm):
     class Meta:
@@ -150,7 +155,6 @@ class ProcessForm(forms.ModelForm):
     class Meta:
         model = Dependece
         fields = "__all__"
-
 
 class TypeMeetForm(forms.ModelForm):
     class Meta:

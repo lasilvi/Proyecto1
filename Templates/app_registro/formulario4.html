@@ -10,158 +10,110 @@
             <form method="post" id="myForm">
                 {% csrf_token %}
                 <div class="container">
-                  <label >Esta registrando los compromisos del Acta N°{{ act_ident }}</label> 
-                  <div>
-                  <label >del Proceso/Dependecia {{ act_proceso }}</label> 
-                  </div>
-                  <table class="table table-bordered text-center">
-                      <tr>   
-                          <td> 
-                              <label class="field-label" id="num1">N°1</label>
-                          </td>  
+                  <table class="table text-center">  
+                    <tr> 
+                      <td colspan="3" class="grande">UNIVERSIDAD DE ANTIOQUIA</td>
+                  </tr> 
+                  <tr> 
+                    <h1 class="text-center">Sistema de control y registro de actas de reuniones</h1>
+                    <h2 class="text-center">Escuela Interamericana de Bibliotecología</h2>
+                  <tr> 
+                    <tr>
+                      <td colspan="1" class="text-center">
+                          <a href="{% url 'RegistroUserconfirmation' act_id act_proceso act_ident%}" class="btn btn-primary">Asistentes</a>
+                      </td>
+                      <td colspan="1" class="text-center">
+                          <a href="{% url 'RegistroDevelop' act_id act_proceso act_ident%}" class="btn btn-primary">Desarrollos</a>
+                      </td>
+                      <td colspan="1" class="text-center">
+                          <a href="{% url 'RegistroCommintment' act_id act_proceso act_ident%}" class="btn btn-primary">Compromisos</a>
+                      </td>
+                  </tr>
+              </table>
+                  <table class="table  text-center">
+                    <label >Esta registrando los compromisos del Acta N°{{ act_ident }} </label> 
+                    <div>
+                    <label>del Proceso/Dependecia {{ proceso.name }}</label>
+                    </div>
+                      <tr>    
+                        <input type="hidden" name="act_id" value="{{ act_id }}">
                           <td>       
                               <label class="field-label">Compromiso</label>
-                              <textarea name="title" id="commiment1" rows="4" cols="25"></textarea>
+                              <textarea name="commitment" id="commitment" rows="4" cols="25" required></textarea>
                           </td> 
                           <td>  
                               <label class="field-label">Fecha</label>
-                              <input type="date" name="date" id="date1"  rows="1" cols="25">
+                              <input type="date" name="date" id="date"  rows="1" cols="25" required>
                           </td>  
                           <td>       
                               <label class="field-label">Estado</label>
-                              <select name="control1" id="control1" class="form-control">
-                                {% for choice in form.estado.field.choices %}
+                              
+                              <select name="control" id="control" class="form-control" required>
+                                <option value="">Seleccione una opción</option>
+                                {% for choice in form.control.field.choices %}
                                     <option value="{{ choice.0 }}">{{ choice.1 }}</option>
                                 {% endfor %}
                                 </select>
                           </td> 
                           <td>       
                             <label class="field-label">Observaciones</label>
-                            <textarea name="user" id="observaton1" rows="4" cols="25" ></textarea>
+                            <textarea name="observations" id="observations" rows="4" cols="25" ></textarea>
                         </td> 
                         <td>       
                             <label class="field-label">Responsable</label>
-                            <select name="campo1" id="campo1" class="form-control">
-                            {% for choice in form.responsible.field.choices %}
+                            <select name="user_id" id="user_id" class="form-control" required>
+                              <option value="">Seleccione una opción</option>
+                              {% for choice in form.user_id.field.choices %}
                                 <option value="{{ choice.0 }}">{{ choice.1 }}</option>
-                            {% endfor %}
-                            </select>
+                              {% endfor %}
+                          </select>
                       </td>
                       <td>
-                        <button type="button" class="btn btn-danger" onclick="eliminarCampo1">Eliminar</button>
+                        <button type="submit" class="btn btn-primary">Registrar compromiso</button>
                       </td> 
                       </tr>   
                   </table>
-                    <div id="campos-extra"></div>
-                    <button type="button" class="btn btn-primary" onclick="agregarCampo()">Agregar Nuevo Campo</button>
-                    <button type="submit" class="btn btn-primary">Enviar</button>
-                </div>
+                  <table class="table text-center">
+                    <thead>
+                      <tr>
+                        <th>Compromiso</th>
+                        <th>Fecha</th>
+                        <th>Observaciones</th>
+                        <th>Control</th>
+                        <th>Responsable</th>
+                        <th>Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for user in compromiso %}
+                        <tr>
+                          <td>{{ user.commitment }}</td>
+                          <td>{{ user.date }}</td>
+                          <td>{{ user.observations }}</td>
+                          <td>{{ user.control }}</td>
+                          <td>{{ user.user_id }}</td>
+                          <td>
+                            <a href="{% url 'EditarRegistroCompromiso' user.id act_id act_proceso act_ident%}" class="btn btn-danger btn-sm">Editar</a>
+                            <a href="{% url 'eliminar_Compromiso' user.id act_id act_proceso act_ident%}" class="btn btn-danger btn-sm delete-typemeet" data-typemeet-id="{{ user.id }}">Eliminar</a>
+                          </td>
+                        </tr>
+                      {% empty %}
+                        <tr>
+                          <td colspan="5">No se encontraron compromisos</td>
+                        </tr>
+                      {% endfor %}
+                    </tbody> 
+                      <td colspan="3" class="text-center">
+                        <a href="{% url 'menu' %}" class="btn btn-primary">Volver a menú</a>
+                      </td> 
+                      <td colspan="3" class="text-center">
+                        <a href="{% url 'resumen' act_id %}" class="btn btn-primary">Resumen</a>
+                      </td> 
+                  </table>
             </form>
         </div>
 
     </div>
 </div>
 
-<script>
-  let contadorCampos = 2; // Contador para asignar IDs únicos a los nuevos campos
-  const valoresCampos = {};
-
-  
-  function eliminarCampo(campoId) {
-    const campo = document.getElementById(campoId);
-    const tabla = campo.closest("table"); // Obtener la tabla que contiene el campo
-    tabla.remove(); // Eliminar la tabla completa
-    delete valoresCampos[campoId]
-  }
-
-
-  function agregarCampo() {
-    const camposExtra = document.getElementById("campos-extra");
-    const nuevoCampoId = `campo${contadorCampos}`
-
-    // Crear el nuevo campo
-    const nuevoCampo = document.createElement("div");
-    nuevoCampo.className = "form-group";
-    nuevoCampo.innerHTML = `
-    <table class="table table-bordered text-center">
-        <tr>   
-            <td> 
-                <label class="field-label" id="num${contadorCampos}">N°${contadorCampos}</label>
-            </td>  
-            <td>       
-                <label class="field-label">Compromiso</label>
-                <textarea name="title" id="commiment${contadorCampos}" rows="4" cols="25"></textarea>
-            </td> 
-            <td>  
-                <label class="field-label">Fecha</label>
-                <input type="date" name="date" id="date${contadorCampos}" rows="1" cols="25">
-            </td>  
-            <td>       
-                <label class="field-label">Estado</label>
-                <select name="campo1" id="control${contadorCampos}" class="form-control">
-                    {% for choice in form.estado.field.choices %}
-                        <option value="{{ choice.0 }}">{{ choice.1 }}</option>
-                    {% endfor %}
-                </select>
-            </td> 
-            <td>       
-              <label class="field-label">Observaciones</label>
-              <textarea name="user" id="observaton${contadorCampos}" rows="4" cols="25"></textarea>
-          </td> 
-          <td>       
-              <label class="field-label">Responsable</label>
-              <select name="campo1" id="campo${contadorCampos}" class="form-control">
-              {% for choice in form.responsible.field.choices %}
-                  <option value="{{ choice.0 }}">{{ choice.1 }}</option>
-              {% endfor %}
-              </select>
-        </td>
-        <td>
-            <button type="button" class="btn btn-danger" onclick="eliminarCampo('${nuevoCampoId}')">Eliminar</button>
-        </td>
-        </tr>   
-    </table>
-    
-    `;
-    // Agregar el nuevo campo al contenedor
-    camposExtra.appendChild(nuevoCampo);
-    // Incrementar el contador de campos
-    contadorCampos++;
-  }
-
-  document.getElementById("myForm").addEventListener("submit", function(event) {
-    event.preventDefault(); // Evitar el envío del formulario por defecto
-  
-    const ultimoCampo = document.getElementById(`campo${contadorCampos - 1}`);
-   
-    // Recorrer los campos existentes y guardar sus valores en el objeto valoresCampos
-    for (let i = 1; i < contadorCampos; i++) {
-      const campo = document.getElementById(`campo${i}`);
-      const numCampo = document.getElementById(`num${i}`);
-      const commimentCampo = document.getElementById(`commiment${i}`);
-      const dateCampo = document.getElementById(`date${i}`);
-      const controlCampo = document.getElementById(`control${i}`);
-      const observationCampo = document.getElementById(`observaton${i}`);
-      if (campo) {
-        const user_id = campo.value;
-        const numValue = i;
-        const commiment = commimentCampo.value;
-        const date = dateCampo.value;
-        const control = controlCampo.value;
-        const observation = observationCampo.value;
-        valoresCampos[numValue] = [ numValue,user_id,commiment,date,control,observation];
-      }
-    }
-    console.log(valoresCampos);
-    
-    const valoresCamposInput = document.createElement("input");
-    valoresCamposInput.type = "hidden";
-    valoresCamposInput.name = "valoresCampos";
-    valoresCamposInput.value = JSON.stringify(valoresCampos);
-    this.appendChild(valoresCamposInput);
-
-    // Enviar el formulario
-    this.submit();
-  });
-</script>
 {% endblock %}

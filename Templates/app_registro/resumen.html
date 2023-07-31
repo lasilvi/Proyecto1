@@ -5,7 +5,8 @@
 <div class="container mt-5">
   <div class="row justify-content-center">
     <div class="d-flex p-2">
-      <table class="table">
+      <h2 class="text-center">Información del Acta</h2>
+      <table class="table text-center">
         <tr> 
           {% for dato in datos %}
           <td colspan="3" class="grande text-center">ACTA N°{{ dato.ident }}</td>
@@ -84,44 +85,112 @@
             </div>
           </td>
         </tr>  
-        <tr>
-          {% for dato in asistentes %}
-          <td class="text-center">{{ dato.user_id }}</td>
-          {% endfor %}
-        </tr>
-        {% for dato in desarrollo %}
-        <tr>   
-          <td class="text-center"> 
-            <label>N°{{ dato.num }}</label>
-          </td>  
-          <td class="text-center">       
-            <label>Titulo {{ dato.tittle }}</label>            
-          </td> 
-          <td class="text-center">  
-            <label>Decripción {{ dato.description }}</label>
-          </td> 
-          <td class="text-center">  
-            <label>Discusión {{ dato.discussion }}</label>
-          </td>   
-          <td class="text-center">  
-            <label>Resultado </label>
-            <div>
-              {{ dato.result }}
-            </div>
-          </td>  
-          <td class="text-center">       
-            <label>Responsable </label>
-            <div>
-              {{ dato.user_id }}
-            </div>
-          </td>       
-        </tr>  
-        {% endfor %} 
-        <tr>
-          <td colspan="3" class="text-center">
-            <a href="{% url 'menu' %}" class="btn btn-primary">Volver a menú</a>
-          </td>
-        </tr>
+        <!-- Contenido de la tabla de información del acta -->
+      </table>
+    </div>
+  </div>
+
+  <div class="row justify-content-center">
+    <div class="d-flex p-2">
+      <h2 class="text-center">Asistentes</h2>
+      <table class="table text-center">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Asistio</th>
+            <th>Cargo</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in asistentes %}
+              <tr>
+                <td>{{ user.user_id }}</td>
+                <td>
+                  {% if user.asset == True %}
+                      Sí
+                  {% elif user.asset == False %}
+                      No
+                  {% else %}
+                      No registrado
+                  {% endif %}
+              </td>
+                <td>{{ user.job_position }}</td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="5">No se encontraron asistentes</td>
+              </tr>
+            {% endfor %}<!-- Contenido de la tabla de asistentes -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="row justify-content-center">
+    <div class="d-flex p-2">
+      <h2 class="text-center">Desarrollos</h2>
+      <table class="table text-center">
+        <thead>
+          <tr>
+            <th>Numero</th>
+            <th>Titulo</th>
+            <th>Descripcion</th>
+            <th>Discusion</th>
+            <th>Resultado</th>
+            <th>Responsable</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in desarrollo %}
+              <tr>
+                <td>{{ user.num }}</td>
+                <td>{{ user.tittle }}</td>
+                <td>{{ user.description }}</td>
+                <td>{{ user.discussion }}</td>
+                <td>{{ user.result }}</td>
+                <td>{{ user.user_id }}</td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="5">No se encontraron desarrollos</td>
+              </tr>
+            {% endfor %} <!-- Contenido de la tabla de desarrollos -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="row justify-content-center">
+    <div class="d-flex p-2">
+      <h2 class="text-center">Compromisos</h2>
+      <table class="table text-center">
+        <thead>
+          <tr>
+            <th>Compromiso</th>
+            <th>Fecha</th>
+            <th>Observaciones</th>
+            <th>Control</th>
+            <th>Responsable</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in compromisos %}
+              <tr>
+                <td>{{ user.commitment }}</td>
+                <td>{{ user.date }}</td>
+                <td>{{ user.observations }}</td>
+                <td>{{ user.control }}</td>
+                <td>{{ user.user_id }}</td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="5">No se encontraron compromisos</td>
+              </tr>
+            {% endfor %}<!-- Contenido de la tabla de compromisos -->
+        </tbody>
+        <td colspan="3" class="text-center">
+          <a href="{% url 'menu' %}" class="btn btn-primary">Volver a menú</a>
+        </td> 
       </table>
     </div>
   </div>

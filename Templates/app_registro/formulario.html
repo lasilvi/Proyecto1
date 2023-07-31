@@ -16,11 +16,16 @@
                   <tr> 
                       <td colspan="3" class="grande">UNIVERSIDAD DE ANTIOQUIA</td>
                   </tr> 
+                  <tr> 
+                    <h1 class="text-center">Sistema de control y registro de actas de reuniones</h1>
+                    <h2 class="text-center">Escuela Interamericana de Bibliotecología</h2>
+                  <tr> 
                   <tr >
                       <td colspan="2">
                           <label for="{{ form.process_text.id_for_label }}">Proceso/Dependencia</label>
                           <div>
-                          <select name="process_text" id="process_text" class="form-control">
+                          <select name="process_text" id="process_text" class="form-control" required>
+                            <option value="">Selecciona una opción</option>
                             {% for choice in form.process_text.field.choices %}
                             <option value="{{ choice.0 }}">{{ choice.1 }}</option>
                             {% endfor %}
@@ -30,8 +35,8 @@
                       <td>
                           <label for="{{ form.type_meet.id_for_label }}">Tipo de reunión</label>
                           <div>
-                            <select name="type_meet" id="type_meet" class="form-control">
-                                <option value="">Seleccione una opción</option>
+                            <select name="type_meet" id="type_meet" class="form-control"  required>
+                                <option value="">Selecciona una opción</option>
                                 {% for choice in form.type_meet.field.choices %}
                                 <option value="{{ choice.0 }}">{{ choice.1 }}</option>
                                 {% endfor %}

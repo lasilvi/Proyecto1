@@ -9,16 +9,39 @@
         <div class="d-flex p-2">
             <form method="post" id="myForm">
                 {% csrf_token %}
-                <label >Esta registrando los asistentes del Acta N°{{ act_ident }} </label> 
+                <table class="table text-center"> 
+                  <tr> 
+                    <td colspan="3" class="grande">UNIVERSIDAD DE ANTIOQUIA</td>
+                </tr> 
+                <tr> 
+                  <h1 class="text-center">Sistema de control y registro de actas de reuniones</h1>
+                  <h2 class="text-center">Escuela Interamericana de Bibliotecología</h2>
+                </tr>
+                <tr>
+                  <td colspan="1" class="text-center">
+                      <a href="{% url 'RegistroUserconfirmation' act_id act_proceso act_ident%}" class="btn btn-primary">Asistentes</a>
+                  </td>
+                  <td colspan="1" class="text-center">
+                      <a href="{% url 'RegistroDevelop' act_id act_proceso act_ident%}" class="btn btn-primary">Desarrollos</a>
+                  </td>
+                  <td colspan="1" class="text-center">
+                      <a href="{% url 'RegistroCommintment' act_id act_proceso act_ident%}" class="btn btn-primary">Compromisos</a>
+                  </td>
+              </tr>
+              
+            </table>
+            <label >Esta registrando los asistentes del Acta N°{{ act_ident }} </label> 
                 <div>
-                <label>del Proceso/Dependecia {{ act_proceso }}</label>
+                <label>del Proceso/Dependecia {{ proceso.name }}</label>
                 </div>
                 <table class="table text-center">
                 <div class="container">
                   <div class="form-group"> 
                     <td>
+                      <input type="hidden" name="act_id" value="{{ act_id }}">
                     <label >Asistente</label>
-                    <select name="user_id" id="user_id" class="form-control">
+                    <select name="user_id" id="user_id" class="form-control" required>
+                      <option value="">Seleccione una opción</option>
                         {% for choice in form.user_id.field.choices %}
                           <option value="{{ choice.0 }}">{{ choice.1 }}</option>
                         {% endfor %}
@@ -27,6 +50,7 @@
                   <td>
                     <label >Cargo</label>
                     <select name="job_position" id="job_position" class="form-control">
+                      <option value="">Seleccione una opción</option>
                         {% for choice in form.job_position.field.choices %}
                           <option value="{{ choice.0 }}">{{ choice.1 }}</option>
                         {% endfor %}
@@ -35,6 +59,7 @@
                   <td>
                     <label >Proceso</label>
                     <select name="process" id="process" class="form-control">
+                      <option value="">Seleccione una opción</option>
                         {% for choice in form.process.field.choices %}
                           <option value="{{ choice.0 }}">{{ choice.1 }}</option>
                         {% endfor %}
@@ -43,7 +68,7 @@
                   <td>
                   <label >Asistio</label>
                 <div>
-                  <input type="checkbox" name="asset" id="asset">
+                  <input type="checkbox" name="asset" id="asset" >
                   <td colspan="3">
                     <div class="text-center">
                         <button type="submit" class="btn btn-primary btn-lg btn-block">Crear Asistente</button>
@@ -74,13 +99,13 @@
                         </td>
                           <td>{{ user.job_position }}</td>
                           <td>
-                            <a href="{% url 'EditarUsuario' user.id %}" class="btn btn-danger btn-sm">Editar</a>
+                            <a href="{% url 'EditarRegistroUsuariosConfirmacion' user.id act_id act_proceso act_ident%}" class="btn btn-danger btn-sm">Editar</a>
                             <a href="{% url 'eliminar_RegistroUsuariosConfirmacion' user.id act_id act_proceso act_ident%}" class="btn btn-danger btn-sm delete-typemeet" data-typemeet-id="{{ user.id }}">Eliminar</a>
                           </td>
                         </tr>
                       {% empty %}
                         <tr>
-                          <td colspan="5">No se encontraron actas.</td>
+                          <td colspan="5">No se encontraron asistentes</td>
                         </tr>
                       {% endfor %}
                     </tbody> 
@@ -88,11 +113,10 @@
                         <a href="{% url 'menu' %}" class="btn btn-primary">Volver a menú</a>
                       </td> 
                       <td colspan="3" class="text-center">
-                        <a href="{% url 'menu' %}" class="btn btn-primary">Siguiente</a>
+                        <a href="{% url 'RegistroDevelop' act_id act_proceso act_ident%}" class="btn btn-primary">Siguiente</a>
                       </td> 
                   </table>
             </form>
-        </div>
     </div>
 </div>
 
