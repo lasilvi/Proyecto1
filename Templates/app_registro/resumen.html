@@ -29,16 +29,16 @@
           <td colspan="2" class="text-center">
             <label>Proceso/Dependencia</label>
             <div>
-              {% for dato in nombreproceso %}
-              {{ dato.name }}
+              {% for dato in datos%}
+              {{ dato.process_text.name }}
               {% endfor %}
             </div>
           </td>
           <td class="text-center">
             <label>Tipo de reunión</label>
             <div>
-              {% for dato in nombretiporeunion %}
-              {{ dato.name }}
+              {% for dato in datos%}
+              {{ dato.type_meet.name }}
               {% endfor %}
             </div>
           </td>
@@ -189,7 +189,7 @@
                 <td>{{ user.commitment }}</td>
                 <td>{{ user.date }}</td>
                 <td>{{ user.observations }}</td>
-                <td>{{ user.control }}</td>
+                <td>{{ user.control.name }}</td>
                 <td>{{ user.user_id }}</td>
               </tr>
             {% empty %}

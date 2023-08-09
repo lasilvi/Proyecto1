@@ -397,11 +397,17 @@ def edit_act(request, act_id):
     confirmacion = Confirmation.objects.filter(act_id=act_id)
     desarrollo = Development.objects.filter(act_id=act_id)
     compromisos = Commitment.objects.filter(act_id=act_id)
+    typemeet_choices = Typemeet.objects.values_list('pk', 'name')
+    dependece_choices = Dependece.objects.values_list('cod', 'name')
+    print("Typemeet choices:", typemeet_choices)
+    print("Dependece choices:", dependece_choices)
 
     nombreproceso = acta.process_text
     if request.method == 'POST':
 
         form = ActForm(request.POST, instance=acta)
+        print("process_text:", form['process_text'].value())
+        print("type_meet:", form['type_meet'].value())
 
         if form.is_valid():
             tipo_dependencia = form.cleaned_data['process_text']
@@ -425,6 +431,8 @@ def edit_act(request, act_id):
             print("si")
             url_redireccion = reverse('edit_act' , args=[act_id])
             return redirect(url_redireccion)  # Redirigir a la página de filtrado de actas después de guardar los cambios
+        else:
+            print(form.errors)
     else:
         form = ActForm(instance=acta)
     context = {
@@ -442,12 +450,7 @@ def Summary(request,act_id):
     # Realiza la consulta y el filtrado de los datos
     datos_acta = Act.objects.filter(pk=act_id)
     datos_desarrollo = Development.objects.filter(act_id=act_id)
-    for dato in datos_acta:
-      ProcesoDependecia = dato.process_text
-      Tipodereunion = dato.type_meet
-      
-    nombreproceso = Dependece.objects.filter(cod=ProcesoDependecia)
-    nombretiporeunion = Typemeet.objects.filter(pk=Tipodereunion)
+    
     asistentes = Confirmation.objects.filter(act_id = act_id)
     compromisos = Commitment.objects.filter(act_id=act_id)
     
@@ -464,8 +467,8 @@ def Summary(request,act_id):
         return redirect('resumen', act_id=act_id)
 
     return render(request, 'app_registro/resumen.html', {'datos': datos_acta,
-                                                         'desarrollo': datos_desarrollo,'nombreproceso' : nombreproceso,
-                                                         'nombretiporeunion':nombretiporeunion, 'asistentes': asistentes,
+                                                         'desarrollo': datos_desarrollo,
+                                                          'asistentes': asistentes,
                                                          'compromisos': compromisos,'act_id':act_id})
 
 def filter_acts(request):

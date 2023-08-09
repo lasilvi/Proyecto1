@@ -40,7 +40,7 @@ class RegisterForm(forms.ModelForm):
         self.fields['next_place'].required = False
         self.fields['ident'].required = False
         self.fields['send'].required = False
-        
+
         Tiposdereunion = Typemeet.objects.values_list('pk','name')
         self.fields['type_meet'].choices = Tiposdereunion
         Dependecias = Dependece.objects.values_list('pk', 'name')
@@ -147,9 +147,9 @@ class ActForm(forms.ModelForm):
             self.fields['send'].required = False
             self.fields['next_place'].required = False
             Tiposdereunion = Typemeet.objects.values_list('pk','name')
-            self.fields['type_meet'].widget.choices = Tiposdereunion
-            Dependecias = Dependece.objects.values_list('cod', 'name')
-            self.fields['process_text'].widget.choices = Dependecias
+            self.fields['type_meet'].choices = Tiposdereunion
+            Dependecias = Dependece.objects.values_list('pk', 'name')
+            self.fields['process_text'].choices = Dependecias
 
 class UserForm(forms.ModelForm):
     class Meta:
