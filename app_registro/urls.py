@@ -20,6 +20,7 @@ urlpatterns = [
     path('eliminar_Compromiso/<int:compromiso_id>/<int:act_id>/<str:act_proceso>/<int:act_ident>/', views.eliminar_RegisterCommintment, name='eliminar_Compromiso'),
     
     path('resumen/<int:act_id>/', views.Summary, name='resumen'),
+    path('enviar_correo/', views.enviar_correo, name='enviar_correo'),
    
     path('edit_act/<int:act_id>/', views.edit_act, name='edit_act'),
     path('filter-acts/', views.filter_acts, name='filter_acts'),

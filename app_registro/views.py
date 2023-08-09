@@ -10,6 +10,7 @@ import json
 from django.db.models import Max,Q
 from django.http import JsonResponse
 from django.contrib import messages 
+from django.core.mail import send_mail
 
 # Create your views here.
 
@@ -24,7 +25,9 @@ class MenuView(View):
 def Register(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
+       
         if form.is_valid():
+           print("aqui")
            act = form.save(commit=False)
             # Obtener el tipo de dependencia seleccionado en el formulario
            tipo_dependencia = form.cleaned_data['process_text']
@@ -54,7 +57,11 @@ def Register(request):
            # Construye la URL de redirección con la variable como parámetro
            url_redireccion = reverse('RegistroUserconfirmation' , kwargs={'act_id': id, 'act_proceso': proceso, 'act_ident': indentificacion})
            return redirect(url_redireccion) 
+        else:
+            errors = form.errors
+            print(errors)
     else:
+    
         form = RegisterForm()
         #formuser = RegisterFormUser()
     return render(request, 'app_registro/formulario.html', {'form': form})
@@ -63,8 +70,10 @@ def Register(request):
 def RegisterUserConfirmation(request,act_id,act_proceso,act_ident):
     if request.method == 'POST':
         formuser = RegisterFormUserConfirmation(request.POST)
-        if formuser.is_valid():
+        
 
+        if formuser.is_valid():
+            
             user_id = formuser.cleaned_data['user_id']  # Obtener el ID del usuario del formulario
             existing_confirmation = Confirmation.objects.filter(act_id=act_id, user_id=user_id).first()
             if existing_confirmation:
@@ -388,14 +397,34 @@ def edit_act(request, act_id):
     confirmacion = Confirmation.objects.filter(act_id=act_id)
     desarrollo = Development.objects.filter(act_id=act_id)
     compromisos = Commitment.objects.filter(act_id=act_id)
-    
+
+    nombreproceso = acta.process_text
     if request.method == 'POST':
+
         form = ActForm(request.POST, instance=acta)
-        #if form.is_valid():
-        # Actualizar otros campos según sea necesario
-        form.save()
-        url_redireccion = reverse('edit_act' , args=[act_id])
-        return redirect(url_redireccion)  # Redirigir a la página de filtrado de actas después de guardar los cambios
+
+        if form.is_valid():
+            tipo_dependencia = form.cleaned_data['process_text']
+            tipo_reunion = form.cleaned_data['type_meet']
+                
+            resultados = Act.objects.filter(Q(process_text=tipo_dependencia) & Q(type_meet=tipo_reunion))
+            ultimo_ident_dict = resultados.aggregate(Max('ident'))
+            ultimo_ident = ultimo_ident_dict['ident__max']
+
+            # Incrementar el valor de 'ident' para la nueva Acta
+            if ultimo_ident is not None:
+                acta.ident = ultimo_ident + 1
+                print(acta.ident)
+            else:
+                acta.ident = 1
+                print(acta.ident)
+            #if form.is_valid():
+            # Actualizar otros campos según sea necesario
+            form.save()
+            acta.save()
+            print("si")
+            url_redireccion = reverse('edit_act' , args=[act_id])
+            return redirect(url_redireccion)  # Redirigir a la página de filtrado de actas después de guardar los cambios
     else:
         form = ActForm(instance=acta)
     context = {
@@ -403,9 +432,10 @@ def edit_act(request, act_id):
         'acta': acta,
         'confirmacion': confirmacion,
         'desarrollos': desarrollo,
-        'compromisos': compromisos
+        'compromisos': compromisos,
+        'proceso':nombreproceso
     }
-
+    print("no")
     return render(request, 'app_registro/edit_act.html', context)
 
 def Summary(request,act_id):
@@ -421,10 +451,22 @@ def Summary(request,act_id):
     asistentes = Confirmation.objects.filter(act_id = act_id)
     compromisos = Commitment.objects.filter(act_id=act_id)
     
-    
+    if request.method == 'POST':
+        acta = get_object_or_404(Act, pk=act_id)
+        acta.send = True
+        acta.save()
+        contenido_correo = "hola"
+        correos_destino =  [asistente.user_id.mail for asistente in asistentes if asistente.user_id.mail]
+        # Enviar el correo a cada dirección de correo electrónico
+        for correo_destino in correos_destino:
+            enviar_correo(correo_destino, contenido_correo)
+
+        return redirect('resumen', act_id=act_id)
+
     return render(request, 'app_registro/resumen.html', {'datos': datos_acta,
                                                          'desarrollo': datos_desarrollo,'nombreproceso' : nombreproceso,
-                                                         'nombretiporeunion':nombretiporeunion, 'asistentes': asistentes,'compromisos': compromisos})
+                                                         'nombretiporeunion':nombretiporeunion, 'asistentes': asistentes,
+                                                         'compromisos': compromisos,'act_id':act_id})
 
 def filter_acts(request):
     ident = request.POST.get('ident')
@@ -447,12 +489,22 @@ def filter_acts(request):
         'acts': acts,
         'typemeets': typemeets,
         'Dependeces': Dependeces,
-
     }
 
     return render(request, 'app_registro/filter_acts.html', context)
 
 
+def enviar_correo(correo_destino,contenido_correo):
+    subject = 'Asunto del correo'
+    message = contenido_correo
+    from_email = 'tu_correo@example.com'
+     # Crea una lista con el correo de destino
+    recipient_list = [correo_destino]
+
+    send_mail(subject, message, from_email,  recipient_list)
+
+    # Opcionalmente, puedes redireccionar a una página de éxito o renderear un template de éxito
+    #return render(request, 'correo_enviado.html')
 
     
 

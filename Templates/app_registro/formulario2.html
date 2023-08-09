@@ -71,7 +71,7 @@
                   <input type="checkbox" name="asset" id="asset" >
                   <td colspan="3">
                     <div class="text-center">
-                        <button type="submit" class="btn btn-primary btn-lg btn-block">Crear Asistente</button>
+                        <button type="submit" class="btn btn-primary btn-lg btn-block">Registrar Asistente</button>
                     </div>
                  </td>
                   </table>
@@ -114,6 +114,9 @@
                       </td> 
                       <td colspan="3" class="text-center">
                         <a href="{% url 'RegistroDevelop' act_id act_proceso act_ident%}" class="btn btn-primary">Siguiente</a>
+                      </td> 
+                      <td colspan="3" class="text-center">
+                        <a href="{% url 'resumen' act_id %}" class="btn btn-primary">Resumen</a>
                       </td> 
                   </table>
             </form>

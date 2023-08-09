@@ -53,8 +53,8 @@
           <tr>
             <td>{{ act.ident }}</td>
             <td>{{ act.pub_date }}</td>
-            <td>{{ act.type_meet }}</td>
-            <td>{{ act.process_text }}</td>
+            <td>{{ act.type_meet.name }}</td>
+            <td>{{ act.process_text.name }}</td>
             <td><a href="{% url 'edit_act' act.pk %}">Editar</a></td>
           </tr>
         {% empty %}

@@ -16,7 +16,21 @@
                             <td colspan="3" class="grande">esta editando el Acta N° {{ acta.ident }}</td>
                         </tr> 
                         <tr> 
-                            <td colspan="3" class="grande">del proceso dependencia {{ acta.process_text}}</td>
+                            <td colspan="3" class="grande">del proceso/dependencia {{ proceso.name}}</td>
+                        </tr> 
+                        <tr> 
+                            <td >
+                                <label for="{{ acta.process_text.id_for_label }}">Dependencia</label>
+                                <div>
+                                    {{form.process_text}}
+                                </div>
+                            </td>
+                            <td >
+                                <label for="{{ acta.type_meet.id_for_label }}">Tipo de Reunion</label>
+                                <div>
+                                    {{form.type_meet}}
+                                </div>
+                            </td>
                         </tr> 
                         <tr> 
                             <td >

@@ -33,7 +33,9 @@
               <div>
               <label>del Proceso/Dependecia {{ proceso.name }}</label>
               </div>
-              <table class="table table-bordered text-center">
+              <table class="table  text-center">
+                <div class="container">
+                  <div class="form-group">
                   <tr>  
                     <input type="hidden" name="act_id" value="{{ act_id }}"> 
                       <td>       
@@ -62,11 +64,10 @@
                         </select>
                       </td>    
                       <td>
-                        <button type="submit" class="btn btn-primary btn-lg btn-block">Crear desarrollo</button>
+                        <button type="submit" class="btn btn-primary btn-lg btn-block">Registrar desarrollo</button>
                       </td>       
                   </tr>   
               </table>
-            </table>
             <table class="table text-center">
               <thead>
                 <tr>
@@ -100,15 +101,18 @@
               </tbody> 
                 <td colspan="3" class="text-center">
                   <a href="{% url 'menu' %}" class="btn btn-primary">Volver a menú</a>
+                </td>  
+                <td colspan="3" class="text-center">
+                  <a href="{% url 'resumen' act_id %}" class="btn btn-primary">Resumen</a>
                 </td> 
                 <td colspan="3" class="text-center">
                   <a href="{% url 'RegistroCommintment' act_id act_proceso act_ident%}" class="btn btn-primary">Siguiente</a>
-                </td> 
+                </td>
             </table>
           </form>
-        </div>
       </div>
-  </div>
-</div>
+    </div>
+ </div>
+
 
 {% endblock %}

@@ -27,7 +27,8 @@ class RegisterForm(forms.ModelForm):
                     "placeholder": "Select a date",
                     "type": "time",
                 },
-            )
+            ), 'process_text': forms.Select(attrs={'class': 'form-control'})
+            ,'type_meet': forms.Select(attrs={'class': 'form-control'})
             #'next_meet': NumberInput(attrs={'type':'date'})
         }
     def __init__(self, *args, **kwargs):
@@ -38,10 +39,11 @@ class RegisterForm(forms.ModelForm):
         self.fields['place'].required = False
         self.fields['next_place'].required = False
         self.fields['ident'].required = False
+        self.fields['send'].required = False
+        
         Tiposdereunion = Typemeet.objects.values_list('pk','name')
-        print(Tiposdereunion)
         self.fields['type_meet'].choices = Tiposdereunion
-        Dependecias = Dependece.objects.values_list('cod', 'name')
+        Dependecias = Dependece.objects.values_list('pk', 'name')
         self.fields['process_text'].choices = Dependecias
         
    
@@ -82,6 +84,7 @@ class RegisterFormDevelopment(forms.ModelForm):
         self.fields['result'].required = False
         self.fields['discussion'].required = False
         self.fields['num'].required = False
+        self.fields['act_id'].required = False
         user = User.objects.values_list('pk','name')
         self.fields['user_id'].choices = user
 
@@ -98,8 +101,8 @@ class RegisterFormCommitment(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['date'].required = False
         self.fields['observations'].required = False
-        
-
+        self.fields['act_id'].required = False
+    
 
         user = User.objects.values_list('pk','name')
         self.fields['user_id'].choices = user
@@ -128,18 +131,25 @@ class ActForm(forms.ModelForm):
             'next_meet': DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'next_hour': TimeInput(attrs={'class': 'form-control', 'type': 'time'}),
             'next_place': TextInput(attrs={'class': 'form-control'}),
+            'type_meet': forms.Select(attrs={'class': 'form-control'}),
+            'process_text': forms.Select(attrs={'class': 'form-control'}),
+
         }
     def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
             self.fields['pub_date'].required = False
             self.fields['process_text'].required = False
-            self.fields['type_meet'].required = False
-            self.fields['ident'].required = False
             self.fields['hour'].required = False
             self.fields['next_meet'].required = False
             self.fields['next_hour'].required = False
             self.fields['place'].required = False
+            self.fields['ident'].required = False
+            self.fields['send'].required = False
             self.fields['next_place'].required = False
+            Tiposdereunion = Typemeet.objects.values_list('pk','name')
+            self.fields['type_meet'].widget.choices = Tiposdereunion
+            Dependecias = Dependece.objects.values_list('cod', 'name')
+            self.fields['process_text'].widget.choices = Dependecias
 
 class UserForm(forms.ModelForm):
     class Meta:

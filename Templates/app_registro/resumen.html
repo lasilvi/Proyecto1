@@ -6,11 +6,21 @@
   <div class="row justify-content-center">
     <div class="d-flex p-2">
       <h2 class="text-center">Información del Acta</h2>
+      <h2> {% for dato in datos %}
+              {% if dato.send == True %}
+                      Enviado 
+              {% elif user.asset == none %}
+                      No enviado
+              {% endif %}
+      {% endfor %}
+    </h2>
       <table class="table text-center">
         <tr> 
+          <div>
           {% for dato in datos %}
           <td colspan="3" class="grande text-center">ACTA N°{{ dato.ident }}</td>
           {% endfor %}
+          </div>
         </tr> 
         <tr> 
           <td colspan="3" class="grande text-center">UNIVERSIDAD DE ANTIOQUIA</td>
@@ -190,7 +200,15 @@
         </tbody>
         <td colspan="3" class="text-center">
           <a href="{% url 'menu' %}" class="btn btn-primary">Volver a menú</a>
+          <td><a href="{% url 'edit_act' act_id %}" class="btn btn-primary">Editar Acta</a></td>
         </td> 
+        <td colspan="3" class="text-center">
+          <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">Enviar Correo</button>
+          </form>
+          
+      </td>
       </table>
     </div>
   </div>
