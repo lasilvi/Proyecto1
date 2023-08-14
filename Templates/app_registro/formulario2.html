@@ -87,7 +87,7 @@
                     <tbody>
                       {% for user in confimaciones %}
                         <tr>
-                          <td>{{ user.user_id }}</td>
+                          <td>{{ user.user_id.name}}</td>
                           <td>
                             {% if user.asset == True %}
                                 Sí

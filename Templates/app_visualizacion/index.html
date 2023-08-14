@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="text-center">
+<h1>Actas Registradas</h1>
+<h1>Bienvenido {{ username.username }}</h1>
+</div>
+<div class="table-container">
+
+<table class="table text-center">
+  <thead>
+    <th>Actas sin aprobación</th>
+    <tr>
+      <th>N° Acta</th>
+      <th>Fecha</th>
+      <th>Tipo de reunión</th>
+      <th>Proceso/Dependencia</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for confirmacion in Confirmation_unapproved %}
+      <tr>
+        <td>{{ confirmacion.act_id.ident }}</td>
+        <td>{{ confirmacion.act_id.pub_date }}</td>
+        <td>{{ confirmacion.act_id.type_meet.name }}</td>
+        <td>{{ confirmacion.act_id.process_text.name }}</td>
+        <td><a href="{% url 'resumen1' confirmacion.act_id.id %}" class="btn btn-primary">Resumen</a></td>
+      </tr>
+    {% empty %}
+      <tr>
+        <td colspan="5">No se encontraron actas.</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<table class="table text-center">
+  <thead>
+    <th>Resgistro actas</th>
+    <tr>
+      <th>N° Acta</th>
+      <th>Fecha</th>
+      <th>Tipo de reunión</th>
+      <th>Proceso/Dependencia</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for confirmacion in Confirmation_user %}
+      <tr>
+        <td>{{ confirmacion.act_id.ident }}</td>
+        <td>{{ confirmacion.act_id.pub_date }}</td>
+        <td>{{ confirmacion.act_id.type_meet.name }}</td>
+        <td>{{ confirmacion.act_id.process_text.name }}</td>
+        <td><a href="{% url 'resumen1' confirmacion.act_id.id %}" class="btn btn-primary">Resumen</a></td>
+      </tr>
+    {% empty %}
+      <tr>
+        <td colspan="5">No se encontraron actas.</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+
+<style>
+.table-container {
+  display: flex;
+  justify-content: space-between;
+}
+.table {
+  width: 45%; /* Ajusta el ancho según tus necesidades */
+}
+</style>
+{% endblock %}

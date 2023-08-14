@@ -5,6 +5,8 @@
 <div class="container mt-5">
   <div class="row justify-content-center">
     <div class="d-flex p-2">
+      <form method="post">
+        {% csrf_token %}
       <h2 class="text-center">Información del Acta</h2>
       <h2> {% for dato in datos %}
               {% if dato.send == True %}
@@ -109,6 +111,7 @@
             <th>Nombre</th>
             <th>Asistio</th>
             <th>Cargo</th>
+            <th>Aprovado</th>
           </tr>
         </thead>
         <tbody>
@@ -208,19 +211,42 @@
             {% endfor %}<!-- Contenido de la tabla de compromisos -->
         </tbody>
         <td colspan="3" class="text-center">
-          <a href="{% url 'menu' %}" class="btn btn-primary">Volver a menú</a>
-          <td><a href="{% url 'edit_act' act_id %}" class="btn btn-primary">Editar Acta</a></td>
-        </td> 
-        <td colspan="3" class="text-center">
-          <form method="post">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-primary">Enviar Correo</button>
-          </form>
           
-      </td>
+          <a href="{% url 'index' %}" class="btn btn-primary">Volver</a>
+          <button type="submit" class="btn btn-primary">Aprobar</button>
+          <button id="comentario-btn" type="button" class="btn btn-primary">Agregar Comentario</button>
+          </td>
+          <!-- Agrega esto en la misma ubicación, pero ocúltalo inicialmente con CSS -->
+          <td colspan="3" class="text-center">
+        <div id="comentario-form" style="display: none;">
+          <form method="post" action="{% url 'EnviarComentario' act_id %}">
+            {% csrf_token %}
+            <textarea name="comentario" rows="4" cols="50"></textarea><br>
+            <button type="submit" class="btn btn-primary">Enviar</button>
+            <button id="cancelar-btn" class="btn btn-primary">Cancelar</button>
+          </form>
+        </div>
+        <td>
+
       </table>
+    </form>
     </div>
   </div>
 </div>
+
+<script>
+  // Manejo de eventos para mostrar/ocultar el campo de comentario
+  const comentarioBtn = document.getElementById("comentario-btn");
+  const comentarioForm = document.getElementById("comentario-form");
+  const cancelarBtn = document.getElementById("cancelar-btn");
+
+  comentarioBtn.addEventListener("click", () => {
+    comentarioForm.style.display = "block";
+  });
+
+  cancelarBtn.addEventListener("click", () => {
+    comentarioForm.style.display = "none";
+  });
+</script>
   
 {% endblock %}

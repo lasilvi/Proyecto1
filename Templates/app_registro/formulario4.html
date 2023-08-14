@@ -91,7 +91,7 @@
                           <td>{{ user.date }}</td>
                           <td>{{ user.observations }}</td>
                           <td>{{ user.control.name }}</td>
-                          <td>{{ user.user_id }}</td>
+                          <td>{{ user.user_id.name }}</td>
                           <td>
                             <a href="{% url 'EditarRegistroCompromiso' user.id act_id act_proceso act_ident%}" class="btn btn-danger btn-sm">Editar</a>
                             <a href="{% url 'eliminar_Compromiso' user.id act_id act_proceso act_ident%}" class="btn btn-danger btn-sm delete-typemeet" data-typemeet-id="{{ user.id }}">Eliminar</a>

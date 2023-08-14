@@ -109,13 +109,15 @@ def editar_RegisterUserConfirmation(request,user_id,act_id,act_proceso,act_ident
     confimaciones = Confirmation.objects.get(id=user_id)
     
     if request.method == 'POST':
-        form = RegisterFormUserConfirmation(request.POST, instance=confimaciones)
-        #if form.is_valid():
-        # Actualizar
-        #  otros campos según sea necesario
-        form.save()
-        url= reverse('RegistroUserconfirmation', kwargs={'act_id': act_id, 'act_proceso': act_proceso, 'act_ident': act_ident}) 
-        return redirect(url) # Redirigir a la página de filtrado de actas después de guardar los cambios
+        form = RegisterFormUserConfirmation(request.POST)
+        if form.is_valid():
+            form = RegisterFormUserConfirmation(request.POST, instance=confimaciones)
+            #if form.is_valid():
+            # Actualizar
+            #  otros campos según sea necesario
+            form.save()
+            url= reverse('RegistroUserconfirmation', kwargs={'act_id': act_id, 'act_proceso': act_proceso, 'act_ident': act_ident}) 
+            return redirect(url) # Redirigir a la página de filtrado de actas después de guardar los cambios
     else:
         form = RegisterFormUserConfirmation(instance=confimaciones)
     context = {
@@ -191,13 +193,15 @@ def editar_RegisterDevelopment(request,desarrollo_id,act_id,act_proceso,act_iden
     desarrollo = Development.objects.get(id=desarrollo_id)
     
     if request.method == 'POST':
-        form = RegisterFormDevelopment(request.POST, instance=desarrollo)
-        #if form.is_valid():
-        # Actualizar
-        #  otros campos según sea necesario
-        form.save()
-        url= reverse('RegistroDevelop', kwargs={'act_id': act_id, 'act_proceso': act_proceso, 'act_ident': act_ident}) 
-        return redirect(url) # Redirigir a la página de filtrado de actas después de guardar los cambios
+        form = RegisterFormDevelopment(request.POST)
+        if form.is_valid():
+            form = RegisterFormDevelopment(request.POST, instance=desarrollo)
+            #if form.is_valid():
+            # Actualizar
+            #  otros campos según sea necesario
+            form.save()
+            url= reverse('RegistroDevelop', kwargs={'act_id': act_id, 'act_proceso': act_proceso, 'act_ident': act_ident}) 
+            return redirect(url) # Redirigir a la página de filtrado de actas después de guardar los cambios
     else:
         form = RegisterFormDevelopment(instance=desarrollo)
     context = {
@@ -247,13 +251,15 @@ def editar_RegisterCommintment(request,compromiso_id,act_id,act_proceso,act_iden
     compromiso = Commitment.objects.get(id=compromiso_id)
     
     if request.method == 'POST':
-        form = RegisterFormCommitment(request.POST, instance=compromiso)
-        #if form.is_valid():
-        # Actualizar
-        #  otros campos según sea necesario
-        form.save()
-        url= reverse('RegistroCommintment', kwargs={'act_id': act_id, 'act_proceso': act_proceso, 'act_ident': act_ident}) 
-        return redirect(url) # Redirigir a la página de filtrado de actas después de guardar los cambios
+        form = RegisterFormCommitment(request.POST)
+        if form.is_valid():
+            form = RegisterFormCommitment(request.POST, instance=compromiso)
+            #if form.is_valid():
+            # Actualizar
+            #  otros campos según sea necesario
+            form.save()
+            url= reverse('RegistroCommintment', kwargs={'act_id': act_id, 'act_proceso': act_proceso, 'act_ident': act_ident}) 
+            return redirect(url) # Redirigir a la página de filtrado de actas después de guardar los cambios
     else:
         form = RegisterFormCommitment(instance=compromiso)
     context = {
@@ -451,7 +457,7 @@ def Summary(request,act_id):
     datos_acta = Act.objects.filter(pk=act_id)
     datos_desarrollo = Development.objects.filter(act_id=act_id)
     
-    asistentes = Confirmation.objects.filter(act_id = act_id)
+    asistentes = Confirmation.objects.filter(act_id = act_id, asset = True)
     compromisos = Commitment.objects.filter(act_id=act_id)
     
     if request.method == 'POST':
@@ -499,8 +505,8 @@ def filter_acts(request):
 
 def enviar_correo(correo_destino,contenido_correo):
     subject = 'Asunto del correo'
-    message = contenido_correo
-    from_email = 'tu_correo@example.com'
+    message =  'a continuacion encontrara el enlace para revisar las actas que esperan su aprobación  http://127.0.0.1:8000/accounts/login/?next=/app_visualizacion/'
+    from_email = 'escuelainteramericanadebibliot@gmail.com'
      # Crea una lista con el correo de destino
     recipient_list = [correo_destino]
 

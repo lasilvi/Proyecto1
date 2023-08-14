@@ -46,7 +46,7 @@ class User(models.Model):
     num_id = models.IntegerField(default=None)
 
     def __str__(self):
-        return str(self.name)
+        return str(self.num_id)
            
 class Process(models.Model):
     name = models.CharField(max_length=200,null=True, default=None)
@@ -59,7 +59,7 @@ class Confirmation(models.Model):
     asset = models.BooleanField(null=True, default=None)
     job_position = models.ForeignKey(Job, on_delete=models.SET_NULL, blank=True, null=True)
     process = models.ForeignKey(Process,on_delete =models.CASCADE,null=True, default=None)
-    approved = models.BooleanField(null=True, default=None)
+    approved = models.BooleanField(null=True, default=False)
 
     def __str__(self):
         return str(self.pk)
