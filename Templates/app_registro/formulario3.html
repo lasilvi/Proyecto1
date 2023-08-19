@@ -1,118 +1,104 @@
-{% extends 'app_registro/pages.html' %}
 
-{% block formulario %}
+{% extends 'base.html' %}
+{% load static %}
 
-{% load crispy_forms_tags %}
-
-<div class="container mt-5">
-  <div class="row justify-content-center">
-      <div class="d-flex p-2">
-          <form method="post" id="myForm">
-              {% csrf_token %}
-              <table class="table text-center">
-                <tr> 
-                  <td colspan="3" class="grande">UNIVERSIDAD DE ANTIOQUIA</td>
-              </tr> 
-              <tr> 
-                <h1 class="text-center">Sistema de control y registro de actas de reuniones</h1>
-                <h2 class="text-center">Escuela Interamericana de Bibliotecología</h2>
-              <tr> 
-                <tr>
-                  <td colspan="1" class="text-center">
-                      <a href="{% url 'RegistroUserconfirmation' act_id act_proceso act_ident%}" class="btn btn-primary">Asistentes</a>
-                  </td>
-                  <td colspan="1" class="text-center">
-                      <a href="{% url 'RegistroDevelop' act_id act_proceso act_ident%}" class="btn btn-primary">Desarrollos</a>
-                  </td>
-                  <td colspan="1" class="text-center">
-                      <a href="{% url 'RegistroCommintment' act_id act_proceso act_ident%}" class="btn btn-primary">Compromisos</a>
-                  </td>
-              </tr>
-          </table>
-          <label >Esta registrando los desarrollo del Acta N°{{ act_ident }} </label> 
-              <div>
-              <label>del Proceso/Dependecia {{ proceso.name }}</label>
-              </div>
-              <table class="table  text-center">
-                <div class="container">
-                  <div class="form-group">
-                  <tr>  
-                    <input type="hidden" name="act_id" value="{{ act_id }}"> 
-                      <td>       
-                          <label class="field-label">Titulo</label>
-                          <textarea name="tittle" id="tittle" rows="1" cols="25" required></textarea>
-                      </td> 
-                      <td>  
-                          <label class="field-label">Decripción</label>
-                          <textarea name="description" id="description" rows="4" cols="25" required></textarea>
-                      </td> 
-                      <td>  
-                        <label class="field-label">Discusión</label>
-                        <textarea name="discussion" id="discussion" rows="4" cols="25"></textarea>
-                      </td>   
-                      <td>  
-                        <label class="field-label">Resultado</label>
-                        <textarea name="result" id="result" rows="4" cols="25"></textarea>
-                      </td>  
-                      <td>       
-                          <label class="field-label">Responsable</label>
-                          <select name="user_id" id="user_id" class="form-control" required>
-                            <option value="">Seleccione una opción</option>
-                            {% for choice in form.user_id.field.choices %}
-                              <option value="{{ choice.0 }}">{{ choice.1 }}</option>
-                            {% endfor %}
-                        </select>
-                      </td>    
-                      <td>
-                        <button type="submit" class="btn btn-primary btn-lg btn-block">Registrar desarrollo</button>
-                      </td>       
-                  </tr>   
-              </table>
-            <table class="table text-center">
-              <thead>
-                <tr>
-                  <th>Numero</th>
-                  <th>Titulo</th>
-                  <th>Descripcion</th>
-                  <th>Discusion</th>
-                  <th>Responsable</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for user in desarrollo %}
-                  <tr>
-                    <td>{{ user.num }}</td>
-                    <td>{{ user.tittle }}</td>
-                    <td>{{ user.description }}</td>
-                    <td>{{ user.discussion }}</td>
-                    <td>{{ user.result }}</td>
-                    <td>{{ user.user_id.name }}</td>
-                    <td>
-                      <a href="{% url 'EditarRegistroDesarrollo' user.id act_id act_proceso act_ident%}" class="btn btn-danger btn-sm">Editar</a>
-                      <a href="{% url 'eliminar_Desarrollo' user.id act_id act_proceso act_ident%}" class="btn btn-danger btn-sm delete-typemeet" data-typemeet-id="{{ user.id }}">Eliminar</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Agrega el enlace al archivo CSS de Bootstrap -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+</head>
+<body>
+    {% block content %}
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+              <form method="post" id="myForm">
+                  {% csrf_token %}
+              <label >Esta registrando los desarrollo del Acta N°{{ act_ident }} </label> 
+                  <div>
+                  <label>del Proceso/Dependecia {{ proceso.name }}</label>
+                  </div>
+                  <table class="table  text-center">
+                    <div class="container">
+                      <div class="form-group">
+                      <tr>  
+                        <input type="hidden" name="act_id" value="{{ act_id }}"> 
+                          <td>       
+                              <label class="field-label">Titulo</label>
+                              <textarea name="tittle" id="tittle" rows="1" cols="25" required></textarea>
+                          </td> 
+                          <td>  
+                              <label class="field-label">Decripción</label>
+                              <textarea name="description" id="description" rows="4" cols="25" required></textarea>
+                          </td> 
+                          <td>  
+                            <label class="field-label">Discusión</label>
+                            <textarea name="discussion" id="discussion" rows="4" cols="25"></textarea>
+                          </td>   
+                          <td>  
+                            <label class="field-label">Resultado</label>
+                            <textarea name="result" id="result" rows="4" cols="25"></textarea>
+                          </td>  
+                          <td>       
+                              <label class="field-label">Responsable</label>
+                              <select name="user_id" id="user_id" class="form-control" required>
+                                <option value="">Seleccione una opción</option>
+                                {% for choice in form.user_id.field.choices %}
+                                  <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                                {% endfor %}
+                            </select>
+                          </td>    
+                          <td>
+                            <button type="submit" class="btn btn-primary btn-lg btn-block">Registrar desarrollo</button>
+                          </td>       
+                      </tr>   
+                  </table>
+                <table class="table text-center">
+                  <thead>
+                    <tr>
+                      <th>Numero</th>
+                      <th>Titulo</th>
+                      <th>Descripcion</th>
+                      <th>Discusion</th>
+                      <th>Responsable</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for user in desarrollo %}
+                      <tr>
+                        <td>{{ user.num }}</td>
+                        <td>{{ user.tittle }}</td>
+                        <td>{{ user.description }}</td>
+                        <td>{{ user.discussion }}</td>
+                        <td>{{ user.result }}</td>
+                        <td>{{ user.user_id.name }}</td>
+                        <td>
+                          <a href="{% url 'EditarRegistroDesarrollo' user.id act_id act_proceso act_ident%}" class="btn btn-danger btn-sm">Editar</a>
+                          <a href="{% url 'eliminar_Desarrollo' user.id act_id act_proceso act_ident%}" class="btn btn-danger btn-sm delete-typemeet" data-typemeet-id="{{ user.id }}">Eliminar</a>
+                        </td>
+                      </tr>
+                    {% empty %}
+                      <tr>
+                        <td colspan="5">No se encontraron desarrollos</td>
+                      </tr>
+                    {% endfor %}
+                  </tbody> 
+                    <td colspan="3" class="text-center">
+                      <a href="{% url 'menu' %}" class="btn btn-primary">Volver a menú</a>
+                    </td>  
+                    <td colspan="3" class="text-center">
+                      <a href="{% url 'resumen' act_id %}" class="btn btn-primary">Resumen</a>
+                    </td> 
+                    <td colspan="3" class="text-center">
+                      <a href="{% url 'RegistroCommintment' act_id act_proceso act_ident%}" class="btn btn-primary">Siguiente</a>
                     </td>
-                  </tr>
-                {% empty %}
-                  <tr>
-                    <td colspan="5">No se encontraron desarrollos</td>
-                  </tr>
-                {% endfor %}
-              </tbody> 
-                <td colspan="3" class="text-center">
-                  <a href="{% url 'menu' %}" class="btn btn-primary">Volver a menú</a>
-                </td>  
-                <td colspan="3" class="text-center">
-                  <a href="{% url 'resumen' act_id %}" class="btn btn-primary">Resumen</a>
-                </td> 
-                <td colspan="3" class="text-center">
-                  <a href="{% url 'RegistroCommintment' act_id act_proceso act_ident%}" class="btn btn-primary">Siguiente</a>
-                </td>
-            </table>
-          </form>
-      </div>
-    </div>
- </div>
-
+                </table>
+              </form>
+            </main>
 
 {% endblock %}
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+</body>
+</html>

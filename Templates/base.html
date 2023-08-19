@@ -1,12 +1,14 @@
 <!-- base.html -->
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}{% endblock %}</title>
     <!-- Agrega esto en la sección <head> de tu archivo base.html -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">     
-    {% block css %}{% endblock %}
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    {% block css %}
+    {% endblock %}
     <style>
         .grande {
             font-size: 24px; /* Puedes ajustar el valor del tamaño de fuente según tus preferencias */
@@ -19,7 +21,7 @@
         .table {
             border-collapse: collapse;
           }
-          .table-container {
+        .table-container {
             margin-bottom: 20px; /* Espacio entre las tablas */
         }
           
@@ -35,18 +37,72 @@
           .table td:last-child {
             border-right: none; /* Elimina el borde derecho de la última columna */
           }
-          .pagination .active a {
-            background-color: #007bff;
-            color: #fff; /* Color de texto blanco para que se vea mejor en el fondo azul */
-            border-color: #007bff; /* Color de borde azul */
-        }
+          
   
 
         </style>
     </style>
 </head>
 <body>
-    {% block content %}{% endblock %}
+  <div class="container">
+    <h1 class="text-center">Sistema de control y registro de actas de reuniones</h1>
+    <h2 class="text-center">Escuela Interamericana de Bibliotecología</h2>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Navbar lateral -->
+        <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar" >
+            <a class="navbar-brand" >Navbar</a>
+            <div class="position-sticky">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'Registro' %}">
+                            Nueva acta
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'filter_acts' %}">
+                            Filtrar acta
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'RegisterAssistant' %}">
+                            Registrar asistente
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'RegisterProcess' %}">
+                            Registrar proceso
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'RegisterTypemeet' %}">
+                            Registrar tipo de reunion 
+                        </a>
+                    </li>
+                    <!-- Agrega más opciones de navegación aquí -->
+                </ul>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      Sistema de Actas
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                      <a class="dropdown-item" href="#">Action</a>
+                      <a class="dropdown-item" href="#">Another action</a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="#">Something else here</a>
+                    </div>
+                </li>
+        </nav>
+        {% block content %} 
+        {% endblock %}
+    </div>
+    
+   
+</div>
+
+
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>

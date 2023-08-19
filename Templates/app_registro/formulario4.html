@@ -1,119 +1,120 @@
-{% extends 'app_registro/pages.html' %}
 
-{% block formulario %}
+{% extends 'base.html' %}
+{% load static %}
 
-{% load crispy_forms_tags %}
-
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="d-flex p-2">
-            <form method="post" id="myForm">
-                {% csrf_token %}
-                <div class="container">
-                  <table class="table text-center">  
-                    <tr> 
-                      <td colspan="3" class="grande">UNIVERSIDAD DE ANTIOQUIA</td>
-                  </tr> 
-                  <tr> 
-                    <h1 class="text-center">Sistema de control y registro de actas de reuniones</h1>
-                    <h2 class="text-center">Escuela Interamericana de Bibliotecología</h2>
-                  <tr> 
-                    <tr>
-                      <td colspan="1" class="text-center">
-                          <a href="{% url 'RegistroUserconfirmation' act_id act_proceso act_ident%}" class="btn btn-primary">Asistentes</a>
-                      </td>
-                      <td colspan="1" class="text-center">
-                          <a href="{% url 'RegistroDevelop' act_id act_proceso act_ident%}" class="btn btn-primary">Desarrollos</a>
-                      </td>
-                      <td colspan="1" class="text-center">
-                          <a href="{% url 'RegistroCommintment' act_id act_proceso act_ident%}" class="btn btn-primary">Compromisos</a>
-                      </td>
-                  </tr>
-              </table>
-                  <table class="table  text-center">
-                    <label >Esta registrando los compromisos del Acta N°{{ act_ident }} </label> 
-                    <div>
-                    <label>del Proceso/Dependecia {{ proceso.name }}</label>
-                    </div>
-                      <tr>    
-                        <input type="hidden" name="act_id" value="{{ act_id }}">
-                          <td>       
-                              <label class="field-label">Compromiso</label>
-                              <textarea name="commitment" id="commitment" rows="4" cols="25" required></textarea>
-                          </td> 
-                          <td>  
-                              <label class="field-label">Fecha</label>
-                              <input type="date" name="date" id="date"  rows="1" cols="25" required>
-                          </td>  
-                          <td>       
-                              <label class="field-label">Estado</label>
-                              
-                              <select name="control" id="control" class="form-control" required>
-                                <option value="">Seleccione una opción</option>
-                                {% for choice in form.control.field.choices %}
-                                    <option value="{{ choice.0 }}">{{ choice.1 }}</option>
-                                {% endfor %}
-                                </select>
-                          </td> 
-                          <td>       
-                            <label class="field-label">Observaciones</label>
-                            <textarea name="observations" id="observations" rows="4" cols="25" ></textarea>
-                        </td> 
-                        <td>       
-                            <label class="field-label">Responsable</label>
-                            <select name="user_id" id="user_id" class="form-control" required>
-                              <option value="">Seleccione una opción</option>
-                              {% for choice in form.user_id.field.choices %}
-                                <option value="{{ choice.0 }}">{{ choice.1 }}</option>
-                              {% endfor %}
-                          </select>
-                      </td>
-                      <td>
-                        <button type="submit" class="btn btn-primary btn-lg btn-block">Registrar compromiso</button>
-                      </td> 
-                      </tr>   
-                  </table>
-                  <table class="table text-center">
-                    <thead>
-                      <tr>
-                        <th>Compromiso</th>
-                        <th>Fecha</th>
-                        <th>Observaciones</th>
-                        <th>Control</th>
-                        <th>Responsable</th>
-                        <th>Acciones</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {% for user in compromiso %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Agrega el enlace al archivo CSS de Bootstrap -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+</head>
+<body>
+    {% block content %}
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <form method="post" id="myForm">
+                    {% csrf_token %}
+                    <div class="container">
+                      <table class="table text-center">  
+                        
                         <tr>
-                          <td>{{ user.commitment }}</td>
-                          <td>{{ user.date }}</td>
-                          <td>{{ user.observations }}</td>
-                          <td>{{ user.control.name }}</td>
-                          <td>{{ user.user_id.name }}</td>
-                          <td>
-                            <a href="{% url 'EditarRegistroCompromiso' user.id act_id act_proceso act_ident%}" class="btn btn-danger btn-sm">Editar</a>
-                            <a href="{% url 'eliminar_Compromiso' user.id act_id act_proceso act_ident%}" class="btn btn-danger btn-sm delete-typemeet" data-typemeet-id="{{ user.id }}">Eliminar</a>
+                          <td colspan="1" class="text-center">
+                              <a href="{% url 'RegistroUserconfirmation' act_id act_proceso act_ident%}" class="btn btn-primary">Asistentes</a>
                           </td>
-                        </tr>
-                      {% empty %}
-                        <tr>
-                          <td colspan="5">No se encontraron compromisos</td>
-                        </tr>
-                      {% endfor %}
-                    </tbody> 
-                      <td colspan="3" class="text-center">
-                        <a href="{% url 'menu' %}" class="btn btn-primary">Volver a menú</a>
-                      </td> 
-                      <td colspan="3" class="text-center">
-                        <a href="{% url 'resumen' act_id %}" class="btn btn-primary">Resumen</a>
-                      </td> 
+                          <td colspan="1" class="text-center">
+                              <a href="{% url 'RegistroDevelop' act_id act_proceso act_ident%}" class="btn btn-primary">Desarrollos</a>
+                          </td>
+                          <td colspan="1" class="text-center">
+                              <a href="{% url 'RegistroCommintment' act_id act_proceso act_ident%}" class="btn btn-primary">Compromisos</a>
+                          </td>
+                      </tr>
                   </table>
-            </form>
-        </div>
+                      <table class="table  text-center">
+                        <label >Esta registrando los compromisos del Acta N°{{ act_ident }} </label> 
+                        <div>
+                        <label>del Proceso/Dependecia {{ proceso.name }}</label>
+                        </div>
+                          <tr>    
+                            <input type="hidden" name="act_id" value="{{ act_id }}">
+                              <td>       
+                                  <label class="field-label">Compromiso</label>
+                                  <textarea name="commitment" id="commitment" rows="4" cols="25" required></textarea>
+                              </td> 
+                              <td>  
+                                  <label class="field-label">Fecha</label>
+                                  <input type="date" name="date" id="date"  rows="1" cols="25" required>
+                              </td>  
+                              <td>       
+                                  <label class="field-label">Estado</label>
+                                  
+                                  <select name="control" id="control" class="form-control" required>
+                                    <option value="">Seleccione una opción</option>
+                                    {% for choice in form.control.field.choices %}
+                                        <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                                    {% endfor %}
+                                    </select>
+                              </td> 
+                              <td>       
+                                <label class="field-label">Observaciones</label>
+                                <textarea name="observations" id="observations" rows="4" cols="25" ></textarea>
+                            </td> 
+                            <td>       
+                                <label class="field-label">Responsable</label>
+                                <select name="user_id" id="user_id" class="form-control" required>
+                                  <option value="">Seleccione una opción</option>
+                                  {% for choice in form.user_id.field.choices %}
+                                    <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                                  {% endfor %}
+                              </select>
+                          </td>
+                          <td>
+                            <button type="submit" class="btn btn-primary btn-lg btn-block">Registrar compromiso</button>
+                          </td> 
+                          </tr>   
+                      </table>
+                      <table class="table text-center">
+                        <thead>
+                          <tr>
+                            <th>Compromiso</th>
+                            <th>Fecha</th>
+                            <th>Observaciones</th>
+                            <th>Control</th>
+                            <th>Responsable</th>
+                            <th>Acciones</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for user in compromiso %}
+                            <tr>
+                              <td>{{ user.commitment }}</td>
+                              <td>{{ user.date }}</td>
+                              <td>{{ user.observations }}</td>
+                              <td>{{ user.control.name }}</td>
+                              <td>{{ user.user_id.name }}</td>
+                              <td>
+                                <a href="{% url 'EditarRegistroCompromiso' user.id act_id act_proceso act_ident%}" class="btn btn-danger btn-sm">Editar</a>
+                                <a href="{% url 'eliminar_Compromiso' user.id act_id act_proceso act_ident%}" class="btn btn-danger btn-sm delete-typemeet" data-typemeet-id="{{ user.id }}">Eliminar</a>
+                              </td>
+                            </tr>
+                          {% empty %}
+                            <tr>
+                              <td colspan="5">No se encontraron compromisos</td>
+                            </tr>
+                          {% endfor %}
+                        </tbody> 
+                          <td colspan="3" class="text-center">
+                            <a href="{% url 'menu' %}" class="btn btn-primary">Volver a menú</a>
+                          </td> 
+                          <td colspan="3" class="text-center">
+                            <a href="{% url 'resumen' act_id %}" class="btn btn-primary">Resumen</a>
+                          </td> 
+                      </table>
+                </form>
+              </main>
 
-    </div>
-</div>
-
-{% endblock %}
+    {% endblock %}
+    
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+</body>
+</html>

@@ -7,6 +7,7 @@
     <title>Eliminar Proceso/Dependencia</title>
 </head>
 <body>
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
     <h1>Eliminar tipo proceso/dependencia</h1>
     <p>¿Estás seguro de que deseas eliminar el proceso/dependencia?"{{ depedece.name }}"?</p>
     <form method="post" action="{% url 'eliminar_proceso' depedece.id %}">
@@ -14,6 +15,7 @@
         <button type="submit">Eliminar</button>
         <a href="{% url 'RegisterProcess' %}">Cancelar</a>
     </form>
+</main>
 </body>
 </html>
 {% endblock %}
