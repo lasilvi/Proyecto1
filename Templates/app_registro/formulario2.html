@@ -6,106 +6,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Agrega el enlace al archivo CSS de Bootstrap -->
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    
 </head>
 <body>
     {% block content %}
+    
     <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+      <nav class="navbar bg-body-tertiary ">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">
+            <div>
+              <label>Acta N°{{ act_ident }} </label> 
+              </div>
+              <div>
+              <label>Proceso/Dependecia {{ proceso.name }}</label>
+              </div>
+              <div>
+              <label>Tipo de reunion{{ proceso.name }}</label>
+              </div>
+            </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+            <div class="offcanvas-header">
+              <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Nueva acta</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+              <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'RegistroUserconfirmation' act_id act_proceso act_ident%}">Asistentes</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'RegistroDevelop' act_id act_proceso act_ident%}" class="btn btn-primary">Desarrollos</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'RegistroCommintment' act_id act_proceso act_ident%}" class="btn btn-primary">Compromisos</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'resumen' act_id %}">Resumen</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </nav>
+
       <form method="post" id="myForm">
           {% csrf_token %}
-      <label >Esta registrando los asistentes del Acta N°{{ act_ident }} </label> 
-          <div>
-          <label>del Proceso/Dependecia {{ proceso.name }}</label>
-          </div>
-          <table class="table text-center">
-          <div class="container">
-            <div class="form-group"> 
-              <td>
+          <div class="container-fluid">
+            <div class="mb-3 row">
+              <label class="col-sm-2 col-form-label">Asistente</label>
+              <div class="col-sm-10">
                 <input type="hidden" name="act_id" value="{{ act_id }}">
-              <label >Asistente</label>
-              <select name="user_id" id="user_id" class="form-control" required>
-                <option value="">Seleccione una opción</option>
-                  {% for choice in form.user_id.field.choices %}
-                    <option value="{{ choice.0 }}">{{ choice.1 }}</option>
-                  {% endfor %}
-              </select>
-            </td>
-            <td>
-              <label >Cargo</label>
-              <select name="job_position" id="job_position" class="form-control">
-                <option value="">Seleccione una opción</option>
-                  {% for choice in form.job_position.field.choices %}
-                    <option value="{{ choice.0 }}">{{ choice.1 }}</option>
-                  {% endfor %}
-              </select>
-            </td>
-            <td>
-              <label >Proceso</label>
-              <select name="process" id="process" class="form-control">
-                <option value="">Seleccione una opción</option>
-                  {% for choice in form.process.field.choices %}
-                    <option value="{{ choice.0 }}">{{ choice.1 }}</option>
-                  {% endfor %}
-              </select>
-            </td>
-            <td>
-            <label >Asistio</label>
-          <div>
-            <input type="checkbox" name="asset" id="asset" >
-            <td colspan="3">
-              <div class="text-center">
-                  <button type="submit" class="btn btn-primary btn-lg btn-block">Registrar Asistente</button>
+                <select name="user_id" id="user_id" class="form-control" required>
+                  <option value="">Seleccione una opción</option>
+                    {% for choice in form.user_id.field.choices %}
+                      <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                    {% endfor %}
+                </select>
               </div>
-          </td>
-            </table>
-            <table class="table text-center">
-              <thead>
-                <tr>
-                  <th>Nombre</th>
-                  <th>Asistio</th>
-                  <th>Cargo</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for user in confimaciones %}
+            </div>
+
+  
+            <div  class="mb-3 row">
+              <label class="col-sm-2 col-form-label">Cargo</label>
+              <div class="col-sm-10">
+                <select name="job_position" id="job_position" class="form-control">
+                  <option value="">Seleccione una opción</option>
+                    {% for choice in form.job_position.field.choices %}
+                      <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                    {% endfor %}
+                </select>
+              </div>
+            </div> 
+
+            <div class="mb-3 row">
+              <label class="col-sm-2 col-form-label">Proceso</label>
+              <div class="col-sm-10">
+                <select name="process" id="process" class="form-control">
+                  <option value="">Seleccione una opción</option>
+                    {% for choice in form.process.field.choices %}
+                      <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                    {% endfor %}
+                </select>
+              </div>
+            </div>
+            
+            <div class="mb-3 row">
+              <label class="col-sm-2 col-form-label">Asiste</label>
+              <div class="col-sm-10">
+                <input type="checkbox" name="asset" id="asset" >
+              </div>
+            </div>
+            <div class="mb-3 ">
+              <div class="col-auto mx-auto">
+                <button type="submit" class="btn btn-outline-primary" >Registrar asistente</button>
+              </div>
+            </div>
+           
+          </div>
+
+            <div class="container-fluid">
+              <table class="table text-center">
+                <thead>
                   <tr>
-                    <td>{{ user.user_id.name}}</td>
-                    <td>
-                      {% if user.asset == True %}
-                          Sí
-                      {% elif user.asset == False %}
-                          No
-                      {% else %}
-                          No registrado
-                      {% endif %}
-                  </td>
-                    <td>{{ user.job_position }}</td>
-                    <td>
-                      <a href="{% url 'EditarRegistroUsuariosConfirmacion' user.id act_id act_proceso act_ident%}" class="btn btn-danger btn-sm">Editar</a>
-                      <a href="{% url 'eliminar_RegistroUsuariosConfirmacion' user.id act_id act_proceso act_ident%}" class="btn btn-danger btn-sm delete-typemeet" data-typemeet-id="{{ user.id }}">Eliminar</a>
+                    <th>Nombre</th>
+                    <th>Asistio</th>
+                    <th>Cargo</th>
+                    <th>Proceso</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for user in confimaciones %}
+                    <tr>
+                      <td>{{ user.user_id.name}}</td>
+                      <td>
+                        {% if user.asset == True %}
+                            Sí
+                        {% elif user.asset == False %}
+                            No
+                        {% else %}
+                            No registrado
+                        {% endif %}
                     </td>
-                  </tr>
-                {% empty %}
-                  <tr>
-                    <td colspan="5">No se encontraron asistentes</td>
-                  </tr>
-                {% endfor %}
-              </tbody> 
-              <td colspan="3" class="text-center">
-                <a href="{% url 'menu' %}" class="btn btn-primary">Volver a menú</a>
-              </td>  
-              <td colspan="3" class="text-center">
-                <a href="{% url 'resumen' act_id %}" class="btn btn-primary">Resumen</a>
-              </td> 
-              <td colspan="3" class="text-center">
-                <a href="{% url 'RegistroDevelop' act_id act_proceso act_ident%}" class="btn btn-primary">Siguiente</a>
-              </td>
-            </table>
+                      <td>{{ user.job_position }}</td>
+                      <td>{{ user.process}}</td>
+                      <td>
+                        <a href="{% url 'EditarRegistroUsuariosConfirmacion' user.id act_id act_proceso act_ident%}" class="btn btn-danger btn-sm">Editar</a>
+                        <a href="{% url 'eliminar_RegistroUsuariosConfirmacion' user.id act_id act_proceso act_ident%}" class="btn btn-danger btn-sm delete-typemeet" data-typemeet-id="{{ user.id }}">Eliminar</a>
+                      </td>
+                    </tr>
+                  {% empty %}
+                    <tr>
+                      <td colspan="5">No se encontraron asistentes</td>
+                    </tr>
+                  {% endfor %}
+                </tbody> 
+              </table>
+            </div>
       </form>
     </main>
-
 
     {% endblock %}
 

@@ -7,7 +7,7 @@
 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
 <div class="container mt-5">
   <div class="row justify-content-center align-items-center">
-      <div class="d-flex p-2">
+      <div class="text-center">
       
           <form method="post" >
               {% csrf_token %}
@@ -49,9 +49,7 @@
                   {% endfor %}
                   
                 </tbody>
-                <td colspan="3" class="text-center">
-                  <a href="{% url 'menu' %}" class="btn btn-primary">Volver a menú</a>
-                </td>
+                
               </table>
           </form>
         </main>

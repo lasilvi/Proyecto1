@@ -20,6 +20,7 @@
         }
         .table {
             border-collapse: collapse;
+            
           }
         .table-container {
             margin-bottom: 20px; /* Espacio entre las tablas */
@@ -37,22 +38,52 @@
           .table td:last-child {
             border-right: none; /* Elimina el borde derecho de la última columna */
           }
+          .container-fluid {
+            background-color: #e4e4e4; /* Cambia este valor al color que desees */
+            
+        }
           
+        body {
+            background-color:#e4e4e4; /* Cambia este valor al color deseado */
+        }
+        .nav-link:hover {
+            background-color: rgba(0, 0, 0, 0.2); 
+            
+        }
+        .colored-table {
+            width: 100%;
+            background-color: #e4e4e4; /* Cambia por el color de fondo deseado */
+        }
   
 
         </style>
     </style>
 </head>
 <body>
-  <div class="container">
-    <h1 class="text-center">Sistema de control y registro de actas de reuniones</h1>
-    <h2 class="text-center">Escuela Interamericana de Bibliotecología</h2>
-</div>
+    <nav class="navbar bg-body-tertiary text-center">
+        <div class="container-fluid">
+          <span class="navbar-brand mb-0 h1 fs-3">Sistema de control de actas</span>
+        </div>
+      </nav>
 <div class="container-fluid">
     <div class="row">
         <!-- Navbar lateral -->
         <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar" >
-            <a class="navbar-brand" >Navbar</a>
+            <a class="navbar-brand" >Username</a>
+            <div class="position-sticky">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'Registro' %}">
+                            Cambiar contraseña
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'filter_acts' %}">
+                            Cerrar sesión
+                        </a>
+                    </li>
+                </ul>
+                <a class="navbar-brand" >Sistema de actas</a>
             <div class="position-sticky">
                 <ul class="nav flex-column">
                     <li class="nav-item">
@@ -80,20 +111,23 @@
                             Registrar tipo de reunion 
                         </a>
                     </li>
-                    <!-- Agrega más opciones de navegación aquí -->
                 </ul>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      Sistema de Actas
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                      <a class="dropdown-item" href="#">Action</a>
-                      <a class="dropdown-item" href="#">Another action</a>
-                      <div class="dropdown-divider"></div>
-                      <a class="dropdown-item" href="#">Something else here</a>
-                    </div>
-                </li>
+                <a class="navbar-brand" >Actas</a>
+            <div class="position-sticky">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'Registro' %}">
+                            Por abrobar
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'filter_acts' %}">
+                            Historico
+                        </a>
+                    </li>
+                </ul>
         </nav>
+
         {% block content %} 
         {% endblock %}
     </div>
