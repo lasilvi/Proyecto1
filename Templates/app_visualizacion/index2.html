@@ -3,9 +3,9 @@
 {% block content %}
 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
 <div class="table-container">
-<table class="table table-light text-center">
+<table class="table  table-light text-center">
   <thead>
-    <th>Actas sin aprobación</th>
+    <th>Resgistro actas</th>
     <tr>
       <th>N° Acta</th>
       <th>Fecha</th>
@@ -15,8 +15,7 @@
     </tr>
   </thead>
   <tbody>
-   
-    {% for confirmacion in Confirmation_unapproved %}
+    {% for confirmacion in Confirmation_user %}
       <tr>
         <td>{{ confirmacion.act_id.ident }}</td>
         <td>{{ confirmacion.act_id.pub_date }}</td>
@@ -29,9 +28,10 @@
         <td colspan="5">No se encontraron actas.</td>
       </tr>
     {% endfor %}
+    </main>
   </tbody>
 </table>
-
 </div>
+
 
 {% endblock %}

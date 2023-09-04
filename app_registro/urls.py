@@ -2,11 +2,14 @@
 from django.urls import path, re_path
 from . import views
 from .views import MenuView
+from django.contrib.auth.views import LoginView, LogoutView
 
 urlpatterns = [
-    path('menu/', MenuView.as_view(), name='menu'),
+    path('menu/', views.MenuView, name='menu'),
     path('RegistroActa/', views.Register, name='Registro'),
-    
+    path('accounts/login/', LoginView.as_view(template_name='registration/login.html'), name='login'),
+    path('logout/', views.logout_view, name='logout'),
+
     path('RegistroUsuariosConfirmacion/<int:act_id>/<str:act_proceso>/<int:act_ident>/', views.RegisterUserConfirmation, name='RegistroUserconfirmation'),
     path('EditarRegistroUsuariosConfirmacion/<int:user_id>/<int:act_id>/<str:act_proceso>/<int:act_ident>/', views.editar_RegisterUserConfirmation, name='EditarRegistroUsuariosConfirmacion'),
     path('eliminar_RegistroUsuariosConfirmacion/<int:user_id>/<int:act_id>/<str:act_proceso>/<int:act_ident>/', views.eliminar_RegisterUserConfirmation, name='eliminar_RegistroUsuariosConfirmacion'),

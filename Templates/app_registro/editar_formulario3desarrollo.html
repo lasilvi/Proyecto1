@@ -2,65 +2,61 @@
 
 {% block content %}
 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="d-flex p-2">
+<div class="container-fluid">
             <form method="post">
                 {% csrf_token %}
-                <table class="table text-center">
-                    <tr> 
-                        <th colspan="4">
-                            <h1 class="text-center">Sistema de control y registro de actas de reuniones</h1>
-                            <h2 class="text-center">Escuela Interamericana de Bibliotecología</h2>
-                        </th>
-                    </tr> 
-                    <tr> 
-                        <td>
-                            <div>
-                            {{ form.act_id }}
-                            </div>
-                            
-                        </td>
-                        <td>
-                            <label>Titulo</label>
-                            <div>
-                                {{ form.tittle }}
-                            </div>
-                        </td>
-                        <td>
-                            <label>Descripción</label>
-                            <div>
-                                {{ form.description }}
-                            </div>
-                        </td>
-                        <td>
-                            <label>Discusión</label>
-                            <div>
-                                {{ form.discussion }}
-                            </div>
-                        </td>
-                        <td>
-                            <label>Resultado</label>
-                            <div>
-                                {{ form.result }}
-                            </div>
-                        </td>
-                        <td>
-                            <label>Responsable</label>
-                            <div>
-                                {{ form.user_id }}
-                            </div>
-                        </td>
-                    </tr> 
-                    
-                </table>
-                <div class="text-center">
-                    <button type="submit" class="btn btn-primary btn-lg btn-block">Guardar cambios</button>
-                </div>
-            </form>
 
-        </div>
-    </div>
+                <div class="container-fluid">
+                    <input type="hidden" name="act_id" value="{{ form.act_id.value }}">
+                    <div  class="mb-3 row">
+                      
+                      <label class="col-sm-2 col-form-label">Titulo</label>
+                      <div class="col-sm-10">
+                        <textarea class="form-control" name="tittle" id="tittle" rows="1"  required>{{ form.tittle.value }}</textarea>
+                      </div>
+                    </div> 
+        
+                    <div  class="mb-3 row">
+                      <label class="col-sm-2 col-form-label">Decripción</label>
+                      <div class="col-sm-10">
+                        
+                        <textarea class="form-control" name="description" id="description" rows="3" required>{{ form.description.value }}</textarea>
+                      </div>
+                    </div>
+        
+                    <div  class="mb-3 row">
+                      <label class="col-sm-2 col-form-label">Discusión</label>
+                      <div class="col-sm-10">
+                        <textarea class="form-control" name="discussion" id="discussion" rows="3" >{{ form.discussion.value }}</textarea>
+                      </div>
+                    </div>
+        
+                    <div  class="mb-3 row">
+                      <label class="col-sm-2 col-form-label">Resultado</label>
+                      <div class="col-sm-10">
+                        <textarea class="form-control" name="result" id="result" rows="3" >{{ form.result.value }}</textarea>
+                      </div>
+                    </div>
+        
+                    <div  class="mb-3 row">
+                      <label class="col-sm-2 col-form-label">Responsable</label>
+                      <div class="col-sm-10">
+                        <select name="user_id" id="user_id" class="form-control" required>
+                          <option value="{{ form.user_id }}"></option> 
+                      </select>
+                      </div>
+                    </div>
+        
+                    <div class="mb-3 ">
+                      <div class="col-auto mx-auto">
+                        <button type="submit" class="btn btn-outline-primary">Editar desarrollo</button>
+                      </div>
+                    </div>
+                  </div>
+            </form>
+        </main>
+
+    
 </div>
 </main>
 {% endblock %}

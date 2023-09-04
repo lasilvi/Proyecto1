@@ -4,64 +4,61 @@
 
 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
 <div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="d-flex p-2">
+    
             <form method="post">
                 {% csrf_token %}
-                <table class="table text-center">
-                    <tr> 
-                        <th colspan="4">
-                            <h1 class="text-center">Sistema de control y registro de actas de reuniones</h1>
-                            <h2 class="text-center">Escuela Interamericana de Bibliotecología</h2>
-                        </th>
-                    </tr> 
-                    <tr> 
-                        <td>
-                            <div>
-                            {{ form.act_id }}
-                            </div>
+            
+                <div class="container-fluid">
+                    <input type="hidden" name="act_id" value="{{ form.act_id.value }}">
+                    <div  class="mb-3 row">
+                      <label class="col-sm-2 col-form-label">Compromiso</label>
+                      <div class="col-sm-10">
+                        <textarea class="form-control" name="commitment" id="commitment" rows="4"  required> {{ form.commitment.value }}</textarea>
+                      </div>
+                    </div> 
+
+                    <div  class="mb-3 row">
+                      <label class="col-sm-2 col-form-label">Fecha</label>
+                      <div class="col-sm-10">
+                       {{form.date.value}}
+                      </div>
+                    </div> 
+
+                    <div  class="mb-3 row">
+                      <label class="col-sm-2 col-form-label">Estado</label>
+                      <div class="col-sm-10">
+                        <select name="control" id="control" class="form-control" required>
                             
-                        </td>
-                        <td>
-                            <label>Fecha</label>
-                            <div>
-                                {{ form.date }}
-                            </div>
-                        </td>
-                        <td>
-                            <label>Observación</label>
-                            <div>
-                                {{ form.observations }}
-                            </div>
-                        </td>
-                        <td>
-                            <label>Compromiso</label>
-                            <div>
-                                {{ form.commitment }}
-                            </div>
-                        </td>
-                        <td>
-                            <label>Control</label>
-                            <div>
-                                {{ form.control }}
-                            </div>
-                        </td>
-                        <td>
-                            <label>Responsable</label>
-                            <div>
-                                {{ form.user_id }}
-                            </div>
-                        </td>
-                    </tr> 
+                                <option value="{{ form.control }}"></option> 
+                            
+                          </select>
+                      </div>
+                    </div> 
                     
-                </table>
-                <div class="text-center">
-                    <button type="submit" class="btn btn-primary btn-lg btn-block">Guardar cambios</button>
-                </div>
+                      <div  class="mb-3 row">
+                        <label class="col-sm-2 col-form-label">Observaciones</label>
+                        <div class="col-sm-10">
+                          <textarea class="form-control" name="observations" id="observations" rows="4"  required>{{form.observations.value}}</textarea>
+                        </div>
+                      </div> 
+
+                      <div  class="mb-3 row">
+                        <label class="col-sm-2 col-form-label">Responsable</label>
+                        <div class="col-sm-10">
+                            <select name="user_id" id="user_id" class="form-control" required>
+                                <option value="{{ form.user_id }}"></option> 
+                            </select>
+                        </div>
+                      </div> 
+
+                      <div class="mb-3 ">
+                        <div class="col-auto mx-auto">
+                          <button type="submit" class="btn btn-outline-primary">Editar compromiso</button>
+                        </div>
+                      </div>
+
             </form>
 
-        </div>
-    </div>
 </div>
 </main>
 {% endblock %}

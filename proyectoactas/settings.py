@@ -137,4 +137,4 @@ EMAIL_USE_TLS = True  # Usa TLS (True) o SSL (False) según tu proveedor
 EMAIL_HOST_USER = 'escuelainteramericanadebibliot@gmail.com'  # Coloca aquí tu correo electrónico
 EMAIL_HOST_PASSWORD = 'ttiaapxeblpvhnda'  # Coloca aquí tu contraseña
 
-LOGIN_REDIRECT_URL = 'index'
+

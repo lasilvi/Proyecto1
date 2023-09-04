@@ -1,9 +1,10 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 from app_registro.models import *
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.db.models import Max,Q
 from django.core.mail import send_mail
+from django.contrib.auth.views import LogoutView
 # Create your views here.
 @login_required
 def index(request):
@@ -14,11 +15,24 @@ def index(request):
     #todas las actas en las que esta el asistente 
     user = User.objects.get(mail=usermail)   
     Confirmation_user = Confirmation.objects.filter(user_id = user)
-
     #actas por aprobar 
     Confirmation_unapproved = Confirmation.objects.filter(Q(user_id = user) & Q(approved=False))
    
     return render(request, 'app_visualizacion/index.html',{'username': username, 'Confirmation_user':Confirmation_user,'Confirmation_unapproved':Confirmation_unapproved})
+
+@login_required
+def index2(request):
+    # Obtén el nombre de usuario del objeto request.user
+    username = request.user
+    usermail = username.email
+
+    #todas las actas en las que esta el asistente 
+    user = User.objects.get(mail=usermail)   
+    Confirmation_user = Confirmation.objects.filter(user_id = user)
+    #actas por aprobar 
+    Confirmation_unapproved = Confirmation.objects.filter(Q(user_id = user) & Q(approved=False))
+   
+    return render(request, 'app_visualizacion/index2.html',{'username': username, 'Confirmation_user':Confirmation_user,'Confirmation_unapproved':Confirmation_unapproved})
 
 def login_view(request):
     if request.method == 'POST':
@@ -30,6 +44,11 @@ def login_view(request):
             return redirect('index')  # Redirige al índice después de iniciar sesión
     return render(request, 'app_visualizacion/login.html')
 
+def logout_view(request):
+    logout(request)  # Cierra la sesión del usuario
+    return redirect('login')  
+
+@login_required
 def Resumen1(request,act_id):
     # Realiza la consulta y el filtrado de los datos
     datos_acta = Act.objects.filter(pk=act_id)

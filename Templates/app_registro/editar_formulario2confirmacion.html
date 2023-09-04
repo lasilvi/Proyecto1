@@ -7,49 +7,52 @@
         <div class="d-flex p-2">
             <form method="post">
                 {% csrf_token %}
-                <table class="table text-center">
-                    <tr> 
-                        <th colspan="4">
-                            <h1 class="text-center">Sistema de control y registro de actas de reuniones</h1>
-                            <h2 class="text-center">Escuela Interamericana de Bibliotecología</h2>
-                        </th>
-                    </tr> 
-                    <tr> 
-                        <td>
+                    <div class="container-fluid">
+                        <input type="hidden" name="act_id" value="{{ form.act_id.value }}">
+                      <div class="mb-3 row">
+                        <label class="col-sm-2 col-form-label">Asistente</label>
+                        <div class="col-sm-10">
+                            <select name="user_id" id="user_id" class="form-control" required>
+                                <option value={{ form.user_id }}></option> 
+                            </select>
+                        </div>
+                      </div>
+          
+            
+                      <div  class="mb-3 row">
+                        <label class="col-sm-2 col-form-label">Cargo</label>
+                        <div class="col-sm-10">
+                            <select name="job_position" id="job_position" class="form-control" required>
+                                <option value={{ form.job_position }}></option> 
+                            </select>
+                        </div>
+                      </div> 
+          
+                      <div class="mb-3 row">
+                        <label class="col-sm-2 col-form-label">Proceso</label>
+                        <div class="col-sm-10">
                             <div>
-                            {{ form.act_id}}
-                            </div>   
-                        </td>
-                        <td>
-                            <label>Nombre</label>
-                            <div>
-                                {{ form.user_id }}
+                                <select name="process" id="process" class="form-control" required>
+                                    <option value={{ form.process }}></option> 
+                                </select>
+                                
                             </div>
-                        </td>
-                        <td>
-                            <label>Cargo</label>
-                            <div>
-                                {{ form.job_position }}
-                            </div>
-                        </td>
-                        <td>
-                            <label>Proceso</label>
-                            <div>
-                                {{ form.process }}
-                            </div>
-                        </td>
-                        <td>
-                            <label>Asistio</label>
-                            <div>
-                                {{ form.asset }}
-                            </div>
-                        </td>
-                    </tr> 
-                    
-                </table>
-                <div class="text-center">
-                    <button type="submit" class="btn btn-primary btn-lg btn-block">Guardar cambios</button>
-                </div>
+                        </div>
+                      </div>
+                      
+                      <div class="mb-3 row">
+                        <label class="col-sm-2 col-form-label">Asiste</label>
+                        <div class="col-sm-10">
+                            {{ form.asset }}
+                        </div>
+                      </div>
+                      <div class="mb-3 ">
+                        <div class="col-auto mx-auto">
+                            <button type="submit" class="btn btn-primary btn-lg btn-block">Guardar cambios</button>
+                        </div>
+                      </div>
+                     
+                    </div>
             </form>
 
         </div>

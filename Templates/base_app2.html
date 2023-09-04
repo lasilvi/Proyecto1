@@ -82,18 +82,18 @@
 </head>
 <body>
     <div class="container-fluid text-center">
-            <div class="text-center">
-                <label style="font-size: 34px; font-weight: bold; font-family: 'OtroTipoDeLetra', sans-serif;">
-                Sistema de control de actas
-                </label>
-            </div>
+        <div class="text-center">
+            <label style="font-size: 34px; font-weight: bold; font-family: 'OtroTipoDeLetra', sans-serif;">
+            Sistema de control de actas
+            </label>
         </div>
+    </div>
 <div class="container-fluid">
     <div class="row">
         <!-- Navbar lateral -->
         <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar" >
-            <a class="navbar-brand" > <strong>Escuela Interamericana</strong></a>
-            <a class="navbar-brand" ><strong>de Bibliotecología</strong></a>
+            <a class="navbar-brand" >  <strong>Escuela Interamericana  </strong></a>
+            <a class="navbar-brand" > <strong> de Bibliotecología </strong></a>
             <div>
             <a class="navbar-brand cursiva" > 
                 {% if user.is_authenticated %}
@@ -101,7 +101,7 @@
                 {% else %}
                     Invitado
                 {% endif %}
-            </a>
+                 </a>
             </div>
             <div class="position-sticky">
                 <ul class="nav flex-column">
@@ -116,32 +116,17 @@
                         </a>
                     </li>
                 </ul>
-                <a class="navbar-brand" > <strong>Sistema de actas </strong></a>
+                <a class="navbar-brand" > <strong>Actas </strong></a>
             <div class="position-sticky">
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link active" href="{% url 'Registro' %}">
-                            Nueva acta
+                        <a class="nav-link active" href="{% url 'index' %}">
+                            Por abrobar
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'filter_acts' %}">
-                            Editar acta
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'RegisterAssistant' %}">
-                            Registrar asistente
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'RegisterProcess' %}">
-                            Registrar proceso
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'RegisterTypemeet' %}">
-                            Registrar tipo de reunion 
+                        <a class="nav-link" href="{% url 'index2' %}">
+                            Historico
                         </a>
                     </li>
                 </ul>

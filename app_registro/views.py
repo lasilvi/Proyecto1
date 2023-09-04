@@ -5,23 +5,82 @@ from .forms import *
 from django.urls import reverse
 from .models import *
 from .models import Development
-from django.views import View
+from django.views.generic import View
 import json
 from django.db.models import Max,Q
 from django.http import JsonResponse
 from django.contrib import messages 
 from django.core.mail import send_mail
-
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login,logout 
 # Create your views here.
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return render(request, 'app_registro/formulario.html')  # Redirige al índice después de iniciar sesión
+    return render(request, 'app_registro/login.html')
 
-class MenuView(View):
-    def get(self, request):
-        return render(request, 'app_registro/menu.html')
-    def post(self, request):
-        # Lógica para procesar las solicitudes POST
-        # ...
-        return render(request, 'app_registro/formulario.html')
-    
+def logout_view(request):
+    logout(request)  # Cierra la sesión del usuario
+    return render(request, 'app_registro/login.html')  # Redirige a una página de confirmación de cierre de sesión
+
+@login_required
+def MenuView(request):
+    if request.method == 'GET':
+        ident = request.POST.get('ident')
+        date = request.POST.get('date')
+        type_meet = request.POST.get('type_meet')
+
+        acts = Act.objects.all()
+
+        if ident:
+            acts = acts.filter(ident=ident)
+        if date:
+            acts = acts.filter(pub_date=date)
+        if type_meet:
+            acts = acts.filter(type_meet=type_meet)
+
+        typemeets = Typemeet.objects.all()
+        Dependeces = Dependece.objects.all()
+
+        context = {
+            'acts': acts,
+            'typemeets': typemeets,
+            'Dependeces': Dependeces,
+        }
+
+        return render(request, 'app_registro/menu.html', context)
+        
+    if request.method == 'POST':
+        ident = request.POST.get('ident')
+        date = request.POST.get('date')
+        type_meet = request.POST.get('type_meet')
+
+        acts = Act.objects.all()
+
+        if ident:
+            acts = acts.filter(ident=ident)
+        if date:
+            acts = acts.filter(pub_date=date)
+        if type_meet:
+            acts = acts.filter(type_meet=type_meet)
+
+        typemeets = Typemeet.objects.all()
+        Dependeces = Dependece.objects.all()
+
+        context = {
+            'acts': acts,
+            'typemeets': typemeets,
+            'Dependeces': Dependeces,
+        }
+
+        return render(request, 'app_registro/menu.html', context)
+
+@login_required
 def Register(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
@@ -67,6 +126,8 @@ def Register(request):
     return render(request, 'app_registro/formulario.html', {'form': form})
 
 #/////////////////////////////////////////////////////////////////////////////////
+
+@login_required
 def RegisterUserConfirmation(request,act_id,act_proceso,act_ident):
     if request.method == 'POST':
         formuser = RegisterFormUserConfirmation(request.POST)
@@ -105,6 +166,8 @@ def RegisterUserConfirmation(request,act_id,act_proceso,act_ident):
     
     return render(request, 'app_registro/formulario2.html', context)
 
+
+@login_required
 def editar_RegisterUserConfirmation(request,user_id,act_id,act_proceso,act_ident):
     confimaciones = Confirmation.objects.get(id=user_id)
     
@@ -126,6 +189,8 @@ def editar_RegisterUserConfirmation(request,user_id,act_id,act_proceso,act_ident
 
     return render(request, ('app_registro/editar_formulario2confirmacion.html'), context)
 
+
+@login_required
 def eliminar_RegisterUserConfirmation(request,user_id,act_id,act_proceso,act_ident):
     print(user_id)
     
@@ -143,6 +208,8 @@ def eliminar_RegisterUserConfirmation(request,user_id,act_id,act_proceso,act_ide
         return redirect(url_redireccion) 
         
 #////////////////////////////////////////////////////////////////////////////////
+
+@login_required
 def RegisterDevelopment(request,act_id,act_proceso,act_ident):
     if request.method == 'POST':
         formdevelopment = RegisterFormDevelopment(request.POST)
@@ -175,6 +242,8 @@ def RegisterDevelopment(request,act_id,act_proceso,act_ident):
             'act_ident': act_ident,'desarrollo':desarrollo,'proceso': proceso}    
     return render(request, 'app_registro/formulario3.html',  context )
 
+
+@login_required
 def eliminar_RegisterDevelopment(request,desarrollo_id,act_id,act_proceso,act_ident):
     print(desarrollo_id)
     
@@ -189,6 +258,8 @@ def eliminar_RegisterDevelopment(request,desarrollo_id,act_id,act_proceso,act_id
         url_redireccion = reverse('RegistroDevelop' , args=[act_id, act_proceso, act_ident]) 
         return redirect(url_redireccion) 
 
+
+@login_required
 def editar_RegisterDevelopment(request,desarrollo_id,act_id,act_proceso,act_ident):
     desarrollo = Development.objects.get(id=desarrollo_id)
     
@@ -210,6 +281,8 @@ def editar_RegisterDevelopment(request,desarrollo_id,act_id,act_proceso,act_iden
 
     return render(request, ('app_registro/editar_formulario3desarrollo.html'), context)
 #///////////////////////////////////////////////////////////////////////////////////////////////
+
+@login_required
 def RegisterCommintment(request,act_id,act_proceso,act_ident):
     if request.method == 'POST':
         formcompromiso = RegisterFormCommitment(request.POST)
@@ -234,6 +307,8 @@ def RegisterCommintment(request,act_id,act_proceso,act_ident):
             'act_ident': act_ident,'compromiso':compromisos,'proceso': proceso}    
     return render(request, 'app_registro/formulario4.html',  context )
 
+
+@login_required
 def eliminar_RegisterCommintment(request,compromiso_id,act_id,act_proceso,act_ident):
 
     if request.method == 'GET':
@@ -246,7 +321,9 @@ def eliminar_RegisterCommintment(request,compromiso_id,act_id,act_proceso,act_id
         # Construye la URL de redirección con la variable como parámetro
         url_redireccion = reverse('RegistroCommintment' , args=[act_id, act_proceso, act_ident]) 
         return redirect(url_redireccion) 
-    
+
+
+@login_required  
 def editar_RegisterCommintment(request,compromiso_id,act_id,act_proceso,act_ident):
     compromiso = Commitment.objects.get(id=compromiso_id)
     
@@ -268,6 +345,9 @@ def editar_RegisterCommintment(request,compromiso_id,act_id,act_proceso,act_iden
 
     return render(request, ('app_registro/editar_formulario4compromiso.html'), context)
 #////////////////////////////////////////////////////////////////////////////////
+
+
+@login_required
 def RegisterAssistant(request):
     if request.method == 'POST':
         form = RegisterFormAssistant(request.POST)
@@ -282,6 +362,8 @@ def RegisterAssistant(request):
             'users' : users   }     
     return render(request, 'app_registro/usuarios.html', context)
 
+
+@login_required
 def eliminar_usuario(request,user_id):
 
     if request.method == 'GET':
@@ -293,6 +375,8 @@ def eliminar_usuario(request,user_id):
         user.delete()
         return redirect('RegisterAssistant')
 
+
+@login_required
 def editar_usuario(request, user_id):
     user = User.objects.get(id=user_id)
     
@@ -311,6 +395,8 @@ def editar_usuario(request, user_id):
     return render(request, ('app_registro/editar_usuario.html'), context)
 
 #///////////////////////////////////////////////////////////////////////////////
+
+@login_required
 def RegisterProcess(request):
     if request.method == 'POST':
         form = ProcessForm(request.POST)
@@ -325,6 +411,8 @@ def RegisterProcess(request):
         'processs' : processs}     
     return render(request, 'app_registro/procesos.html', context)
 
+
+@login_required
 def editar_Proceso(request, process_id):
     process = Dependece.objects.get(id=process_id)
     
@@ -343,6 +431,8 @@ def editar_Proceso(request, process_id):
 
     return render(request, ('app_registro/editar_procesos.html'), context)
 
+
+@login_required
 def eliminar_proceso(request,dependece_id):
 
     if request.method == 'GET':
@@ -355,6 +445,8 @@ def eliminar_proceso(request,dependece_id):
         return redirect('RegisterProcess')
 
 #///////////////////////////////////////////////////////////////////////////////
+
+@login_required
 def RegisterTypemeet(request):
     if request.method == 'POST':
         form = TypeMeetForm(request.POST)
@@ -368,6 +460,7 @@ def RegisterTypemeet(request):
         'typemeets' : typemeets}     
     return render(request, 'app_registro/tipodereunion.html', context)
 
+@login_required
 def editar_Tipodereunion(request, tmeet_id):
     typemeet = Typemeet.objects.get(id=tmeet_id)
     
@@ -386,6 +479,7 @@ def editar_Tipodereunion(request, tmeet_id):
 
     return render(request, ('app_registro/editar_tipodereunion.html'), context)
 
+@login_required
 def eliminar_tipo_reunion(request,type_id):
 
     if request.method == 'GET':
@@ -398,6 +492,8 @@ def eliminar_tipo_reunion(request,type_id):
         return redirect('RegisterTypemeet')
 
 #///////////////////////////////////////////////////////////////////////////////
+
+@login_required
 def edit_act(request, act_id):
     acta = Act.objects.get(id=act_id)
     confirmacion = Confirmation.objects.filter(act_id=act_id)
@@ -452,11 +548,17 @@ def edit_act(request, act_id):
     print("no")
     return render(request, 'app_registro/edit_act.html', context)
 
+
+@login_required
 def Summary(request,act_id):
     # Realiza la consulta y el filtrado de los datos
     datos_acta = Act.objects.filter(pk=act_id)
     datos_desarrollo = Development.objects.filter(act_id=act_id)
-    
+
+    for datos in datos_acta:
+        proceso = datos.process_text
+        identificacion = datos.ident
+
     asistentes = Confirmation.objects.filter(act_id = act_id, asset = True)
     compromisos = Commitment.objects.filter(act_id=act_id)
     
@@ -475,8 +577,9 @@ def Summary(request,act_id):
     return render(request, 'app_registro/resumen.html', {'datos': datos_acta,
                                                          'desarrollo': datos_desarrollo,
                                                           'asistentes': asistentes,
-                                                         'compromisos': compromisos,'act_id':act_id})
+                                                         'compromisos': compromisos,'act_id':act_id,'proceso': proceso,'identificacion':identificacion})
 
+@login_required
 def filter_acts(request):
     ident = request.POST.get('ident')
     date = request.POST.get('date')
@@ -503,6 +606,7 @@ def filter_acts(request):
     return render(request, 'app_registro/filter_acts.html', context)
 
 
+@login_required
 def enviar_correo(correo_destino,contenido_correo):
     subject = 'Asunto del correo'
     message =  'a continuacion encontrara el enlace para revisar las actas que esperan su aprobación  http://127.0.0.1:8000/accounts/login/?next=/app_visualizacion/'

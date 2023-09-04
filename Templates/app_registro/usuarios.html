@@ -10,33 +10,39 @@
       <div class="text-center">
           <form method="post" >
               {% csrf_token %}
-              <table class="table text-center ">
-                      <td >
-                          <label for="{{ form.name.id_for_label }}">Nombre</label>
-                          <div>
-                              {{ form.name}}
-                          </div>
-                      </td>
-                      <td>
-                        <label for="{{ form.num_id.id_for_label }}">Cedula</label>
-                        <div>
-                            {{ form.num_id }}
-                        </div>
-                      <td>
-                          <label for="{{ form.mail.id_for_label }}">Correo</label>
-                          <div>
-                          {{ form.mail }}
-                          </div>
-                      </td>
-                    </td>
-                  </tr> 
-              </table>
+             
+
+              <div  class="mb-3 row">
+                <label class="col-sm-2 col-form-label">ID</label>
+                <div class="col-sm-10">
+                  {{form.num_id}}
+                </div>
+              </div> 
+
+              <div  class="mb-3 row">
+                <label class="col-sm-2 col-form-label">Nombre</label>
+                <div class="col-sm-10">
+                  <textarea class="form-control" name="name" id="name" rows="1"  required> </textarea>
+                </div>
+              </div> 
+
+              <div  class="mb-3 row">
+                <label class="col-sm-2 col-form-label">Correo</label>
+                <div class="col-sm-10">
+                  <textarea class="form-control" name="mail" id="mail" rows="1"  required> </textarea>
+                </div>
+              </div> 
+              
+
+              <div  class="mb-3 row">
               <td colspan="3">
                 <div class="text-center">
-                    <button type="submit" class="btn btn-primary btn-lg btn-block">Crear Asistente</button>
+                    <button type="submit"  class="btn btn-outline-primary">Crear Asistente</button>
                 </div>
              </td>
-             <table class="table text-center">
+            </div> 
+
+             <table class="table table-light text-center">
                 <thead>
                   <tr>
                     <th>Nombre</th>
