@@ -9,6 +9,7 @@ urlpatterns = [
     path('RegistroActa/', views.Register, name='Registro'),
     path('accounts/login/', LoginView.as_view(template_name='registration/login.html'), name='login'),
     path('logout/', views.logout_view, name='logout'),
+    path('change_password/', views.change_password, name='change_password1'),
 
     path('RegistroUsuariosConfirmacion/<int:act_id>/<str:act_proceso>/<int:act_ident>/', views.RegisterUserConfirmation, name='RegistroUserconfirmation'),
     path('EditarRegistroUsuariosConfirmacion/<int:user_id>/<int:act_id>/<str:act_proceso>/<int:act_ident>/', views.editar_RegisterUserConfirmation, name='EditarRegistroUsuariosConfirmacion'),

@@ -19,35 +19,26 @@
   <div class="container">
     <form method="post">
       {% csrf_token %}
-      <div class="text-center fs-2 fw-bold ">Iniciar sesión</div>
-      
+      <div class="text-center fs-2 fw-bold ">Ingrese sus datos</div>
       <div class="input-group mt-1">
         <input
           class="form-control bg-light"
           type="text"
-          placeholder="Usuario"
           name="username" id="username"
+          placeholder="Nombre"
         />
-     
       </div>
       <div class="input-group mt-1">
         <input
-        class="form-control bg-light"
-        type="password"
-        placeholder="Contraseña"
-        name="password" id="password"
-      />
+          class="form-control bg-light"
+          type="text"
+          name="correo" id="correo"
+          placeholder="Correo electronico"
+        />
     </div>
-      <div class="pt-1">
-        <a
-           href="{% url 'sigin' %}"
-          class="text-decoration-none text-info fw-semibold fst-italic"
-          style="font-size: 0.9rem"
-          >Solicitar registro</a
-        >
       </div>
       <div class="center" style="display: flex; justify-content: center; align-items: center;">
-      <button class="btn btn-primary d-flex gap-2  border mt-3 shadow-sm" type="submit">Iniciar sesión</button>
+      <button class="btn btn-primary d-flex gap-2  border mt-3 shadow-sm" type="submit">Solicitar registro</button>
       </div>
     </form>
   </div>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cambio de Contraseña</title>
+    <!-- Agrega aquí tus enlaces a hojas de estilo CSS si es necesario -->
+</head>
+<body>
+    {% extends 'base.html' %}
+
+    {% block content %}
+
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+    <h1>Cambio de Contraseña</h1>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        {{ form.non_field_errors }}
+        
+        <div class="form-control">
+            <label for="{{ form.old_password.id_for_label }}">Contraseña actual:</label>
+            {{ form.old_password }}
+            {{ form.old_password.errors }}
+        </div>
+        
+        <div class="form-control">
+            <label for="{{ form.new_password1.id_for_label }}">Nueva contraseña:</label>
+            {{ form.new_password1 }}
+            {{ form.new_password1.errors }}
+        </div>
+        
+        <div  class="form-control">
+            <label for="{{ form.new_password2.id_for_label }}">Confirmar nueva contraseña:</label>
+            {{ form.new_password2 }}
+            {{ form.new_password2.errors }}
+        </div>
+        
+        <button type="submit"  class="btn btn-outline-primary">Cambiar Contraseña</button>
+    </form>
+    
+{% endblock %}
+    <!-- Agrega aquí cualquier otro contenido o enlaces necesarios -->
+</body>
+</html>
+

@@ -13,6 +13,10 @@ from django.contrib import messages
 from django.core.mail import send_mail
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login,logout 
+from django.contrib import messages
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
+
 # Create your views here.
 def login_view(request):
     if request.method == 'POST':
@@ -27,6 +31,17 @@ def login_view(request):
 def logout_view(request):
     logout(request)  # Cierra la sesión del usuario
     return render(request, 'app_registro/login.html')  # Redirige a una página de confirmación de cierre de sesión
+
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Actualiza la sesión del usuario
+            return redirect('login')  # Redirige a la página de perfil o a donde desees
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, 'app_registro/contraseña1.html', {'form': form})
 
 @login_required
 def MenuView(request):
@@ -86,7 +101,6 @@ def Register(request):
         form = RegisterForm(request.POST)
        
         if form.is_valid():
-           print("aqui")
            act = form.save(commit=False)
             # Obtener el tipo de dependencia seleccionado en el formulario
            tipo_dependencia = form.cleaned_data['process_text']
@@ -139,7 +153,7 @@ def RegisterUserConfirmation(request,act_id,act_proceso,act_ident):
             existing_confirmation = Confirmation.objects.filter(act_id=act_id, user_id=user_id).first()
             if existing_confirmation:
                 # Si ya existe, redirigir a la página de confirmación con un mensaje de error
-                messages.error(request, 'El asistente ya ha sido registrado para esta acta.')
+                messages.error(request, 'el usuario ya se encuentra registrado')
                 url_redireccion = reverse('RegistroUserconfirmation' , kwargs={'act_id': act_id, 'act_proceso': act_proceso, 'act_ident': act_ident})
                 return redirect(url_redireccion)
             
@@ -559,15 +573,16 @@ def Summary(request,act_id):
         proceso = datos.process_text
         identificacion = datos.ident
 
-    asistentes = Confirmation.objects.filter(act_id = act_id, asset = True)
+    asistentes = Confirmation.objects.filter(act_id = act_id)
     compromisos = Commitment.objects.filter(act_id=act_id)
+    asistentes_sinaprobar = Confirmation.objects.filter(act_id = act_id, asset = True,approved = False)
     
     if request.method == 'POST':
         acta = get_object_or_404(Act, pk=act_id)
         acta.send = True
         acta.save()
         contenido_correo = "hola"
-        correos_destino =  [asistente.user_id.mail for asistente in asistentes if asistente.user_id.mail]
+        correos_destino =  [asistente.user_id.mail for asistente in asistentes_sinaprobar if asistente.user_id.mail]
         # Enviar el correo a cada dirección de correo electrónico
         for correo_destino in correos_destino:
             enviar_correo(correo_destino, contenido_correo)
@@ -606,10 +621,9 @@ def filter_acts(request):
     return render(request, 'app_registro/filter_acts.html', context)
 
 
-@login_required
 def enviar_correo(correo_destino,contenido_correo):
     subject = 'Asunto del correo'
-    message =  'a continuacion encontrara el enlace para revisar las actas que esperan su aprobación  http://127.0.0.1:8000/accounts/login/?next=/app_visualizacion/'
+    message =  'a continuacioó encontrara el enlace para revisar las actas que esperan su aprobación  http://127.0.0.1:8000/accounts/login/?next=/app_visualizacion/index.html'
     from_email = 'escuelainteramericanadebibliot@gmail.com'
      # Crea una lista con el correo de destino
     recipient_list = [correo_destino]

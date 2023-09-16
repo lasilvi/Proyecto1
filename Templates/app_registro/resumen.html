@@ -116,7 +116,11 @@
                   <label>Hora</label>
                   <div>
                     {% for dato in datos %}
-                    {{ dato.hour }}
+                      {% if dato.hour == none %}
+                        no registrado
+                      {% else %}
+                      {{ dato.hour }}
+                      {% endif %}
                     {% endfor %}
                   </div>
                 </td>
@@ -124,7 +128,11 @@
                   <label>Lugar</label>
                   <div>
                     {% for dato in datos %}
-                    {{ dato.place }}
+                    {% if dato.place == none %}
+                    no registrado
+                    {% else %}
+                        {{ dato.place }}
+                    {% endif %}
                     {% endfor %}
                   </div>
                 </td>
@@ -134,7 +142,11 @@
                   <label>Fecha próxima</label>
                   <div>
                     {% for dato in datos %}
-                    {{ dato.next_meet }}
+                    {% if dato.next_meet == none %}
+                         no registrado
+                    {% else %}
+                        {{ dato.next_meet }}
+                    {% endif %}
                     {% endfor %}
                   </div>
                 </td>
@@ -142,15 +154,24 @@
                   <label>Hora Próxima</label>
                   <div>
                     {% for dato in datos %}
-                    {{ dato.next_hour }}
+                    {% if dato.next_hour == none %}
+                         no registrado
+                    {% else %}
+                      {{ dato.next_hour }}
+                    {% endif %}
                     {% endfor %}
                   </div>
                 </td>
                 <td class="text-center">
                   <label>Lugar próxima</label>
                   <div>
+                  
                     {% for dato in datos %}
-                    {{ dato.next_place }}
+                    {% if  dato.next_place == none %}
+                         no registrado
+                    {% else %}
+                      {{ dato.next_place }}
+                    {% endif %}
                     {% endfor %}
                   </div>
                 </td>
@@ -166,7 +187,7 @@
               <thead>
                 <tr>
                   <th>Nombre</th>
-                  <th>Asistio</th>
+                  <th>Asiste</th>
                   <th>Cargo</th>
                   <th>Aprobado</th>
                 </tr>
@@ -210,10 +231,10 @@
             <table class="table table-light text-center">
               <thead>
                 <tr>
-                  <th>Numero</th>
-                  <th>Titulo</th>
-                  <th>Descripcion</th>
-                  <th>Discusion</th>
+                  <th>Número</th>
+                  <th>Título</th>
+                  <th>Descripción</th>
+                  <th>Discusión</th>
                   <th>Resultado</th>
                   <th>Responsable</th>
                 </tr>

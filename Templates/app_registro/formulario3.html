@@ -20,10 +20,7 @@
               <label>Acta N°{{ act_ident }} </label> 
               </div>
               <div>
-              <label>Proceso/Dependecia {{ proceso.name }}</label>
-              </div>
-              <div>
-              <label>Tipo de reunion{{ proceso.name }}</label>
+              <label>Proceso/Dependecia: {{ proceso.name }}</label>
               </div>
             </a>
           <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
@@ -60,7 +57,7 @@
           <div class="container-fluid">
             <div  class="mb-3 row">
               <input type="hidden" name="act_id" value="{{ act_id }}"> 
-              <label class="col-sm-2 col-form-label">Titulo</label>
+              <label class="col-sm-2 col-form-label">Título</label>
               <div class="col-sm-10">
                 <textarea class="form-control" name="tittle" id="tittle" rows="1"  required></textarea>
               </div>
@@ -111,9 +108,9 @@
             <thead>
               <tr>
                 <th>Numero</th>
-                <th>Titulo</th>
-                <th>Descripcion</th>
-                <th>Discusion</th>
+                <th>Título</th>
+                <th>Descripción</th>
+                <th>Discusión</th>
                 <th>Resultado</th>
                 <th>Responsable</th>
                 <th>Acciones</th>

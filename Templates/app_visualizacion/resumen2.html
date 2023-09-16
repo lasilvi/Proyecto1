@@ -34,18 +34,6 @@
                 <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                   <form  method="post"  id="miFormulario" >
                     {% csrf_token %}
-                  <div style="margin-bottom: 10px;">
-                      <button type="submit" class="btn btn-outline-primary" name="action" value="aprobar">Aprobar</button>
-                    </div>
-                    <div style="margin-bottom: 10px;">
-                    <textarea class="form-control" rows="4" cols="50"  name="comentario" id="comentario"></textarea>
-                  </div>
-                <div>
-                    <button type="submit" class="btn btn-outline-primary" name="action" value="enviar_info">Enviar Información</button>
-                    </div>  
-                    <div>
-                      <button type="submit" class="btn btn-outline-primary" name="action" value="generarpdf">generarpdf</button>
-                      </div>  
                 </form>
                 </ul>
               </div>
