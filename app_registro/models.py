@@ -46,6 +46,7 @@ class User(models.Model):
     name = models.CharField(max_length=200, default=None)
     mail = models.CharField(max_length=200,null=True,default=None)
     num_id = models.IntegerField(default=None)
+    
  
 
     def __str__(self):

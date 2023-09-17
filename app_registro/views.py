@@ -15,7 +15,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login,logout 
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
-from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.forms import PasswordChangeForm,UserCreationForm
+import random
+import string
+from django.contrib.auth.models import User as usuariodjango
+
 
 # Create your views here.
 def login_view(request):
@@ -136,7 +140,7 @@ def Register(request):
     else:
     
         form = RegisterForm()
-        #formuser = RegisterFormUser()
+       
     return render(request, 'app_registro/formulario.html', {'form': form})
 
 #/////////////////////////////////////////////////////////////////////////////////
@@ -365,8 +369,19 @@ def editar_RegisterCommintment(request,compromiso_id,act_id,act_proceso,act_iden
 def RegisterAssistant(request):
     if request.method == 'POST':
         form = RegisterFormAssistant(request.POST)
+         
         if form.is_valid():
-            user = form.save()
+            # Generar una contraseña aleatoria
+            usuario = form.cleaned_data['mail']
+            print(usuario)
+            contrasena_aleatoria = generar_contrasena_aleatoria()
+            form.save()
+            contenido_correo = "Estas son sus credenciales \nUsuario: " + usuario + "\nContraseña: " + contrasena_aleatoria +"\nhttp://127.0.0.1:8000/accounts/login/?next=/app_visualizacion/index.html"
+            # Crear el usuario sin guardar
+            user = usuariodjango.objects.create_user(username=usuario, password=contrasena_aleatoria)
+            user.save()
+        
+            enviar_correo(str(usuario),contenido_correo)
             return redirect('RegisterAssistant') 
     else:
         form = RegisterFormAssistant()      
@@ -515,15 +530,13 @@ def edit_act(request, act_id):
     compromisos = Commitment.objects.filter(act_id=act_id)
     typemeet_choices = Typemeet.objects.values_list('pk', 'name')
     dependece_choices = Dependece.objects.values_list('cod', 'name')
-    print("Typemeet choices:", typemeet_choices)
-    print("Dependece choices:", dependece_choices)
+
 
     nombreproceso = acta.process_text
     if request.method == 'POST':
 
         form = ActForm(request.POST, instance=acta)
-        print("process_text:", form['process_text'].value())
-        print("type_meet:", form['type_meet'].value())
+        
 
         if form.is_valid():
             tipo_dependencia = form.cleaned_data['process_text']
@@ -536,10 +549,10 @@ def edit_act(request, act_id):
             # Incrementar el valor de 'ident' para la nueva Acta
             if ultimo_ident is not None:
                 acta.ident = ultimo_ident + 1
-                print(acta.ident)
+              
             else:
                 acta.ident = 1
-                print(acta.ident)
+              
             #if form.is_valid():
             # Actualizar otros campos según sea necesario
             form.save()
@@ -581,7 +594,7 @@ def Summary(request,act_id):
         acta = get_object_or_404(Act, pk=act_id)
         acta.send = True
         acta.save()
-        contenido_correo = "hola"
+        contenido_correo = 'a continuación encontrará el enlace para revisar las actas que esperan su aprobación  http://127.0.0.1:8000/accounts/login/?next=/app_visualizacion/index.html'
         correos_destino =  [asistente.user_id.mail for asistente in asistentes_sinaprobar if asistente.user_id.mail]
         # Enviar el correo a cada dirección de correo electrónico
         for correo_destino in correos_destino:
@@ -623,7 +636,7 @@ def filter_acts(request):
 
 def enviar_correo(correo_destino,contenido_correo):
     subject = 'Asunto del correo'
-    message =  'a continuacioó encontrara el enlace para revisar las actas que esperan su aprobación  http://127.0.0.1:8000/accounts/login/?next=/app_visualizacion/index.html'
+    message =  contenido_correo
     from_email = 'escuelainteramericanadebibliot@gmail.com'
      # Crea una lista con el correo de destino
     recipient_list = [correo_destino]
@@ -633,6 +646,8 @@ def enviar_correo(correo_destino,contenido_correo):
     # Opcionalmente, puedes redireccionar a una página de éxito o renderear un template de éxito
     #return render(request, 'correo_enviado.html')
 
-    
-
+def generar_contrasena_aleatoria(longitud=12):
+    caracteres = string.ascii_letters + string.digits + string.punctuation
+    contrasena = ''.join(random.choice(caracteres) for i in range(longitud))
+    return contrasena
     

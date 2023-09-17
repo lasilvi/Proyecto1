@@ -17,10 +17,9 @@ from django.http import HttpResponse
 def index(request):
     # Obtén el nombre de usuario del objeto request.user
     username = request.user
-    usermail = username.email
-
+    
     #todas las actas en las que esta el asistente 
-    user = User.objects.get(mail=usermail)   
+    user = User.objects.get(mail=username)   
     Confirmation_user = Confirmation.objects.filter(user_id = user)
     #actas por aprobar 
     Confirmation_unapproved = Confirmation.objects.filter(Q(user_id = user) & Q(approved=False))
@@ -29,12 +28,11 @@ def index(request):
 
 @login_required
 def index2(request):
-    # Obtén el nombre de usuario del objeto request.user
+   # Obtén el nombre de usuario del objeto request.user
     username = request.user
-    usermail = username.email
-
+    
     #todas las actas en las que esta el asistente 
-    user = User.objects.get(mail=usermail)   
+    user = User.objects.get(mail=username)   
     Confirmation_user = Confirmation.objects.filter(Q(user_id = user) & Q(approved=True))
    
     return render(request, 'app_visualizacion/index2.html',{'username': username, 'Confirmation_user':Confirmation_user})

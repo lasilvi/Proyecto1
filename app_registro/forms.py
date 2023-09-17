@@ -47,12 +47,6 @@ class RegisterForm(forms.ModelForm):
         self.fields['process_text'].choices = Dependecias
         
    
-class RegisterFormUser(forms.ModelForm):
-    class Meta:
-        """Campos utilizados."""
-        model = User
-        fields = "__all__"
-
 #para registrar los usuarios en las actas 
 class RegisterFormUserConfirmation(forms.ModelForm):
     class Meta:
@@ -114,11 +108,7 @@ class RegisterFormAssistant(forms.ModelForm):
         """Campos utilizados."""
         model = User
         fields = "__all__"
-        def __init__(self, *args, **kwargs):
-            super().__init__(*args, **kwargs)
-            self.fields['name'].required = False
-            self.fields['mail'].required = False
-            self.fields['num_id'].required = False
+
         
 class ActForm(forms.ModelForm):
     class Meta:
