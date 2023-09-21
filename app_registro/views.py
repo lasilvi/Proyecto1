@@ -368,24 +368,44 @@ def editar_RegisterCommintment(request,compromiso_id,act_id,act_proceso,act_iden
 @login_required
 def RegisterAssistant(request):
     if request.method == 'POST':
-        form = RegisterFormAssistant(request.POST)
-         
-        if form.is_valid():
-            # Generar una contraseña aleatoria
-            usuario = form.cleaned_data['mail']
-            print(usuario)
-            contrasena_aleatoria = generar_contrasena_aleatoria()
-            form.save()
-            contenido_correo = "Estas son sus credenciales \nUsuario: " + usuario + "\nContraseña: " + contrasena_aleatoria +"\nhttp://127.0.0.1:8000/accounts/login/?next=/app_visualizacion/index.html"
-            # Crear el usuario sin guardar
-            user = usuariodjango.objects.create_user(username=usuario, password=contrasena_aleatoria)
-            user.save()
-        
-            enviar_correo(str(usuario),contenido_correo)
-            return redirect('RegisterAssistant') 
+        action = request.POST.get('action')
+        if action == 'crear':
+            form = RegisterFormAssistant(request.POST)
+            if form.is_valid():
+                # Generar una contraseña aleatoria
+                usuario = form.cleaned_data['mail']
+                print(usuario)
+                contrasena_aleatoria = generar_contrasena_aleatoria()
+                form.save()
+                contenido_correo = "Estas son sus credenciales \nUsuario: " + usuario + "\nContraseña: " + contrasena_aleatoria +"\nhttp://127.0.0.1:8000/accounts/login/?next=/app_visualizacion/index.html"
+                # Crear el usuario sin guardar
+                user = usuariodjango.objects.create_user(username=usuario, password=contrasena_aleatoria)
+                user.save()
+            
+                enviar_correo(str(usuario),contenido_correo)
+               
+                return redirect('RegisterAssistant') 
+        if action == 'filtrar':
+            nombre = request.POST.get('nombre')
+            cedula = request.POST.get('cedula')
+            correo = request.POST.get('correo')
+            asistentes = User.objects.all()
+            if nombre:
+                users = asistentes.filter(name=nombre)
+            if cedula:
+                users = asistentes.filter(num_id=cedula)
+            if correo:
+                users = asistentes.filter(mail=correo)
+            
+            form = RegisterFormAssistant()
+            context = {
+            'form': form ,
+            'users' : users   }  
+            render(request, 'app_registro/usuarios.html', context)
+
     else:
         form = RegisterFormAssistant()      
-    users = User.objects.all()
+        users = User.objects.all()
     context = {
             'form': form ,
             'users' : users   }     

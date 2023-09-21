@@ -8,8 +8,7 @@
 </head>
 <body>
     <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-    <h1>Eliminar tipo de reunión</h1>
-    <p>¿Estás seguro de que deseas eliminar el usuario"{{ confirmation.user_id.name }}"?</p>
+    <p>¿Estás seguro de que deseas eliminar el usuario "{{ confirmation.user_id.name }}"?</p>
     <form method="post" action="{% url 'eliminar_RegistroUsuariosConfirmacion' confirmation.id act_id act_proceso act_ident%}">
         {% csrf_token %}
         <button type="submit">Eliminar</button>

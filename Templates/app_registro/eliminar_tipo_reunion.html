@@ -8,7 +8,6 @@
 </head>
 <body>
     <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-    <h1>Eliminar tipo de reunión</h1>
     <p>¿Estás seguro de que deseas eliminar el tipo de reunión "{{ typemeet.name }}"?</p>
     <form method="post" action="{% url 'eliminar_tipo_reunion' typemeet.id %}">
         {% csrf_token %}
