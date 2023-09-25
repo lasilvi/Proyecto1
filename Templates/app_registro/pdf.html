@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <table class="table table-light text-center">
+        <tr> 
+          <H1>UNIVERSIDAD DE ANTIOQUIA</H1>
+        </tr> 
+        <tr> 
+          <div>
+          {% for dato in datos %}
+          <td colspan="3" class="grande text-center"   style="font-weight: bold;">Acta N°{{ dato.ident }}</td>
+          {% endfor %}
+          </div>
+        </tr>
+        <tr>
+          <td colspan="2" class="text-center">
+            <label style="font-weight: bold;">Proceso/Dependencia</label>
+            <div>
+              {% for dato in datos%}
+              {{ dato.process_text.name }}
+              {% endfor %}
+            </div>
+          </td>
+          <td  class="text-center" >
+           <label style="font-weight: bold;"> Tipo de reunión </label style="font-weight: bold;">
+            <div>
+              {% for dato in datos%}
+              {{ dato.type_meet.name }}
+              {% endfor %}
+            </div>
+          </td>
+        </tr> 
+        <tr> 
+          <td class="text-center" >
+            <label style="font-weight: bold;">Fecha</label>
+            <div>
+              {% for dato in datos %}
+              {{ dato.pub_date }}
+              {% endfor %}
+            </div>
+          </td>
+          <td class="text-center">
+            <label style="font-weight: bold;">Hora</label>
+            <div>
+              {% for dato in datos %}
+                {% if dato.hour == None %}
+            
+                {% else %}
+                {{ dato.hour }}
+                {% endif %}
+              {% endfor %}
+            </div>
+          </td>
+          <td class="text-center">
+            <label style="font-weight: bold;">Lugar</label>
+            <div>
+              {% for dato in datos %}
+              {% if dato.place == None %}
+       
+              {% else %}
+                  {{ dato.place }}
+              {% endif %}
+              {% endfor %}
+            </div>
+          </td>
+        </tr> 
+        <tr> 
+          <td class="text-center" >
+            <label  style="font-weight: bold;">Fecha próxima reunión</label>
+            <div>
+              {% for dato in datos %}
+              {% if dato.next_meet == None %}
+                 
+              {% else %}
+                  {{ dato.next_meet }}
+              {% endif %}
+              {% endfor %}
+            </div>
+          </td>
+          <td class="text-center"  >
+            <label style="font-weight: bold;">Hora próxima reunión</label>
+            <div>
+              {% for dato in datos %}
+              {% if dato.next_hour == none %}
+                 
+              {% else %}
+                {{ dato.next_hour }}
+              {% endif %}
+              {% endfor %}
+            </div>
+          </td>
+          <td class="text-center"  >
+            <label style="font-weight: bold;">Lugar próxima</label>
+            <div>
+            
+              {% for dato in datos %}
+              {% if  dato.next_place == none %}
+               
+              {% else %}
+                {{ dato.next_place }}
+              {% endif %}
+              {% endfor %}
+            </div>
+          </td>
+        </tr>  
+        <!-- Contenido de la tabla de información del acta -->
+      </table>
+    </div>
+  </div>
+
+  <div class="row justify-content-center">
+    <div class="d-flex p-2">
+      
+      <table class="table table-light text-center">
+        <thead>
+          <tr>
+          <h2>Asistentes</h2>
+          </tr>
+          <tr>
+            <td  style="font-weight: bold;">Nombre</td>
+            <td  style="font-weight: bold;">Asiste</td>
+            <td  style="font-weight: bold;">Cargo</td>
+            <td  style="font-weight: bold;">Aprueba</td>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in asistentes %}
+              <tr>
+                <td>{{ user.user_id.name }}</td>
+                <td>
+                  {% if user.asset == True %}
+                      Sí
+                  {% elif user.asset == False %}
+                      No
+                  {% else %}
+                      No registrado
+                  {% endif %}
+              </td>
+                <td>{{ user.job_position }}</td>
+                <td>
+                  {% if user.approved == True %}
+                      Sí
+                  {% elif user.approved == False %}
+                      No
+                  {% else %}
+                      No registrado
+                  {% endif %}
+              </td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="5">No se encontraron asistentes</td>
+              </tr>
+            {% endfor %}<!-- Contenido de la tabla de asistentes -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="row justify-content-center">
+    <div class="d-flex p-2">
+      
+      <table class="table table-light text-center">
+        <thead>
+          <tr>
+            <h2>Desarrollos</h2>
+          </tr>
+          <tr>
+            <td   style="font-weight: bold;">Número</td>
+            <td   style="font-weight: bold;">Desarrollo</td>
+            <td  style="font-weight: bold;">Responsable</td>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in desarrollo %}
+              <tr>
+                <td style="width: 10%; padding: 5px;" >{{ user.num }}</td>
+                <td style="width: 70%; padding: 5px;">{{ user.tittle }}<br>
+                {{ user.description }}<br> 
+                  
+                  {% if  user.discussion == none %}
+                  {% else %}
+                  {{ user.discussion }} 
+                  {% endif %}<br>
+
+                  {% if  user.result == none %}
+                  {% else %}
+                  {{ user.result }}
+                  {% endif %}
+              
+                  </td>
+                <td style="width: 20%; padding: 5px;">{{ user.user_id.name }}</td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="5">No se encontraron desarrollos</td>
+              </tr>
+            {% endfor %} <!-- Contenido de la tabla de desarrollos -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="row justify-content-center">
+    <div class="d-flex p-2">
+      <table class="table table-light text-center">
+        <thead>
+          <tr>
+            <h2>Compromisos</h2>
+          </tr>
+         
+          <tr>
+            <td  style="font-weight: bold;">Compromiso</td>
+            <td   style="font-weight: bold;">Fecha</td>
+            <td   style="font-weight: bold;">Observaciones</td>
+            <td   style="font-weight: bold;">Control</td>
+            <td  style="font-weight: bold;">Responsable</td>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in compromisos %}
+              <tr>
+                <td style="width: 30%; padding: 5px;" >{{ user.commitment }}</td>
+                <td style="width: 20%; padding: 5px;">{{ user.date }}</td>
+                <td style="width: 20%; padding: 5px;" >{{ user.observations }}</td>
+                <td style="width: 10%; padding: 5px;">{{ user.control.name }}</td>
+                <td style="width: 20%; padding: 5px;" >{{ user.user_id.name }}</td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="5">No se encontraron compromisos</td>
+              </tr>
+            {% endfor %}<!-- Contenido de la tabla de compromisos -->
+        </tbody>
+      </td>
+      </table>
+</body>
+</html>

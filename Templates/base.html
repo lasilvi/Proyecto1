@@ -75,6 +75,14 @@
           .cursiva {
             font-style: italic;
         }
+        table td.negrita {
+            font-weight: bold;
+          }
+          
+          /* Aplicar negrita solo a las filas con la clase "negrita" */
+          table tr.negrita td {
+            font-weight: bold;
+          }
   
 
         </style>
@@ -116,7 +124,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'logout' %}">
+                        <a class="nav-link" href="{% url 'logout1' %}">
                             Cerrar sesión
                         </a>
                     </li>

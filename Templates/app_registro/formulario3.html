@@ -96,8 +96,7 @@
               </div>
             </div>
 
-            <div class="mb-3 ">
-              <div class="col-auto mx-auto">
+            <div class="d-flex justify-content-end">
                 <button type="submit" class="btn btn-outline-primary">Registrar desarrollo</button>
               </div>
             </div>
@@ -122,11 +121,29 @@
                   <td>{{ user.num }}</td>
                   <td>{{ user.tittle }}</td>
                   <td>{{ user.description }}</td>
-                  <td>{{ user.discussion }}</td>
-                  <td>{{ user.result }}</td>
+                  <td>
+                    {% if user.discussion == None %}
+                            
+                    {% elif user.discussion == ' '%}
+                            
+                    {% else %}
+                        {{ user.discussion }}
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if user.result == None %}
+                            
+                    {% elif user.result == ' '%}
+                            
+                    {% else %}
+                    {{ user.result }}
+                    {% endif %}
+                  </td>
                   <td>{{ user.user_id.name }}</td>
                   <td>
                     <a href="{% url 'EditarRegistroDesarrollo' user.id act_id act_proceso act_ident%}" class="btn btn-danger btn-sm">Editar</a>
+                  </td>
+                  <td>
                     <a href="{% url 'eliminar_Desarrollo' user.id act_id act_proceso act_ident%}" class="btn btn-danger btn-sm delete-typemeet" data-typemeet-id="{{ user.id }}">Eliminar</a>
                   </td>
                 </tr>

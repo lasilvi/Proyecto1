@@ -19,22 +19,29 @@ from django.contrib.auth.forms import PasswordChangeForm,UserCreationForm
 import random
 import string
 from django.contrib.auth.models import User as usuariodjango
-
-
+from xhtml2pdf import pisa 
+from django.template.loader import get_template
 # Create your views here.
 def login_view(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return render(request, 'app_registro/formulario.html')  # Redirige al índice después de iniciar sesión
-    return render(request, 'app_registro/login.html')
+        form = UserLoginForm(request=request, data = request.POST)
+        if form.is_valid():
+            username = request.POST['username']
+            password = request.POST['password']
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('menu')  # Redirige al índice después de iniciar sesión
+        else:
+            for key, error in list (form.errors.items()):
+                messages.error(request, error)
+    form =  UserLoginForm()
+
+    return render(request=request, template_name="registration/login.html",context={'form': form})
 
 def logout_view(request):
     logout(request)  # Cierra la sesión del usuario
-    return render(request, 'app_registro/login.html')  # Redirige a una página de confirmación de cierre de sesión
+    return redirect('login1')  # Redirige a una página de confirmación de cierre de sesión
 
 def change_password(request):
     if request.method == 'POST':
@@ -149,10 +156,7 @@ def Register(request):
 def RegisterUserConfirmation(request,act_id,act_proceso,act_ident):
     if request.method == 'POST':
         formuser = RegisterFormUserConfirmation(request.POST)
-        
-
         if formuser.is_valid():
-            
             user_id = formuser.cleaned_data['user_id']  # Obtener el ID del usuario del formulario
             existing_confirmation = Confirmation.objects.filter(act_id=act_id, user_id=user_id).first()
             if existing_confirmation:
@@ -193,9 +197,6 @@ def editar_RegisterUserConfirmation(request,user_id,act_id,act_proceso,act_ident
         form = RegisterFormUserConfirmation(request.POST)
         if form.is_valid():
             form = RegisterFormUserConfirmation(request.POST, instance=confimaciones)
-            #if form.is_valid():
-            # Actualizar
-            #  otros campos según sea necesario
             form.save()
             url= reverse('RegistroUserconfirmation', kwargs={'act_id': act_id, 'act_proceso': act_proceso, 'act_ident': act_ident}) 
             return redirect(url) # Redirigir a la página de filtrado de actas después de guardar los cambios
@@ -374,10 +375,17 @@ def RegisterAssistant(request):
             if form.is_valid():
                 # Generar una contraseña aleatoria
                 usuario = form.cleaned_data['mail']
-                print(usuario)
+                cedula = form.cleaned_data['num_id']
+
+                if User.objects.filter(mail=usuario).exists():
+                    return redirect('RegisterAssistant')
+                
+                if User.objects.filter(num_id=cedula).exists():
+                    return redirect('RegisterAssistant')
+
                 contrasena_aleatoria = generar_contrasena_aleatoria()
                 form.save()
-                contenido_correo = "Estas son sus credenciales \nUsuario: " + usuario + "\nContraseña: " + contrasena_aleatoria +"\nhttp://127.0.0.1:8000/accounts/login/?next=/app_visualizacion/index.html"
+                contenido_correo = "Estas son sus credenciales \nUsuario: " + usuario + "\nContraseña: " + contrasena_aleatoria + "\n" + "http://127.0.0.1:8000/app_visualizacion/login/"
                 # Crear el usuario sin guardar
                 user = usuariodjango.objects.create_user(username=usuario, password=contrasena_aleatoria)
                 user.save()
@@ -500,7 +508,11 @@ def RegisterTypemeet(request):
     if request.method == 'POST':
         form = TypeMeetForm(request.POST)
         if form.is_valid():
-            typemeet = form.save()
+            tiporeunion = form.cleaned_data['name']
+            if Typemeet.objects.filter(name=tiporeunion).exists():
+                redirect('RegisterTypemeet')
+            else:
+                typemeet = form.save()
           
     form = TypeMeetForm()
     typemeets = Typemeet.objects.all()
@@ -611,14 +623,41 @@ def Summary(request,act_id):
     asistentes_sinaprobar = Confirmation.objects.filter(act_id = act_id, asset = True,approved = False)
     
     if request.method == 'POST':
-        acta = get_object_or_404(Act, pk=act_id)
-        acta.send = True
-        acta.save()
-        contenido_correo = 'a continuación encontrará el enlace para revisar las actas que esperan su aprobación  http://127.0.0.1:8000/accounts/login/?next=/app_visualizacion/index.html'
-        correos_destino =  [asistente.user_id.mail for asistente in asistentes_sinaprobar if asistente.user_id.mail]
-        # Enviar el correo a cada dirección de correo electrónico
-        for correo_destino in correos_destino:
-            enviar_correo(correo_destino, contenido_correo)
+
+        action = request.POST.get('action')
+
+        if action == 'enviarcorreo':
+            acta = get_object_or_404(Act, pk=act_id)
+            acta.send = True
+            acta.save()
+            contenido_correo = 'a continuación encontrará el enlace para revisar las actas que esperan su aprobación  http://127.0.0.1:8000/app_visualizacion/login/'
+            correos_destino =  [asistente.user_id.mail for asistente in asistentes_sinaprobar if asistente.user_id.mail]
+            # Enviar el correo a cada dirección de correo electrónico
+            for correo_destino in correos_destino:
+                enviar_correo(correo_destino, contenido_correo)
+
+    
+        if action == 'generarpdf':
+            html_template = 'app_registro/pdf.html'
+            html_string = get_template(html_template).render(
+                request=request, context={'datos': datos_acta,
+                        'desarrollo': datos_desarrollo,
+                        'asistentes': asistentes,
+                        'compromisos': compromisos,
+                        'act_id':act_id})
+
+            def convert_html_to_pdf(html_string):
+                response = HttpResponse(content_type='application/pdf')
+                response['Content-Disposition'] = 'attachment; filename="actadereunión.pdf"'
+
+                # Convierte el HTML en PDF y lo agrega a la respuesta
+                pisaStatus = pisa.CreatePDF(html_string, dest=response)
+
+                return response
+            # Llama a la función para convertir HTML a PDF
+            pdf_response = convert_html_to_pdf(html_string)
+
+            return pdf_response
 
         return redirect('resumen', act_id=act_id)
 

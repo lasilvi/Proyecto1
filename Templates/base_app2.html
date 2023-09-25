@@ -87,13 +87,17 @@
             Sistema de control de actas
             </label>
         </div>
+        <div>
+            <label style="font-size: 28px; font-weight: bold; font-family: 'OtroTipoDeLetra', sans-serif;">
+                Escuela Interamericana de Bibliotecología
+            </label>
+        </div> 
     </div>
 <div class="container-fluid">
     <div class="row">
         <!-- Navbar lateral -->
         <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar" >
-            <a class="navbar-brand" >  <strong>Escuela Interamericana  </strong></a>
-            <a class="navbar-brand" > <strong> de Bibliotecología </strong></a>
+            <a class="navbar-brand" > <strong>Usuario</strong></a>
             <div>
             <a class="navbar-brand cursiva" > 
                 {% if user.is_authenticated %}
@@ -111,7 +115,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'logout' %}">
+                        <a class="nav-link" href="{% url 'logout2' %}">
                             Cerrar sesión
                         </a>
                     </li>

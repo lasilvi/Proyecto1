@@ -7,8 +7,8 @@ from django.contrib.auth.views import LoginView, LogoutView
 urlpatterns = [
     path('menu/', views.MenuView, name='menu'),
     path('RegistroActa/', views.Register, name='Registro'),
-    path('accounts/login/', LoginView.as_view(template_name='registration/login.html'), name='login'),
-    path('logout/', views.logout_view, name='logout'),
+    path('login/', views.login_view, name='login1'),
+    path('logout/', views.logout_view, name='logout1'),
     path('change_password/', views.change_password, name='change_password1'),
 
     path('RegistroUsuariosConfirmacion/<int:act_id>/<str:act_proceso>/<int:act_ident>/', views.RegisterUserConfirmation, name='RegistroUserconfirmation'),

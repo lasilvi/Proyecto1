@@ -11,6 +11,9 @@ from django.contrib import messages
 from django.template.loader import get_template
 from django.template import Context
 from django.http import HttpResponse
+from xhtml2pdf import pisa 
+from django.urls import reverse
+from .forms import *
 
 # Create your views here.
 @login_required
@@ -39,13 +42,20 @@ def index2(request):
 
 def login_view(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect('index')  # Redirige al índice después de iniciar sesión
-    return render(request, 'app_visualizacion/login.html')
+        form = UserLoginForm(request=request, data = request.POST)
+        if form.is_valid():
+            username = request.POST['username']
+            password = request.POST['password']
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('index')  # Redirige al índice después de iniciar sesión
+        else:
+            for key, error in list (form.errors.items()):
+                messages.error(request, error)
+    form =  UserLoginForm()
+
+    return render(request=request, template_name="registration/login.html",context={'form': form})
 
 def logout_view(request):
     logout(request)  # Cierra la sesión del usuario
@@ -84,16 +94,50 @@ def Resumen1(request,act_id):
         if  action == 'enviar_info':
             username = request.user
             usermail = username.email
-            print(usermail)
             comentario = request.POST.get('comentario')
             Enviar_Comentario(act_id,comentario, usermail)
             return redirect('resumen1', act_id=act_id)
+            
+    return render(request, 'app_visualizacion/resumen1.html', {'datos': datos_acta,
+                                                         'desarrollo': datos_desarrollo,
+                                                          'asistentes': asistentes,
+                                                         'compromisos': compromisos,'act_id':act_id})
+
+@login_required
+def Resumen2(request,act_id):
+    # Realiza la consulta y el filtrado de los datos
+    datos_acta = Act.objects.filter(pk=act_id)
+    datos_desarrollo = Development.objects.filter(act_id=act_id)
+    
+    asistentes = Confirmation.objects.filter(act_id = act_id)
+    compromisos = Commitment.objects.filter(act_id=act_id)
+
+    if request.method == 'POST':
+        action = request.POST.get('action')
         if action == 'generarpdf':
-            template = get_template('resumen1')
-           
+            html_template = 'app_visualizacion/pdf2.html'
+            html_string = get_template(html_template).render(
+                request=request, context={'datos': datos_acta,
+                        'desarrollo': datos_desarrollo,
+                        'asistentes': asistentes,
+                        'compromisos': compromisos,
+                        'act_id':act_id})
+
+            def convert_html_to_pdf(html_string):
+                response = HttpResponse(content_type='application/pdf')
+                response['Content-Disposition'] = 'attachment; filename="actadereunión.pdf"'
+
+                # Convierte el HTML en PDF y lo agrega a la respuesta
+                pisaStatus = pisa.CreatePDF(html_string, dest=response)
+
+                return response
+            # Llama a la función para convertir HTML a PDF
+            pdf_response = convert_html_to_pdf(html_string)
+
+            return pdf_response
             
 
-    return render(request, 'app_visualizacion/resumen1.html', {'datos': datos_acta,
+    return render(request, 'app_visualizacion/resumen2.html', {'datos': datos_acta,
                                                          'desarrollo': datos_desarrollo,
                                                           'asistentes': asistentes,
                                                          'compromisos': compromisos,'act_id':act_id})

@@ -6,26 +6,25 @@ import datetime
 
 class Dependece(models.Model):
     cod = models.CharField(max_length=200,null=True)
-    name = models.CharField(max_length=200,null=True)
-    
+    name = models.CharField(max_length=200,null=True) 
     def __str__(self):
         return str(self.cod)
     
 class Typemeet(models.Model):
     name = models.CharField(max_length=200)
-    
     def __str__(self):
         return str(self.pk)
+    
 # Create your models here.
 class Act(models.Model):
     pub_date = models.DateField()
     process_text = models.ForeignKey(Dependece,on_delete =models.CASCADE,default=None)
     type_meet = models.ForeignKey(Typemeet,on_delete =models.CASCADE,default=None)
-    hour = models.TimeField(null=True)
-    next_meet = models.DateField(null=True)
-    next_hour = models.TimeField(null=True )
+    hour = models.TimeField(null=True,editable=True)
+    next_meet = models.DateField(null=True,editable=True)
+    next_hour = models.TimeField(null=True,editable=True )
     place = models.CharField(max_length=200, editable=True)
-    next_place = models.CharField(max_length=200,null=True)
+    next_place = models.CharField(max_length=200,null=True,editable=True)
     ident = models.IntegerField(null=True, default=None)
     send = models.BooleanField(null=True, default=None)
   
@@ -46,8 +45,6 @@ class User(models.Model):
     name = models.CharField(max_length=200, default=None)
     mail = models.CharField(max_length=200,null=True,default=None)
     num_id = models.IntegerField(default=None)
-    
- 
 
     def __str__(self):
         return str(self.num_id)

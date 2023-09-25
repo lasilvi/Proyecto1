@@ -12,8 +12,10 @@
                       <div class="mb-3 row">
                         <label class="col-sm-2 col-form-label">Asistente</label>
                         <div class="col-sm-10">
-                            <select name="user_id" id="user_id" class="form-control" required>
-                                <option value={{ form.user_id }}></option> 
+                            <select name="user_id" id="user_id" class="form-control" >
+                                {% for choice in form.user_id.field.choices %}
+                                <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                                {% endfor %}
                             </select>
                         </div>
                       </div>
@@ -22,8 +24,10 @@
                       <div  class="mb-3 row">
                         <label class="col-sm-2 col-form-label">Cargo</label>
                         <div class="col-sm-10">
-                            <select name="job_position" id="job_position" class="form-control" required>
-                                <option value={{ form.job_position }}></option> 
+                            <select name="job_position" id="job_position" class="form-control">
+                                {% for choice in form.job_position.field.choices %}
+                                <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                                {% endfor %}
                             </select>
                         </div>
                       </div> 
@@ -33,7 +37,9 @@
                         <div class="col-sm-10">
                             <div>
                                 <select name="process" id="process" class="form-control" required>
-                                    <option value={{ form.process }}></option> 
+                                    {% for choice in form.process.field.choices %}
+                                    <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                                    {% endfor %}
                                 </select>
                                 
                             </div>
@@ -47,8 +53,8 @@
                         </div>
                       </div>
                       <div class="mb-3 ">
-                        <div class="col-auto mx-auto">
-                            <button type="submit" class="btn btn-primary btn-lg btn-block">Actualizar</button>
+                        <div class="d-flex justify-content-end">
+                            <button type="submit" class="btn btn-outline-primary">Actualizar</button>
                         </div>
                       </div>
                      

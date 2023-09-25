@@ -21,7 +21,7 @@
         <td>{{ confirmacion.act_id.pub_date }}</td>
         <td>{{ confirmacion.act_id.type_meet.name }}</td>
         <td>{{ confirmacion.act_id.process_text.name }}</td>
-        <td><a href="{% url 'resumen1' confirmacion.act_id.id %}" class="btn btn-primary">Resumen</a></td>
+        <td><a href="{% url 'resumen2' confirmacion.act_id.id %}" class="btn btn-primary">Resumen</a></td>
       </tr>
     {% empty %}
       <tr>
