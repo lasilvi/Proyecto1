@@ -22,7 +22,9 @@ from django.contrib.auth.models import User as usuariodjango
 from xhtml2pdf import pisa 
 from django.template.loader import get_template
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth.decorators import user_passes_test
 # Create your views here.
+
 def login_view1(request):
     if request.method == 'POST':
         form = UserLoginForm(request=request, data = request.POST)
@@ -452,10 +454,16 @@ def eliminar_usuario(request,user_id):
 @login_required
 def editar_usuario(request, user_id):
     user = User.objects.get(id=user_id)
+    correo = user.mail
+
     action = request.POST.get('action')
     if request.method == 'POST':
         if action == 'Actualizar':
             form = UserForm(request.POST, instance=user)
+            correo_nuevo = request.POST.get('mail').strip()
+            
+            if correo_nuevo != correo:
+                print(1)
             #if form.is_valid():
             # Actualizar otros campos según sea necesario
             form.save()
@@ -463,7 +471,7 @@ def editar_usuario(request, user_id):
         if action == 'Restablecer':
             form = UserForm(request.POST, instance=user)
             usuario = request.POST.get('mail').strip()
-            print(usuario)
+            
             contrasena_aleatoria = generar_contrasena_aleatoria()
             contenido_correo = "Estas son sus credenciales \nUsuario: " + usuario + "\nContraseña: " + contrasena_aleatoria + "\n" + "http://127.0.0.1:8000/app_visualizacion/login/"
             # Crear el usuario sin guardar
