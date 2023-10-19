@@ -142,5 +142,8 @@ EMAIL_HOST_PASSWORD = 'ttiaapxeblpvhnda'  # Coloca aquí tu contraseña
 
 LOGIN_URL = '/app_visualizacion/login/'
 
+LOGIN_URL = '/app_registro/login/'
+
+
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 

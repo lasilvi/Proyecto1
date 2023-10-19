@@ -7,7 +7,7 @@ from django.contrib.auth.views import LoginView, LogoutView
 urlpatterns = [
     path('menu/', views.MenuView, name='menu'),
     path('RegistroActa/', views.Register, name='Registro'),
-    path('login/', views.login_view, name='login1'),
+    path('login/', views.login_view1, name='login1'),
     path('logout/', views.logout_view, name='logout1'),
     path('change_password/', views.change_password, name='change_password1'),
 
@@ -27,7 +27,7 @@ urlpatterns = [
     path('enviar_correo/', views.enviar_correo, name='enviar_correo'),
    
     path('edit_act/<int:act_id>/', views.edit_act, name='edit_act'),
-    path('filter-acts/', views.filter_acts, name='filter_acts'),
+    path('filtrar/', views.filter_acts, name='filter_acts'),
     
     path('RegistroAsistente/', views.RegisterAssistant, name='RegisterAssistant'),
     path('EditarUsuario/<int:user_id>/', views.editar_usuario, name='EditarUsuario'),

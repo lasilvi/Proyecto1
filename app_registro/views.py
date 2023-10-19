@@ -23,7 +23,7 @@ from xhtml2pdf import pisa
 from django.template.loader import get_template
 from django.contrib.auth.hashers import make_password
 # Create your views here.
-def login_view(request):
+def login_view1(request):
     if request.method == 'POST':
         form = UserLoginForm(request=request, data = request.POST)
         if form.is_valid():
@@ -389,12 +389,12 @@ def RegisterAssistant(request):
                 cedula = form.cleaned_data['num_id']
 
                 if User.objects.filter(mail=usuario).exists():
-                    messages.error(request, 'Este es un mensaje de error.')
+                    messages.error(request, 'El usuario ya se encuentran registrado.')
 
                     return redirect('RegisterAssistant')
                 
                 if User.objects.filter(num_id=cedula).exists():
-                    messages.error(request, 'El nombre o la contraseña ya se encuentran registrados.')
+                    messages.error(request, 'El usuario ya se encuentran registrado.')
 
                     return redirect('RegisterAssistant')
 
@@ -408,10 +408,11 @@ def RegisterAssistant(request):
                 enviar_correo(str(usuario),contenido_correo)
                
                 return redirect('RegisterAssistant') 
-        if action == 'filtrar':
-            nombre = request.POST.get('nombre')
-            cedula = request.POST.get('cedula')
-            correo = request.POST.get('correo')
+        elif action == 'filtrar':
+            nombre = request.POST.get('nombre1')
+            cedula = request.POST.get('cedula1')
+            correo = request.POST.get('correo1')
+            
             asistentes = User.objects.all()
             if nombre:
                 users = asistentes.filter(name=nombre)
@@ -461,7 +462,8 @@ def editar_usuario(request, user_id):
             return redirect('RegisterAssistant')  # Redirigir a la página de filtrado de actas después de guardar los cambios
         if action == 'Restablecer':
             form = UserForm(request.POST, instance=user)
-            usuario = request.POST.get('mail')
+            usuario = request.POST.get('mail').strip()
+            print(usuario)
             contrasena_aleatoria = generar_contrasena_aleatoria()
             contenido_correo = "Estas son sus credenciales \nUsuario: " + usuario + "\nContraseña: " + contrasena_aleatoria + "\n" + "http://127.0.0.1:8000/app_visualizacion/login/"
             # Crear el usuario sin guardar

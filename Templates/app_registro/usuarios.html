@@ -49,6 +49,9 @@
             {% endif %}
             </form>
 
+            <hr> 
+            <hr> 
+
             <form  method="post" action="{% url 'RegisterAssistant' %}">
               {% csrf_token %}
               <div class="mb-3 row">
@@ -57,18 +60,18 @@
               <div  class="mb-3 row">
                 <label class="col-sm-1 col-form-label">Nombre</label>
                 <div class="col-sm-10">
-                    <input type="text" name="nombre" id="nombre" class="form-control">
+                    <input type="text" name="nombre1" id="nombre1" class="form-control">
                 </div>
               </div> 
 
               <div  class="mb-3 row">
                 <label class="col-sm-1 col-form-label">Cédula</label>
                 <div class="col-sm-4">
-                    <input name="Cedula" id="cedula" class="form-control">   
+                    <input name="cedula1" id="cedula1" class="form-control">   
                 </div>
                 <label class="col-sm-1 col-form-label">Correo</label>
                 <div class="col-sm-5">
-                    <input type="mail" id="correo" name="correo" class="form-control" >
+                    <input type="mail" id="correo1" name="correo1" class="form-control" >
                 </div>
               </div>
             </div>

@@ -22,8 +22,9 @@
                         <label class="col-sm-2 col-form-label">Cargo</label>
                         <div class="col-sm-10">
                             <select name="job_position" id="job_position" class="form-control">
+                               
                                 {% for choice in form.job_position.field.choices %}
-                                <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                                <option value="{{ choice.0 }}" {% if choice.0 == form.job_position.value %}selected{% endif %}>{{ choice.1 }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -33,9 +34,11 @@
                         <label class="col-sm-2 col-form-label">Proceso</label>
                         <div class="col-sm-10">
                             <div>
+                                
                                 <select name="process" id="process" class="form-control" required>
+                                    
                                     {% for choice in form.process.field.choices %}
-                                    <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                                    <option value="{{ choice.0 }}" {% if choice.0 == form.process.value %}selected{% endif %}s>{{ choice.1 }}</option>
                                     {% endfor %}
                                 </select>
                                 
