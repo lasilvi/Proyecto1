@@ -94,7 +94,7 @@ class RegisterFormDevelopment(forms.ModelForm):
         self.fields['num'].required = False
         self.fields['act_id'].required = False
         user = User.objects.values_list('pk','name')
-        self.fields['user_id'].choices = user
+        
 
 
 class RegisterFormCommitment(forms.ModelForm):

@@ -15,9 +15,17 @@
                 <div class="col-sm-5">
                   <input class="form-control" name="name" id="nem" rows="1" > </textarea>
                 </div>
+                
                 <div class="col-sm-5">
                 <button type="submit" class="btn btn-outline-primary">Crear Tipo de reunion</button>
                 </div> 
+                {% if messages %}
+                  <ul class="messages">
+                    {% for message in messages %}
+                      <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
             </div>
              
           
@@ -35,7 +43,7 @@
                       <td>{{ data.name }}</td>
                       <td>
                         <a href="{% url 'EditarTipoReunion' data.id %}" class="btn btn-danger btn-sm">Editar</a>
-                        <a href="{% url 'eliminar_tipo_reunion' data.id %}" class="btn btn-danger btn-sm delete-typemeet" data-typemeet-id="{{ data.id }}">Eliminar</a>
+                        <!--<a href="{% url 'eliminar_tipo_reunion' data.id %}" class="btn btn-danger btn-sm delete-typemeet" data-typemeet-id="{{ data.id }}">Eliminar</a>-->
                       </td>
                     </tr>
                   {% empty %}

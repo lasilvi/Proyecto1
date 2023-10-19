@@ -85,17 +85,16 @@ def Resumen1(request,act_id):
         action = request.POST.get('action')
         if action == 'aprobar':
             username = request.user
-            usermail = username.email
             #todas las actas en las que esta el asistente 
-            user = User.objects.get(mail=usermail)  
+            user = User.objects.get(mail=username)  
             asistente = Confirmation.objects.get(act_id = act_id, user_id = user)
             Aprovar(asistente)
             return redirect('resumen1', act_id=act_id)
         if  action == 'enviar_info':
             username = request.user
-            usermail = username.email
+            
             comentario = request.POST.get('comentario')
-            Enviar_Comentario(act_id,comentario, usermail)
+            Enviar_Comentario(act_id,comentario, username)
             return redirect('resumen1', act_id=act_id)
             
     return render(request, 'app_visualizacion/resumen1.html', {'datos': datos_acta,

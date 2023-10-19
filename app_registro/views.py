@@ -21,6 +21,7 @@ import string
 from django.contrib.auth.models import User as usuariodjango
 from xhtml2pdf import pisa 
 from django.template.loader import get_template
+from django.contrib.auth.hashers import make_password
 # Create your views here.
 def login_view(request):
     if request.method == 'POST':
@@ -31,10 +32,12 @@ def login_view(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('menu')  # Redirige al índice después de iniciar sesión
+                return redirect('menu') 
+            else:
+                return render(request=request, template_name="registration/login.html",context={'form': form})# Redirige al índice después de iniciar sesión
         else:
-            for key, error in list (form.errors.items()):
-                messages.error(request, error)
+            error="usuario o contraseña incorrecta"
+            messages.error(request, error)
     form =  UserLoginForm()
 
     return render(request=request, template_name="registration/login.html",context={'form': form})
@@ -162,6 +165,7 @@ def RegisterUserConfirmation(request,act_id,act_proceso,act_ident):
             if existing_confirmation:
                 # Si ya existe, redirigir a la página de confirmación con un mensaje de error
                 messages.error(request, 'el usuario ya se encuentra registrado')
+                context = {'act_id': act_id, 'act_proceso': act_proceso, 'act_ident': act_ident}
                 url_redireccion = reverse('RegistroUserconfirmation' , kwargs={'act_id': act_id, 'act_proceso': act_proceso, 'act_ident': act_ident})
                 return redirect(url_redireccion)
             
@@ -192,7 +196,6 @@ def RegisterUserConfirmation(request,act_id,act_proceso,act_ident):
 @login_required
 def editar_RegisterUserConfirmation(request,user_id,act_id,act_proceso,act_ident):
     confimaciones = Confirmation.objects.get(id=user_id)
-    
     if request.method == 'POST':
         form = RegisterFormUserConfirmation(request.POST)
         if form.is_valid():
@@ -202,8 +205,10 @@ def editar_RegisterUserConfirmation(request,user_id,act_id,act_proceso,act_ident
             return redirect(url) # Redirigir a la página de filtrado de actas después de guardar los cambios
     else:
         form = RegisterFormUserConfirmation(instance=confimaciones)
+        
     context = {
         'form': form,
+        'confirmaciones': confimaciones
     }
 
     return render(request, ('app_registro/editar_formulario2confirmacion.html'), context)
@@ -211,7 +216,6 @@ def editar_RegisterUserConfirmation(request,user_id,act_id,act_proceso,act_ident
 
 @login_required
 def eliminar_RegisterUserConfirmation(request,user_id,act_id,act_proceso,act_ident):
-    print(user_id)
     
     if request.method == 'GET':
         confirmation = Confirmation.objects.get(id=user_id)
@@ -233,6 +237,7 @@ def RegisterDevelopment(request,act_id,act_proceso,act_ident):
     if request.method == 'POST':
         formdevelopment = RegisterFormDevelopment(request.POST)
         if formdevelopment.is_valid():
+            
             desarrollo = formdevelopment.save(commit=False)
             
             # Obtener el último valor de "num" para la combinación de "act_id" y "desarrollo"
@@ -256,9 +261,12 @@ def RegisterDevelopment(request,act_id,act_proceso,act_ident):
         formdevelopment = RegisterFormDevelopment()
     desarrollo = Development.objects.filter(act_id=act_id)
     proceso = Dependece.objects.get(cod=act_proceso)
+    asistentes = User.objects.filter(
+            id__in=Confirmation.objects.filter(act_id=act_id,asset=True).values('user_id')
+        )
     context = {
             'form': formdevelopment,'act_id': act_id,'act_proceso': act_proceso,
-            'act_ident': act_ident,'desarrollo':desarrollo,'proceso': proceso}    
+            'act_ident': act_ident,'desarrollo':desarrollo,'proceso': proceso,'asistentes':asistentes}    
     return render(request, 'app_registro/formulario3.html',  context )
 
 
@@ -286,16 +294,16 @@ def editar_RegisterDevelopment(request,desarrollo_id,act_id,act_proceso,act_iden
         form = RegisterFormDevelopment(request.POST)
         if form.is_valid():
             form = RegisterFormDevelopment(request.POST, instance=desarrollo)
-            #if form.is_valid():
-            # Actualizar
-            #  otros campos según sea necesario
             form.save()
             url= reverse('RegistroDevelop', kwargs={'act_id': act_id, 'act_proceso': act_proceso, 'act_ident': act_ident}) 
             return redirect(url) # Redirigir a la página de filtrado de actas después de guardar los cambios
     else:
         form = RegisterFormDevelopment(instance=desarrollo)
+    asistentes = User.objects.filter(
+            id__in=Confirmation.objects.filter(act_id=act_id,asset=True).values('user_id')
+        )
     context = {
-        'form': form,
+        'form': form,'asistentes':asistentes
     }
 
     return render(request, ('app_registro/editar_formulario3desarrollo.html'), context)
@@ -321,9 +329,12 @@ def RegisterCommintment(request,act_id,act_proceso,act_ident):
         formcompromiso = RegisterFormCommitment()
     compromisos = Commitment.objects.filter(act_id=act_id)
     proceso = Dependece.objects.get(cod=act_proceso)
+    asistentes = User.objects.filter(
+            id__in=Confirmation.objects.filter(act_id=act_id,asset=True).values('user_id')
+        )
     context = {
             'form': formcompromiso,'act_id': act_id,'act_proceso': act_proceso,
-            'act_ident': act_ident,'compromiso':compromisos,'proceso': proceso}    
+            'act_ident': act_ident,'compromiso':compromisos,'proceso': proceso,'asistentes':asistentes}    
     return render(request, 'app_registro/formulario4.html',  context )
 
 
@@ -350,16 +361,16 @@ def editar_RegisterCommintment(request,compromiso_id,act_id,act_proceso,act_iden
         form = RegisterFormCommitment(request.POST)
         if form.is_valid():
             form = RegisterFormCommitment(request.POST, instance=compromiso)
-            #if form.is_valid():
-            # Actualizar
-            #  otros campos según sea necesario
             form.save()
             url= reverse('RegistroCommintment', kwargs={'act_id': act_id, 'act_proceso': act_proceso, 'act_ident': act_ident}) 
             return redirect(url) # Redirigir a la página de filtrado de actas después de guardar los cambios
     else:
         form = RegisterFormCommitment(instance=compromiso)
+    asistentes = User.objects.filter(
+            id__in=Confirmation.objects.filter(act_id=act_id,asset=True).values('user_id')
+        )
     context = {
-        'form': form,
+        'form': form,'asistentes':asistentes
     }
 
     return render(request, ('app_registro/editar_formulario4compromiso.html'), context)
@@ -378,9 +389,13 @@ def RegisterAssistant(request):
                 cedula = form.cleaned_data['num_id']
 
                 if User.objects.filter(mail=usuario).exists():
+                    messages.error(request, 'Este es un mensaje de error.')
+
                     return redirect('RegisterAssistant')
                 
                 if User.objects.filter(num_id=cedula).exists():
+                    messages.error(request, 'El nombre o la contraseña ya se encuentran registrados.')
+
                     return redirect('RegisterAssistant')
 
                 contrasena_aleatoria = generar_contrasena_aleatoria()
@@ -436,13 +451,26 @@ def eliminar_usuario(request,user_id):
 @login_required
 def editar_usuario(request, user_id):
     user = User.objects.get(id=user_id)
-    
+    action = request.POST.get('action')
     if request.method == 'POST':
-        form = UserForm(request.POST, instance=user)
-        #if form.is_valid():
-        # Actualizar otros campos según sea necesario
-        form.save()
-        return redirect('RegisterAssistant')  # Redirigir a la página de filtrado de actas después de guardar los cambios
+        if action == 'Actualizar':
+            form = UserForm(request.POST, instance=user)
+            #if form.is_valid():
+            # Actualizar otros campos según sea necesario
+            form.save()
+            return redirect('RegisterAssistant')  # Redirigir a la página de filtrado de actas después de guardar los cambios
+        if action == 'Restablecer':
+            form = UserForm(request.POST, instance=user)
+            usuario = request.POST.get('mail')
+            contrasena_aleatoria = generar_contrasena_aleatoria()
+            contenido_correo = "Estas son sus credenciales \nUsuario: " + usuario + "\nContraseña: " + contrasena_aleatoria + "\n" + "http://127.0.0.1:8000/app_visualizacion/login/"
+            # Crear el usuario sin guardar
+            user = usuariodjango.objects.get(username=usuario)
+            user.set_password(contrasena_aleatoria)
+            user.save()
+            enviar_correo(str(usuario),contenido_correo)
+
+            return redirect('RegisterAssistant') 
     else:
         form = UserForm(instance=user)
     context = {
@@ -458,8 +486,17 @@ def RegisterProcess(request):
     if request.method == 'POST':
         form = ProcessForm(request.POST)
         if form.is_valid():
-            process = form.save()
-            return redirect('RegisterProcess')
+            proceso = form.cleaned_data['name']
+            cod = form.cleaned_data['cod']
+            if Dependece.objects.filter(cod=cod).exists():
+                messages.error(request, 'el tipo de proceso ya se encuentra registrado')
+                redirect('RegisterProcess')
+            if Dependece.objects.filter(name=proceso).exists():
+                messages.error(request, 'el tipo de proceso ya se encuentra registrado')
+                redirect('RegisterProcess')
+            else:
+                process = form.save()
+                return redirect('RegisterProcess')
     else:     
         form = ProcessForm()
     processs = Dependece.objects.all()
@@ -510,6 +547,7 @@ def RegisterTypemeet(request):
         if form.is_valid():
             tiporeunion = form.cleaned_data['name']
             if Typemeet.objects.filter(name=tiporeunion).exists():
+                messages.error(request, 'el tipo de reunión ya se encuentra registrado')
                 redirect('RegisterTypemeet')
             else:
                 typemeet = form.save()

@@ -85,7 +85,7 @@ class Development(models.Model):
     num = models.IntegerField(default=None)
     tittle =  models.CharField(max_length=2000,null=True, default=None)
     description =  models.CharField(max_length=20000,null=True, default=None)
-    discussion =  models.CharField(max_length=20000,null=True)
+    discussion =  models.CharField(max_length=20000,null=True, default=' ')
     result =  models.CharField(max_length=20000,null=True)
     user_id = models.ForeignKey(User,on_delete =models.CASCADE,default=None)
     

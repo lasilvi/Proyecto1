@@ -29,6 +29,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
               </div>
               <div class="offcanvas-body">
+                <form method="post">
                 <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                   <li class="nav-item">
                     <a class="nav-link" href="{% url 'edit_act' act_id%}">Acta</a>
@@ -46,12 +47,12 @@
                     <a class="nav-link" href="{% url 'resumen' act_id %}">Resumen</a>
 
                   </li>
-                  <form method="post">
+                  
                   <li class="nav-item">
                   
                     {% csrf_token %}
                     <button type="submit" class="btn btn-primary" name="action" value="enviarcorreo">Enviar Correo</button>
-                      
+                  <li class="nav-item">
                         {% for dato in datos %}
                           {% if dato.send == True %}
                                   Enviado 
@@ -59,10 +60,10 @@
                                   No enviado
                           {% endif %}
                         {% endfor %}
-                     
+                  </li>
                   </li>
                   <li class="nav-item">
-                    <button type="submit" class="btn btn-outline-primary" name="action" value="generarpdf">generarpdf</button>
+                    <button type="submit" class="btn btn-secondary" name="action" value="generarpdf">generarpdf</button>
                   </li>
 
                   </form>
@@ -249,14 +250,16 @@
                       <td style="width: 70%; padding: 5px;">{{ user.tittle }}<br>
                       {{ user.description }}<br> 
                         
-                        {% if  user.discussion == none %}
+                        {% if  user.discussion == None %}
+
                         {% else %}
-                        {{ user.discussion }} 
+                          {{ user.discussion }} 
                         {% endif %}<br>
       
-                        {% if  user.result == none %}
+                        {% if  user.result == None %}
+
                         {% else %}
-                        {{ user.result }}
+                          {{ user.result }}
                         {% endif %}
                     
                         </td>

@@ -51,6 +51,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
 ]
 
 ROOT_URLCONF = 'proyectoactas.urls'
@@ -124,6 +125,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
@@ -137,4 +139,8 @@ EMAIL_USE_TLS = True  # Usa TLS (True) o SSL (False) según tu proveedor
 EMAIL_HOST_USER = 'escuelainteramericanadebibliot@gmail.com'  # Coloca aquí tu correo electrónico
 EMAIL_HOST_PASSWORD = 'ttiaapxeblpvhnda'  # Coloca aquí tu contraseña
 
+
+LOGIN_URL = '/app_visualizacion/login/'
+
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 

@@ -22,9 +22,17 @@
                     <div class="col-sm-2">
                       <input class="form-control" name="cod" id="cod" rows="2" ></textarea>
                     </div>
+                    
                     <div class="col-sm-4">
                       <button type="submit" class="btn btn-outline-primary">Crear Proceso</button>
-                </div>
+                  </div>
+                  {% if messages %}
+                    <ul class="messages">
+                      {% for message in messages %}
+                        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                      {% endfor %}
+                    </ul>
+                  {% endif %}
                 </div>
       
     
@@ -43,7 +51,7 @@
                       <td>{{ data.cod }}</td>
                       <td>
                         <a href="{% url 'EditarProceso' data.id %}" class="btn btn-danger btn-sm">Editar</a>
-                        <a href="{% url 'eliminar_proceso' data.id %}" class="btn btn-danger btn-sm delete-typemeet" data-typemeet-id="{{ data.id }}">Eliminar</a>
+                       <!-- <a href="{% url 'eliminar_proceso' data.id %}" class="btn btn-danger btn-sm delete-typemeet" data-typemeet-id="{{ data.id }}">Eliminar</a>-->
 
                       </td>
                     </tr>

@@ -6,113 +6,97 @@
     <title>Document</title>
 </head>
 <body>
-    <table class="table table-light text-center">
-        <tr> 
-          <H1>UNIVERSIDAD DE ANTIOQUIA</H1>
-        </tr> 
-        <tr> 
-          <div>
-          {% for dato in datos %}
-          <td colspan="3" class="grande text-center"   style="font-weight: bold;">Acta N°{{ dato.ident }}</td>
-          {% endfor %}
-          </div>
-        </tr>
-        <tr>
-          <td colspan="2" class="text-center">
+  <table class="table table-light text-center">
+    <tr>
+        <td>
+            <img src="static\images\images.png" width="100" height="100">
+        </td>
+        <td class="text-center" style="font-weight: bold;">
+            {% for dato in datos %}
+                Acta N°{{ dato.ident }}
+            {% endfor %}
+        </td>
+        <td class="text-center"  colspan="2">
             <label style="font-weight: bold;">Proceso/Dependencia</label>
             <div>
-              {% for dato in datos%}
-              {{ dato.process_text.name }}
-              {% endfor %}
+                {% for dato in datos %}
+                    {{ dato.process_text.name }}
+                {% endfor %}
             </div>
-          </td>
-          <td  class="text-center" >
-           <label style="font-weight: bold;"> Tipo de reunión </label style="font-weight: bold;">
+        </td>
+        <td class="text-center" colspan="2">
+            <label style="font-weight: bold;">Tipo de reunión</label>
             <div>
-              {% for dato in datos%}
-              {{ dato.type_meet.name }}
-              {% endfor %}
+                {% for dato in datos %}
+                    {{ dato.type_meet.name }}
+                {% endfor %}
             </div>
-          </td>
-        </tr> 
-        <tr> 
-          <td class="text-center" >
-            <label style="font-weight: bold;">Fecha</label>
-            <div>
-              {% for dato in datos %}
+        </td>
+    </tr>
+    <tr>
+    <td class="text-center" colspan="2">
+      <label style="font-weight: bold;">Fecha</label>
+      <div>
+          {% for dato in datos %}
               {{ dato.pub_date }}
-              {% endfor %}
-            </div>
-          </td>
-          <td class="text-center">
-            <label style="font-weight: bold;">Hora</label>
-            <div>
-              {% for dato in datos %}
-                {% if dato.hour == None %}
-            
-                {% else %}
-                {{ dato.hour }}
-                {% endif %}
-              {% endfor %}
-            </div>
-          </td>
-          <td class="text-center">
-            <label style="font-weight: bold;">Lugar</label>
-            <div>
-              {% for dato in datos %}
-              {% if dato.place == None %}
-       
-              {% else %}
+          {% endfor %}
+      </div>
+  </td>
+  <td class="text-center" colspan="2">
+      <label style="font-weight: bold;">Hora</label>
+      <div>
+          {% for dato in datos %}
+              {% if dato.hour is not None %}
+                  {{ dato.hour }}
+              {% endif %}
+          {% endfor %}
+      </div>
+  </td>
+  <td class="text-center" colspan="2">
+      <label style="font-weight: bold;">Lugar</label>
+      <div>
+          {% for dato in datos %}
+              {% if dato.place is not None %}
                   {{ dato.place }}
               {% endif %}
-              {% endfor %}
-            </div>
-          </td>
-        </tr> 
-        <tr> 
-          <td class="text-center" >
-            <label  style="font-weight: bold;">Fecha próxima reunión</label>
-            <div>
-              {% for dato in datos %}
-              {% if dato.next_meet == None %}
-                 
-              {% else %}
+          {% endfor %}
+      </div>
+  </td>
+</tr>
+<tr>
+  <td class="text-center" colspan="2">
+      <label style="font-weight: bold;">Fecha próxima reunión</label>
+      <div>
+          {% for dato in datos %}
+              {% if dato.next_meet is not None %}
                   {{ dato.next_meet }}
               {% endif %}
-              {% endfor %}
-            </div>
-          </td>
-          <td class="text-center"  >
-            <label style="font-weight: bold;">Hora próxima reunión</label>
-            <div>
-              {% for dato in datos %}
-              {% if dato.next_hour == none %}
-                 
-              {% else %}
-                {{ dato.next_hour }}
+          {% endfor %}
+      </div>
+  </td>
+  <td class="text-center" colspan="2">
+      <label style="font-weight: bold;">Hora próxima reunión</label>
+      <div>
+          {% for dato in datos %}
+              {% if dato.next_hour is not None %}
+                  {{ dato.next_hour }}
               {% endif %}
-              {% endfor %}
-            </div>
-          </td>
-          <td class="text-center"  >
-            <label style="font-weight: bold;">Lugar próxima</label>
-            <div>
-            
-              {% for dato in datos %}
-              {% if  dato.next_place == none %}
-               
-              {% else %}
-                {{ dato.next_place }}
+          {% endfor %}
+      </div>
+  </td>
+  <td class="text-center" colspan="2">
+      <label style="font-weight: bold;">Lugar próxima</label>
+      <div>
+          {% for dato in datos %}
+              {% if dato.next_place is not None %}
+                  {{ dato.next_place }}
               {% endif %}
-              {% endfor %}
-            </div>
-          </td>
-        </tr>  
-        <!-- Contenido de la tabla de información del acta -->
-      </table>
-    </div>
-  </div>
-
+          {% endfor %}
+      </div>
+  </td>
+</tr>
+</table>
+</table>
   <div class="row justify-content-center">
     <div class="d-flex p-2">
       

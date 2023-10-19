@@ -89,8 +89,8 @@
               <div class="col-sm-10">
                 <select name="user_id" id="user_id" class="form-control" required>
                   <option value="">Seleccione una opción</option>
-                  {% for choice in form.user_id.field.choices %}
-                    <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                  {% for choice in asistentes %}
+                  <option value="{{ choice.id }}">{{ choice.name }}</option>
                   {% endfor %}
               </select>
               </div>

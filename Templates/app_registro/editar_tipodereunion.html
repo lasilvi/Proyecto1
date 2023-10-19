@@ -8,10 +8,10 @@
                     {% csrf_token %}
                     <div  class="mb-3 row">
                         <label class="col-sm-2 col-form-label">Nombre del proceso</label>
-                        <div class="col-sm-5">
-                          <textarea class="form-control" name="name" id="nem" rows="1" >{{form.name.value}} </textarea>
+                        <div class="col-sm-4">
+                          <input class="form-control" name="name" id="nem" rows="1" value="{{form.name.value}}" >
                         </div>
-                        <div class="col-sm-5">
+                        <div class="col-sm-2">
                         <button type="submit" class="btn btn-outline-primary">Actualizar</button>
                         </div> 
                     </div>

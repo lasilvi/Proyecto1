@@ -21,13 +21,14 @@
                   </div> 
 
                   <div class="mb-3 row">
-                    <label class="col-sm-1 col-form-label">Cedula</label>
+                    <label class="col-sm-1 col-form-label">Cédula</label>
                     <div class="col-sm-4">
-                      {{form.num_id}}
+                    <input  class="form-control" name="num_id" id="num_id" required>
+            
                     </div>
                     <label class="col-sm-1 col-form-label">Correo</label>
                     <div class="col-sm-5">
-                      <input type="email" class="form-control" name="mail" id="mail" required>
+                       <input type="email" class="form-control" name="mail" id="mail" required>
                       <div class="invalid-feedback">
                         Por favor, introduce una dirección de correo válida.
                       </div>
@@ -39,35 +40,52 @@
                   <button type="submit"  class="btn btn-outline-primary" name="action" value="crear">Crear Asistente</button>
                 </div>
               </div>
+              {% if messages %}
+              <ul class="messages">
+                {% for message in messages %}
+                  <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+              </ul>
+            {% endif %}
             </form>
 
             <form  method="post" action="{% url 'RegisterAssistant' %}">
               {% csrf_token %}
+              <div class="mb-3 row">
+              <div class="col-sm-10">
 
               <div  class="mb-3 row">
                 <label class="col-sm-1 col-form-label">Nombre</label>
-                <div class="col-sm-3">
+                <div class="col-sm-10">
                     <input type="text" name="nombre" id="nombre" class="form-control">
                 </div>
-                <label class="col-sm-1 col-form-label">Cedula</label>
-                <div class="col-sm-3">
+              </div> 
+
+              <div  class="mb-3 row">
+                <label class="col-sm-1 col-form-label">Cédula</label>
+                <div class="col-sm-4">
                     <input name="Cedula" id="cedula" class="form-control">   
                 </div>
                 <label class="col-sm-1 col-form-label">Correo</label>
-                <div class="col-sm-3">
+                <div class="col-sm-5">
                     <input type="mail" id="correo" name="correo" class="form-control" >
                 </div>
-                <div>
-                  <button type="submit" class="btn btn-outline-primary" name="action" value="filtrar">Filtrar</button>
-                </div>
+              </div>
             </div>
+
+              <div class="col-sm-2">
+                  <button type="submit" class="btn btn-outline-primary" name="action" value="filtrar">Filtrar</button>
+              </div>
+          
+          </div>
+            
             </form>
 
              <table class="table table-light text-center">
                 <thead>
                   <tr>
                     <th>Nombre</th>
-                    <th>cedula</th>
+                    <th>cédula</th>
                     <th>Correo</th>
                     <th>Acciones</th>
                   </tr>
@@ -80,7 +98,7 @@
                       <td>{{ user.mail }}</td>
                       <td>
                         <a href="{% url 'EditarUsuario' user.id %}" class="btn btn-danger btn-sm">Editar</a>
-                        <a href="{% url 'eliminar_usuario' user.id %}" class="btn btn-danger btn-sm delete-typemeet" data-typemeet-id="{{ user.id }}">Eliminar</a>
+                       <!-- <a href="{% url 'eliminar_usuario' user.id %}" class="btn btn-danger btn-sm delete-typemeet" data-typemeet-id="{{ user.id }}">Eliminar</a>-->
                       </td>
                     </tr>
                   {% empty %}
